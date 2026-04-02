@@ -1798,8 +1798,8 @@ OUTPUT:
           }));
 
           // Get valid respondent data for each item (only respondents who answered ALL items in a group)
-          const getItemArrays = (items) => {
-            const validRespondents = filtered.filter(r =>
+          const getItemArrays = (items, dataSource = filtered) => {
+            const validRespondents = dataSource.filter(r =>
               items.every(item => r.likert?.[item.id] != null)
             );
             return {
@@ -1807,6 +1807,8 @@ OUTPUT:
               n: validRespondents.length,
             };
           };
+          // For Cronbach's Alpha: always use ALL responses (not filtered by region)
+          const getItemArraysAll = (items) => getItemArrays(items, responses);
 
           // === SECTION 1: Cronbach's Alpha ===
           const alphaResults = subsectionGroups.map(sec => {
