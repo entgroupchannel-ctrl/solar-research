@@ -1031,22 +1031,21 @@ function AdminDashboard({ responses, onBack }) {
           ))}
         </div>
 
-        {/* Source Filter */}
+        {/* Source Filter - regions only */}
         <div style={{ marginBottom: 24, display: "flex", flexWrap: "wrap", gap: 8 }}>
           <button onClick={() => setSelectedSource("all")} style={{
             padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer",
             background: selectedSource === "all" ? "#f59e0b" : "rgba(255,255,255,0.1)",
             color: selectedSource === "all" ? "#000" : "#94a3b8", fontSize: 12, fontWeight: 600,
           }}>ทั้งหมด ({responses.length})</button>
-          {Object.entries(SOURCES).map(([key, name]) => {
+          {Object.entries(REGION_PROVINCES).map(([key, region]) => {
             const count = responses.filter(r => r.source === key).length;
-            if (!count) return null;
             return (
               <button key={key} onClick={() => setSelectedSource(key)} style={{
                 padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer",
                 background: selectedSource === key ? "#f59e0b" : "rgba(255,255,255,0.1)",
                 color: selectedSource === key ? "#000" : "#94a3b8", fontSize: 12, fontWeight: 600,
-              }}>{name} ({count})</button>
+              }}>{region.name} ({count})</button>
             );
           })}
         </div>
