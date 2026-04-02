@@ -182,6 +182,8 @@ const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [responses, setResponses] = useState([]);
   const [sources, setSources] = useState([]);
+  const [crossRowVar, setCrossRowVar] = useState("housing");
+  const [crossColVar, setCrossColVar] = useState("electricity_bill");
   const [loading, setLoading] = useState(true);
   const [newSourceName, setNewSourceName] = useState("");
   const [newSourceRegion, setNewSourceRegion] = useState("");
