@@ -425,7 +425,7 @@ const AdminPage = () => {
 
   const getHeaders = () => {
     const likertIds = getAllLikertIds();
-    const base = ["uid", "source_code", "created_at", "time_taken", "survey_version", "want_results", "email", "suggestion"];
+    const base = ["uid", "source_code", "direct_link", "created_at", "time_taken", "survey_version", "want_results", "email", "suggestion"];
     return [...base, ...PERSONAL_QUESTIONS.map(q => q.id), ...likertIds];
   };
 
