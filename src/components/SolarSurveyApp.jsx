@@ -1421,9 +1421,20 @@ export default function SolarSurveyApp() {
               background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18
             }}>×</button>
           </div>
-          <p style={{ color: "#fca5a5", fontSize: 13, margin: 0 }}>
-            ยังเหลืออีก {missingFields.length} ข้อที่ยังไม่ได้ตอบ
+          <p style={{ color: "#fca5a5", fontSize: 13, margin: "0 0 8px" }}>
+            ยังเหลืออีก {missingFields.length} ข้อที่ยังไม่ได้ตอบ — กดที่รายการเพื่อไปยังข้อนั้น
           </p>
+          <div style={{ maxHeight: 150, overflowY: "auto", display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {missingFields.map((f, i) => (
+              <button key={i} onClick={() => scrollToMissing(f)} style={{
+                background: "rgba(248,113,113,0.15)", border: "1px solid rgba(248,113,113,0.3)",
+                borderRadius: 6, padding: "4px 10px", color: "#fca5a5", fontSize: 12,
+                cursor: "pointer", textAlign: "left", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200,
+              }}>
+                📌 {f.text}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
