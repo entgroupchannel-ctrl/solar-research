@@ -1068,9 +1068,9 @@ function AdminDashboard({ responses, onBack }) {
         {/* Export Buttons */}
         <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
           {[
-            { label: "📥 CSV", fn: exportCSV },
-            { label: "📄 TXT", fn: exportTXT },
-            { label: "📊 Excel", fn: exportExcelJSON },
+            { label: "CSV", fn: exportCSV, icon: <Download size={13} /> },
+            { label: "TXT", fn: exportTXT, icon: <FileText size={13} /> },
+            { label: "Excel", fn: exportExcelJSON, icon: <BarChart3 size={13} /> },
           ].map((btn, i) => (
             <button key={i} onClick={btn.fn} style={{
               padding: "10px 24px", border: "1px solid rgba(255,255,255,0.2)",
