@@ -674,6 +674,17 @@ function ThankYou({ responseId, timeTaken }) {
             <div style={{ fontSize: 14, fontWeight: 700, color: "#1e293b" }}>{formatTime(timeTaken)}</div>
           </div>
         </div>
+
+        <div style={{ marginTop: 20, textAlign: "center" }}>
+          <a
+            href="https://doctorofbusinessadministrationprogram.blogspot.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ fontSize: 13, color: "#f59e0b", textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}
+          >
+            🎓 หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี →
+          </a>
+        </div>
       </div>
     </div>
   );
