@@ -7,6 +7,7 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   PieChart, Pie, Cell, Legend,
 } from "recharts";
+import { GraduationCap, Check, QrCode } from "lucide-react";
 
 // ============================================================
 // SOLAR ROOFTOP SURVEY SYSTEM
