@@ -1911,9 +1911,8 @@ export default function SolarSurveyApp() {
           >
             {submitting ? "กำลังบันทึก..." : "ส่งแบบสอบถาม"}
           </button>
-          <p style={{ fontSize: 11, color: "#64748b", marginTop: 12 }}>
-            กด Ctrl+Shift+A เพื่อเข้าหน้า Admin Dashboard
-          </p>
+
+
         </div>
         </div>
       </div>
