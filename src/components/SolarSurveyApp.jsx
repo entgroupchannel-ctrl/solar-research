@@ -1076,9 +1076,11 @@ export default function SolarSurveyApp() {
       <div style={{ maxWidth: 700, margin: "0 auto", padding: "20px 16px 100px" }}>
         {/* Title */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#f59e0b", margin: "0 0 8px", lineHeight: 1.5 }}>
+          <img src={logoTRU} alt="มหาวิทยาลัยธนบุรี" style={{ height: 56, marginBottom: 12, objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.9 }} />
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: "#f59e0b", margin: "0 0 4px", lineHeight: 1.5 }}>
             แบบสอบถามวิจัย
           </h1>
+          <p style={{ fontSize: 11, color: "#64748b", margin: "0 0 8px" }}>หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี</p>
           <p style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.7, margin: 0, maxWidth: 500, marginLeft: "auto", marginRight: "auto" }}>
             อิทธิพลของความไว้วางใจต่อตราสินค้าในฐานะตัวแปรคั่นกลาง
             ที่ส่งผลต่อการตัดสินใจติดตั้งโซลาร์รูฟท็อปในบ้านของผู้บริโภคในประเทศไทย
