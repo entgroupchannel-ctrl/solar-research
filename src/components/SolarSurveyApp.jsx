@@ -1495,7 +1495,7 @@ export default function SolarSurveyApp() {
     },
   ];
 
-  const scrollToSection = (id) => {
+  const scrollToMilestone = (id) => {
     const el = id === "personal" ? sectionRefs.current["personal_0"]
       : id === "suggestion" ? sectionRefs.current["suggestion"]
       : sectionRefs.current["likert_" + LIKERT_SECTIONS.findIndex(s => s.id === id)];
