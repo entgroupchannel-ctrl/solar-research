@@ -1159,7 +1159,6 @@ OUTPUT:
               {[
                 { label: "กลุ่มตัวอย่างทั้งหมด", value: TOTAL_TARGET, sub: "Quota Target" },
                 { label: "เก็บได้แล้ว", value: responses.length, sub: `${((responses.length / TOTAL_TARGET) * 100).toFixed(1)}%` },
-                { label: "ร้าน PSI ทั้งหมด", value: TOTAL_SHOPS, sub: "Population" },
                 { label: "7 วันล่าสุด", value: last7, sub: `≈ ${(last7 / 7).toFixed(1)}/วัน` },
                 { label: "30 วันล่าสุด", value: last30, sub: `≈ ${(last30 / 30).toFixed(1)}/วัน` },
                 { label: "คาดว่าครบ", value: overallProj.status === "done" ? "ครบแล้ว" : overallProj.projectedDate ? formatDate(overallProj.projectedDate) : "—", sub: overallProj.daysLeft != null ? `อีก ${overallProj.daysLeft} วัน` : overallProj.status === "done" ? "เสร็จสิ้น" : "ข้อมูลไม่เพียงพอ" },
