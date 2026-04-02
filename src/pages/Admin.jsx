@@ -1119,10 +1119,10 @@ OUTPUT:
             {/* Chart type selector */}
             <div style={{ display: "flex", gap: 6, marginBottom: 20, background: "#f0fdf4", padding: 6, borderRadius: 12, width: "fit-content" }}>
               {[
-                { key: "pie", icon: "🍩", label: "Donut" },
-                { key: "bar", icon: "📊", label: "Bar" },
-                { key: "hbar", icon: "📶", label: "Horizontal" },
-                { key: "radar", icon: "🕸️", label: "Radar" },
+                 { key: "pie", icon: <PieChartIcon size={14} />, label: "Donut" },
+                 { key: "bar", icon: <BarChart3 size={14} />, label: "Bar" },
+                 { key: "hbar", icon: <BarChartHorizontal size={14} />, label: "Horizontal" },
+                 { key: "radar", icon: <RadarIcon size={14} />, label: "Radar" },
               ].map(t => (
                 <button key={t.key} onClick={() => setDemoChartType(t.key)}
                   style={{
