@@ -452,7 +452,17 @@ const AdminPage = () => {
             <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#f59e0b" }}>📊 Admin Dashboard</h1>
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#94a3b8" }}>รายงานผลแบบสอบถาม (Supabase)</p>
           </div>
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <button onClick={() => exportCSV(filtered)} style={{
+              padding: "8px 20px", border: "1px solid rgba(16,185,129,0.4)",
+              borderRadius: 8, background: "rgba(16,185,129,0.1)", color: "#10b981",
+              cursor: "pointer", fontSize: 13, fontWeight: 600,
+            }}>📥 Export CSV</button>
+            <button onClick={() => exportExcel(filtered)} style={{
+              padding: "8px 20px", border: "1px solid rgba(59,130,246,0.4)",
+              borderRadius: 8, background: "rgba(59,130,246,0.1)", color: "#3b82f6",
+              cursor: "pointer", fontSize: 13, fontWeight: 600,
+            }}>📥 Export Excel</button>
             <button onClick={loadData} style={{
               padding: "8px 20px", border: "1px solid rgba(255,255,255,0.2)",
               borderRadius: 8, background: "transparent", color: "#e2e8f0",
