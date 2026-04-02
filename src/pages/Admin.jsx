@@ -796,7 +796,7 @@ OUTPUT:
         fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif",
       }}>
         <div style={{ background: "#fff", borderRadius: 20, padding: 40, maxWidth: 380, width: "90%", textAlign: "center", border: "1px solid #e2e8f0", boxShadow: "0 8px 30px rgba(0,0,0,0.06)" }}>
-          <div style={{ width: 64, height: 64, borderRadius: 16, background: "#ecfdf5", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 28 }}>🔒</div>
+          <div style={{ width: 64, height: 64, borderRadius: 16, background: "#ecfdf5", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}><Lock size={28} color="#059669" /></div>
           <h2 style={{ color: "#1e293b", fontSize: 20, fontWeight: 700, margin: "0 0 8px" }}>Admin Access</h2>
           <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 24px" }}>กรุณาใส่รหัสผ่านเพื่อเข้าใช้งาน</p>
           <form onSubmit={(e) => {
