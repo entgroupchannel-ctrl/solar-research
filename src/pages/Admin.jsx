@@ -1079,7 +1079,7 @@ OUTPUT:
                 { label: "ร้าน PSI ทั้งหมด", value: TOTAL_SHOPS, sub: "Population" },
                 { label: "7 วันล่าสุด", value: last7, sub: `≈ ${(last7 / 7).toFixed(1)}/วัน` },
                 { label: "30 วันล่าสุด", value: last30, sub: `≈ ${(last30 / 30).toFixed(1)}/วัน` },
-                { label: "คาดว่าครบ", value: overallProj.status === "done" ? "✅ ครบแล้ว" : overallProj.projectedDate ? formatDate(overallProj.projectedDate) : "—", sub: overallProj.daysLeft != null ? `อีก ${overallProj.daysLeft} วัน` : overallProj.status === "done" ? "เสร็จสิ้น" : "ข้อมูลไม่เพียงพอ" },
+                { label: "คาดว่าครบ", value: overallProj.status === "done" ? "ครบแล้ว" : overallProj.projectedDate ? formatDate(overallProj.projectedDate) : "—", sub: overallProj.daysLeft != null ? `อีก ${overallProj.daysLeft} วัน` : overallProj.status === "done" ? "เสร็จสิ้น" : "ข้อมูลไม่เพียงพอ" },
               ].map((c, i) => (
                 <div key={i} style={{ background: "#f1f5f9", borderRadius: 12, padding: 16, textAlign: "center", border: "1px solid #e2e8f0" }}>
                   <div style={{ fontSize: 11, color: "#64748b", marginBottom: 4 }}>{c.label}</div>
