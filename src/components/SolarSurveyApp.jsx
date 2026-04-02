@@ -1086,10 +1086,10 @@ function AdminDashboard({ responses, onBack }) {
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: 8, marginBottom: 32, borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: 12 }}>
-          <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}>📈 ภาพรวม</button>
-          <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}>👥 ข้อมูลผู้ตอบ</button>
-          <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}>📋 ตารางละเอียด</button>
-          <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}>🔗 ลิงก์</button>
+          <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}><TrendingUp size={14} style={{ marginRight: 4 }} /> ภาพรวม</button>
+          <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}><Users size={14} style={{ marginRight: 4 }} /> ข้อมูลผู้ตอบ</button>
+          <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}><ClipboardList size={14} style={{ marginRight: 4 }} /> ตารางละเอียด</button>
+          <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}><Link2 size={14} style={{ marginRight: 4 }} /> ลิงก์</button>
         </div>
 
         {filtered.length === 0 && (
