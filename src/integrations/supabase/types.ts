@@ -17,6 +17,7 @@ export type Database = {
       survey_responses: {
         Row: {
           created_at: string
+          email: string | null
           id: string
           likert_data: Json
           personal_data: Json
@@ -25,9 +26,11 @@ export type Database = {
           survey_version: string | null
           time_taken: number
           uid: string
+          want_results: boolean
         }
         Insert: {
           created_at?: string
+          email?: string | null
           id?: string
           likert_data?: Json
           personal_data?: Json
@@ -36,9 +39,11 @@ export type Database = {
           survey_version?: string | null
           time_taken?: number
           uid: string
+          want_results?: boolean
         }
         Update: {
           created_at?: string
+          email?: string | null
           id?: string
           likert_data?: Json
           personal_data?: Json
@@ -47,6 +52,7 @@ export type Database = {
           survey_version?: string | null
           time_taken?: number
           uid?: string
+          want_results?: boolean
         }
         Relationships: []
       }
