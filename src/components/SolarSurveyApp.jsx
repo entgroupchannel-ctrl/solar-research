@@ -611,7 +611,7 @@ function ProgressBar({ current, total }) {
           >A+</button>
 
           {/* Divider */}
-          <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.1)", margin: "0 4px" }} />
+          <div style={{ width: 1, height: 16, background: theme === "white" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)", margin: "0 4px" }} />
 
           {/* Dark/Light toggle */}
           <button
