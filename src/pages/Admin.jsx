@@ -1742,7 +1742,7 @@ OUTPUT:
                                {/* Suggestion */}
                                {r.suggestion && (
                                  <div style={{ marginTop: 8, padding: "8px 12px", background: "#f0fdf4", borderRadius: 8, fontSize: 12, color: "#059669", lineHeight: 1.6 }}>
-                                   💬 {r.suggestion}
+                                   <MessageSquare size={12} style={{ marginRight: 4, flexShrink: 0 }} /> {r.suggestion}
                                  </div>
                                )}
 
