@@ -411,7 +411,9 @@ const AdminPage = () => {
       const personal = r.personal_data || {};
       const likert = r.likert_data || {};
       const row = {
-        uid: r.uid, source_code: r.source_code, created_at: r.created_at,
+        uid: r.uid, source_code: r.source_code, 
+        direct_link: getSurveyLink(r.source_code),
+        created_at: r.created_at,
         time_taken: r.time_taken, survey_version: r.survey_version,
         want_results: r.want_results ? "ใช่" : "ไม่", email: r.email || "", suggestion: r.suggestion || "",
       };
