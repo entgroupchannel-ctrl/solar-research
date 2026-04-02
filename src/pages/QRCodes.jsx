@@ -52,8 +52,8 @@ const QRCodesPage = () => {
           <p style={{ fontSize: 15, color: "#64748b", margin: 0, lineHeight: 1.6 }}>
             ปัจจัยที่ส่งผลต่อการตัดสินใจติดตั้งโซลาร์รูฟท็อปของผู้บริโภคในประเทศไทย
           </p>
-          <p style={{ fontSize: 13, color: "#059669", margin: "8px 0 0", fontWeight: 600 }}>
-            🎓 หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี
+          <p style={{ fontSize: 13, color: "#059669", margin: "8px 0 0", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+            <GraduationCap size={16} /> หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี
           </p>
           <a
             href="/"
