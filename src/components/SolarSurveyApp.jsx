@@ -595,9 +595,16 @@ function ThankYou({ responseId, timeTaken }) {
     setEmailError("");
     setSaving(true);
     try {
-      await supabase.from("survey_responses").update({ want_results: true, email: email.trim() }).eq("uid", responseId);
-      setSaved(true);
-    } catch (e) { console.error(e); }
+      const { error } = await supabase.functions.invoke("save-email", {
+        body: { uid: responseId, email: email.trim() },
+      });
+      if (error) {
+        console.error("Update error:", error);
+        setEmailError("เกิดข้อผิดพลาดในการบันทึก กรุณาลองใหม่");
+      } else {
+        setSaved(true);
+      }
+    } catch (e) { console.error(e); setEmailError("เกิดข้อผิดพลาด กรุณาลองใหม่"); }
     setSaving(false);
   };
 
