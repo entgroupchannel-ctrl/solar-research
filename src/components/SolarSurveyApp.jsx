@@ -570,7 +570,7 @@ function ProgressBar({ current, total }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 16px 4px" }}>
         {/* Left: progress info */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600 }}>ความคืบหน้า</span>
+          <span style={{ fontSize: 12, color: theme === "white" ? "#64748b" : "#94a3b8", fontWeight: 600 }}>ความคืบหน้า</span>
           <span style={{
             fontSize: 12, fontWeight: 800, color: "#f59e0b",
             background: "rgba(245,158,11,0.12)", padding: "2px 8px", borderRadius: 6,
