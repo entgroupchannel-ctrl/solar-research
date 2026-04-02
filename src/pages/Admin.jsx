@@ -1836,12 +1836,39 @@ OUTPUT:
                                  </div>
                                )}
 
-                               {/* Meta */}
-                               <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 11, color: "#64748b" }}>
-                                 <span>UID: {r.uid}</span>
-                                 <span>Source: {r.source_code || r.source}</span>
-                                 <span>Version: {r.survey_version}</span>
-                               </div>
+                                {/* Quality Score Breakdown */}
+                                <div style={{ marginTop: 12, padding: "12px 16px", background: `${qualityColor(qs.total)}08`, borderRadius: 10, border: `1px solid ${qualityColor(qs.total)}30` }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                                    <CheckCircle2 size={16} color={qualityColor(qs.total)} />
+                                    <span style={{ fontSize: 14, fontWeight: 700, color: qualityColor(qs.total) }}>
+                                      Quality Score: {qs.total}/100 ({qualityLabel(qs.total)})
+                                    </span>
+                                  </div>
+                                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+                                    {[
+                                      { label: "ครบถ้วน", score: qs.completeness, max: 25, detail: `${qs.answeredCount}/${qs.totalItems} ข้อ` },
+                                      { label: "เวลา", score: qs.timeScore, max: 25, detail: formatTime(r.timeTaken) },
+                                      { label: "ความหลากหลาย", score: qs.varietyScore, max: 25, detail: `${qs.uniqueVals} ค่า` },
+                                      { label: "Straight-line", score: qs.straightLineScore, max: 25, detail: `ซ้ำสูงสุด ${qs.maxConsecutive} ข้อ` },
+                                    ].map(item => (
+                                      <div key={item.label} style={{ textAlign: "center" }}>
+                                        <div style={{ fontSize: 11, color: "#64748b", marginBottom: 4 }}>{item.label}</div>
+                                        <div style={{ height: 6, background: "#e2e8f0", borderRadius: 3, overflow: "hidden", marginBottom: 3 }}>
+                                          <div style={{ height: "100%", width: `${(item.score / item.max) * 100}%`, background: qualityColor((item.score / item.max) * 100), borderRadius: 3, transition: "width 0.3s" }} />
+                                        </div>
+                                        <div style={{ fontSize: 11, fontWeight: 600, color: "#1e293b" }}>{item.score}/{item.max}</div>
+                                        <div style={{ fontSize: 10, color: "#94a3b8" }}>{item.detail}</div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                {/* Meta */}
+                                <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 11, color: "#64748b" }}>
+                                  <span>UID: {r.uid}</span>
+                                  <span>Source: {r.source_code || r.source}</span>
+                                  <span>Version: {r.survey_version}</span>
+                                </div>
                              </div>
                            )}
                          </div>
