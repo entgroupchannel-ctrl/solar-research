@@ -183,6 +183,7 @@ const AdminPage = () => {
   const [generatingAll, setGeneratingAll] = useState(false);
   const [printProvince, setPrintProvince] = useState(null);
   const [expandedResponse, setExpandedResponse] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
   const printRef = useRef(null);
 
   // Admin API helper
@@ -836,29 +837,19 @@ OUTPUT:
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b" }}>รายงานผลแบบสอบถาม</p>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <button onClick={() => exportCSV(responses)} style={{
+            <button onClick={() => setShowPreview(true)} style={{
               padding: "8px 20px", border: "1px solid rgba(16,185,129,0.4)",
-              borderRadius: 8, background: "rgba(16,185,129,0.1)", color: "#10b981",
-              cursor: "pointer", fontSize: 13, fontWeight: 600,
-            }}>📥 Export CSV (ทั้งหมด)</button>
-            <button onClick={() => exportExcel(responses)} style={{
-              padding: "8px 20px", border: "1px solid rgba(59,130,246,0.4)",
-              borderRadius: 8, background: "rgba(59,130,246,0.1)", color: "#3b82f6",
-              cursor: "pointer", fontSize: 13, fontWeight: 600,
-            }}>📥 Export Excel (ทั้งหมด)</button>
-            <button onClick={() => exportMplusBoth(responses)} style={{
-              padding: "8px 20px", border: "1px solid rgba(168,85,247,0.4)",
-              borderRadius: 8, background: "rgba(168,85,247,0.1)", color: "#a855f7",
-              cursor: "pointer", fontSize: 13, fontWeight: 600,
-            }}>📥 Mplus (.dat + CFA + SEM)</button>
+              borderRadius: 8, background: "linear-gradient(135deg, #059669, #10b981)", color: "#fff",
+              cursor: "pointer", fontSize: 13, fontWeight: 700,
+            }}>👁 Preview & Export ({responses.length} รายการ)</button>
             <button onClick={loadData} style={{
               padding: "8px 20px", border: "1px solid #d1d5db",
-              borderRadius: 8, background: "transparent", color: "#1e293b",
+              borderRadius: 8, background: "#fff", color: "#1e293b",
               cursor: "pointer", fontSize: 13,
             }}>🔄 รีเฟรช</button>
             <button onClick={() => navigate("/")} style={{
               padding: "8px 20px", border: "1px solid #d1d5db",
-              borderRadius: 8, background: "transparent", color: "#1e293b",
+              borderRadius: 8, background: "#fff", color: "#1e293b",
               cursor: "pointer", fontSize: 13,
             }}>← กลับ</button>
           </div>
@@ -1423,6 +1414,137 @@ OUTPUT:
           </div>
         )}
       </div>
+
+      {/* Preview & Export Modal */}
+      {showPreview && (() => {
+        const previewData = responses;
+        const headers = getHeaders();
+        const rows = buildRows(previewData);
+        const previewRows = rows.slice(0, 10);
+        const likertIds = getAllLikertIds();
+        const personalIds = PERSONAL_QUESTIONS.map(q => q.id);
+
+        // Summary stats
+        const totalLikert = likertIds.length;
+        const filledCounts = previewData.map(r => {
+          const ld = r.likert_data || {};
+          return likertIds.filter(id => ld[id] != null && ld[id] !== "").length;
+        });
+        const avgFilled = filledCounts.length ? (filledCounts.reduce((a,b) => a+b, 0) / filledCounts.length).toFixed(1) : 0;
+        const completePct = filledCounts.length ? ((filledCounts.filter(c => c === totalLikert).length / filledCounts.length) * 100).toFixed(1) : 0;
+
+        return (
+          <div style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 9999,
+            display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
+          }} onClick={() => setShowPreview(false)}>
+            <div onClick={e => e.stopPropagation()} style={{
+              background: "#fff", borderRadius: 20, maxWidth: 960, width: "100%", maxHeight: "90vh",
+              display: "flex", flexDirection: "column", boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+            }}>
+              {/* Modal Header */}
+              <div style={{ padding: "20px 24px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#1e293b" }}>👁 ตัวอย่างข้อมูลก่อน Export</h2>
+                  <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b" }}>แสดง 10 รายการแรกจากทั้งหมด {previewData.length} รายการ · {headers.length} คอลัมน์</p>
+                </div>
+                <button onClick={() => setShowPreview(false)} style={{
+                  width: 36, height: 36, borderRadius: 10, border: "1px solid #e2e8f0", background: "#f8fafc",
+                  cursor: "pointer", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", color: "#64748b",
+                }}>✕</button>
+              </div>
+
+              {/* Data Quality Summary */}
+              <div style={{ padding: "16px 24px", background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                  {[
+                    { label: "จำนวนรายการ", value: previewData.length, color: "#059669" },
+                    { label: "คอลัมน์ทั้งหมด", value: headers.length, color: "#3b82f6" },
+                    { label: "Likert เฉลี่ย", value: `${avgFilled}/${totalLikert}`, color: "#8b5cf6" },
+                    { label: "ตอบครบ 100%", value: `${completePct}%`, color: "#f59e0b" },
+                  ].map((s, i) => (
+                    <div key={i} style={{ background: "#fff", borderRadius: 10, padding: "10px 16px", border: "1px solid #e2e8f0", flex: "1 1 120px", minWidth: 120 }}>
+                      <div style={{ fontSize: 11, color: "#64748b", marginBottom: 2 }}>{s.label}</div>
+                      <div style={{ fontSize: 18, fontWeight: 700, color: s.color }}>{s.value}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Column Groups Legend */}
+              <div style={{ padding: "12px 24px", borderBottom: "1px solid #e2e8f0", display: "flex", gap: 12, flexWrap: "wrap", fontSize: 12 }}>
+                <span style={{ color: "#059669", fontWeight: 600 }}>● Meta ({9} cols)</span>
+                <span style={{ color: "#3b82f6", fontWeight: 600 }}>● ข้อมูลทั่วไป ({personalIds.length} cols)</span>
+                <span style={{ color: "#8b5cf6", fontWeight: 600 }}>● Likert ({likertIds.length} cols)</span>
+              </div>
+
+              {/* Scrollable Table */}
+              <div style={{ flex: 1, overflow: "auto", padding: "0" }}>
+                <table style={{ borderCollapse: "collapse", fontSize: 11, whiteSpace: "nowrap", minWidth: "100%" }}>
+                  <thead>
+                    <tr>
+                      <th style={{ position: "sticky", top: 0, left: 0, zIndex: 3, background: "#f0fdf4", padding: "8px 10px", borderBottom: "2px solid #059669", borderRight: "2px solid #e2e8f0", color: "#059669", fontWeight: 700, textAlign: "center" }}>#</th>
+                      {headers.map((h, i) => {
+                        const isMeta = i < 9;
+                        const isPersonal = i >= 9 && i < 9 + personalIds.length;
+                        const bg = isMeta ? "#f0fdf4" : isPersonal ? "#eff6ff" : "#f5f3ff";
+                        const color = isMeta ? "#059669" : isPersonal ? "#3b82f6" : "#7c3aed";
+                        return (
+                          <th key={h} style={{
+                            position: "sticky", top: 0, zIndex: 2, background: bg, padding: "8px 10px",
+                            borderBottom: `2px solid ${color}`, color, fontWeight: 600, textAlign: "left",
+                          }}>{h}</th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {previewRows.map((row, ri) => (
+                      <tr key={ri} style={{ background: ri % 2 === 0 ? "#fff" : "#fafafa" }}>
+                        <td style={{ position: "sticky", left: 0, zIndex: 1, background: ri % 2 === 0 ? "#fff" : "#fafafa", padding: "6px 10px", borderRight: "2px solid #e2e8f0", color: "#64748b", fontWeight: 600, textAlign: "center" }}>{ri + 1}</td>
+                        {headers.map((h, i) => {
+                          const val = row[h];
+                          const isLikert = i >= 9 + personalIds.length;
+                          const isEmpty = val === "" || val == null;
+                          return (
+                            <td key={h} style={{
+                              padding: "6px 10px", borderBottom: "1px solid #f1f5f9",
+                              color: isEmpty ? "#cbd5e1" : isLikert ? "#1e293b" : "#334155",
+                              fontWeight: isLikert && !isEmpty ? 600 : 400,
+                              background: isEmpty && isLikert ? "#fef2f2" : "transparent",
+                            }}>{isEmpty ? "-" : String(val)}</td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {previewData.length > 10 && (
+                  <div style={{ padding: "12px 24px", textAlign: "center", color: "#64748b", fontSize: 12, background: "#f8fafc", borderTop: "1px solid #e2e8f0" }}>
+                    ... แสดง 10 จาก {previewData.length} รายการ (Export จะได้ข้อมูลทั้งหมด)
+                  </div>
+                )}
+              </div>
+
+              {/* Export Actions */}
+              <div style={{ padding: "16px 24px", borderTop: "1px solid #e2e8f0", display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end", background: "#f8fafc", borderRadius: "0 0 20px 20px" }}>
+                <button onClick={() => { exportCSV(responses); setShowPreview(false); }} style={{
+                  padding: "10px 24px", borderRadius: 10, border: "1px solid rgba(16,185,129,0.4)",
+                  background: "rgba(16,185,129,0.1)", color: "#10b981", cursor: "pointer", fontSize: 13, fontWeight: 600,
+                }}>📥 CSV</button>
+                <button onClick={() => { exportExcel(responses); setShowPreview(false); }} style={{
+                  padding: "10px 24px", borderRadius: 10, border: "1px solid rgba(59,130,246,0.4)",
+                  background: "rgba(59,130,246,0.1)", color: "#3b82f6", cursor: "pointer", fontSize: 13, fontWeight: 600,
+                }}>📥 Excel</button>
+                <button onClick={() => { exportMplusBoth(responses); setShowPreview(false); }} style={{
+                  padding: "10px 24px", borderRadius: 10, border: "1px solid rgba(168,85,247,0.4)",
+                  background: "rgba(168,85,247,0.1)", color: "#a855f7", cursor: "pointer", fontSize: 13, fontWeight: 600,
+                }}>📥 Mplus (CFA + SEM)</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
