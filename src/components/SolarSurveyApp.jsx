@@ -1488,6 +1488,16 @@ export default function SolarSurveyApp() {
         if (id === lastItem.id) {
           const allAnswered = allItems.every(item => next[item.id] != null);
           if (allAnswered) {
+            // Straight-lining detection
+            const values = allItems.map(item => next[item.id]);
+            const allSame = values.every(v => v === values[0]);
+            if (allSame && allItems.length >= 3) {
+              toast.warning("คำตอบซ้ำทั้งหมด", {
+                description: `คุณเลือกคำตอบ "${values[0]}" ทุกข้อใน "${sec.title}" — กรุณาตรวจสอบอีกครั้งว่าตรงกับความคิดเห็นจริงของท่าน`,
+                duration: 8000,
+                icon: <AlertTriangle size={18} />,
+              });
+            }
             if (si < LIKERT_SECTIONS.length - 1) {
               scrollToSection("likert_" + (si + 1));
             } else {
