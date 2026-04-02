@@ -1321,7 +1321,7 @@ export default function SolarSurveyApp() {
               value={suggestion}
               onChange={e => setSuggestion(e.target.value)}
               rows={4}
-              placeholder="พิมพ์ข้อเสนอแนะของท่านที่นี่..."
+              placeholder="พิมพ์ข้อเสนอแนะของท่านที่นี่ หรือกดปุ่มไมค์เพื่อพูด..."
               style={{
                 width: "100%", padding: 16, borderRadius: 12,
                 border: "2px solid rgba(255,255,255,0.1)",
@@ -1333,6 +1333,7 @@ export default function SolarSurveyApp() {
               onFocus={e => e.target.style.borderColor = "#ec4899"}
               onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.1)"}
             />
+            <SpeechToTextButton onResult={(text) => setSuggestion(prev => prev ? prev + " " + text : text)} />
           </div>
         </div>
 
