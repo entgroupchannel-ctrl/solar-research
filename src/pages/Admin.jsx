@@ -850,7 +850,7 @@ OUTPUT:
               padding: "8px 20px", border: "1px solid rgba(168,85,247,0.4)",
               borderRadius: 8, background: "rgba(168,85,247,0.1)", color: "#a855f7",
               cursor: "pointer", fontSize: 13, fontWeight: 600,
-            }}>📥 Mplus (.dat + .inp)</button>
+            }}>📥 Mplus (.dat + CFA + SEM)</button>
             <button onClick={loadData} style={{
               padding: "8px 20px", border: "1px solid #d1d5db",
               borderRadius: 8, background: "transparent", color: "#1e293b",
