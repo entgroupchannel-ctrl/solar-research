@@ -1512,6 +1512,37 @@ export default function SolarSurveyApp() {
                 </div>
               </div>
             ))}
+
+            {/* Province question - filtered by region */}
+            {regionInfo && (
+              <div id="field-province" style={{ marginBottom: 24 }}>
+                <p style={{ fontSize: 14, fontWeight: 600, color: "#e2e8f0", margin: "0 0 10px" }}>
+                  จังหวัดที่ติดตั้งโซลาร์รูฟท็อป ({regionInfo.name})
+                  {!personal.province && showValidation && (
+                    <span style={{ color: "#f87171", fontSize: 12, marginLeft: 8 }}>* จำเป็น</span>
+                  )}
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {regionInfo.provinces.map(prov => (
+                    <button
+                      key={prov}
+                      onClick={() => handlePersonalChange("province", prov)}
+                      style={{
+                        padding: "10px 20px",
+                        borderRadius: 10,
+                        border: personal.province === prov ? "2px solid #f59e0b" : "2px solid rgba(255,255,255,0.1)",
+                        background: personal.province === prov ? "rgba(245,158,11,0.15)" : "rgba(255,255,255,0.03)",
+                        color: personal.province === prov ? "#f59e0b" : "#94a3b8",
+                        fontSize: 13, fontWeight: personal.province === prov ? 700 : 400,
+                        cursor: "pointer", transition: "all 0.2s",
+                      }}
+                    >
+                      {prov}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
