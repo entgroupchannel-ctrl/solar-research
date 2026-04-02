@@ -250,7 +250,20 @@ const AdminPage = () => {
     setLoading(false);
   }, []);
 
-  useEffect(() => { loadData(); }, [loadData]);
+  // Auto-login if password is in sessionStorage
+  useEffect(() => {
+    const savedPw = sessionStorage.getItem("admin_pw");
+    if (savedPw === ADMIN_PASSWORD) {
+      setAuthenticated(true);
+    }
+  }, []);
+
+  // Load data only after authenticated
+  useEffect(() => {
+    if (authenticated) {
+      loadData();
+    }
+  }, [authenticated, loadData]);
 
   // Build SOURCES map from DB
   const SOURCES = useMemo(() => {
