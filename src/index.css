@@ -264,67 +264,92 @@ All colors MUST be HSL.
   }
 }
 
-/* White theme overrides for survey form */
-[data-theme="white"] {
-  --survey-bg: #f8fafc;
-  --survey-text: #1e293b;
-  --survey-text-muted: #475569;
-  --survey-border: rgba(0,0,0,0.1);
-  --survey-card-bg: rgba(255,255,255,0.9);
-  --survey-hover-bg: rgba(0,0,0,0.03);
-}
-
-/* Override hardcoded dark colors in white theme */
+/* ===== White theme overrides for survey form ===== */
 html[data-theme="white"] .survey-root {
   background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f8fafc 100%) !important;
   color: #1e293b !important;
 }
 
+/* All text elements in white theme */
 html[data-theme="white"] .survey-root p,
 html[data-theme="white"] .survey-root span,
 html[data-theme="white"] .survey-root label,
-html[data-theme="white"] .survey-root div,
 html[data-theme="white"] .survey-root h1,
 html[data-theme="white"] .survey-root h2,
-html[data-theme="white"] .survey-root h3 {
-  color: inherit;
+html[data-theme="white"] .survey-root h3,
+html[data-theme="white"] .survey-root h4 {
+  color: #1e293b;
 }
 
-html[data-theme="white"] .survey-root .survey-section-title {
+/* Muted text: secondary info, descriptions */
+html[data-theme="white"] .survey-root [style*="color: #94a3b8"],
+html[data-theme="white"] .survey-root [style*="color: #64748b"],
+html[data-theme="white"] .survey-root [style*="color: #cbd5e1"] {
+  color: #475569 !important;
+}
+
+/* Main body text that uses light colors */
+html[data-theme="white"] .survey-root [style*="color: #e2e8f0"],
+html[data-theme="white"] .survey-root [style*="color: rgb(226, 232, 240)"] {
   color: #1e293b !important;
 }
 
-html[data-theme="white"] .survey-root .survey-item-text {
-  color: #334155 !important;
-}
-
-html[data-theme="white"] .survey-root .survey-muted {
-  color: #64748b !important;
-}
-
-html[data-theme="white"] .survey-root .survey-timer-bar {
-  background: rgba(255,255,255,0.95) !important;
-  border-bottom-color: rgba(0,0,0,0.08) !important;
-}
-
-html[data-theme="white"] .survey-root .survey-likert-row {
-  border-bottom-color: rgba(0,0,0,0.06) !important;
-}
-
-html[data-theme="white"] .survey-root .survey-likert-btn:not(.selected) {
-  border-color: rgba(0,0,0,0.12) !important;
-  background: rgba(0,0,0,0.02) !important;
-  color: #64748b !important;
-}
-
-html[data-theme="white"] .survey-root .survey-card {
+/* Cards, sections, containers */
+html[data-theme="white"] .survey-root [style*="background: rgba(255,255,255,0.04)"],
+html[data-theme="white"] .survey-root [style*="background: rgba(255, 255, 255, 0.04)"],
+html[data-theme="white"] .survey-root [style*="background: rgba(255,255,255,0.03)"],
+html[data-theme="white"] .survey-root [style*="background: rgba(255, 255, 255, 0.03)"],
+html[data-theme="white"] .survey-root [style*="background: rgba(255,255,255,0.02)"],
+html[data-theme="white"] .survey-root [style*="background: rgba(255, 255, 255, 0.02)"] {
   background: rgba(255,255,255,0.85) !important;
   border-color: rgba(0,0,0,0.08) !important;
 }
 
-html[data-theme="white"] .survey-root .survey-personal-btn:not(.selected) {
-  border-color: rgba(0,0,0,0.12) !important;
-  color: #475569 !important;
+/* Borders */
+html[data-theme="white"] .survey-root [style*="border: 2px solid rgba(255,255,255,0.1)"],
+html[data-theme="white"] .survey-root [style*="border: 2px solid rgba(255, 255, 255, 0.1)"] {
+  border-color: rgba(0,0,0,0.15) !important;
+}
+
+html[data-theme="white"] .survey-root [style*="border-bottom: 1px solid rgba(255,255,255,0.05)"],
+html[data-theme="white"] .survey-root [style*="border-bottom: 1px solid rgba(255, 255, 255, 0.05)"],
+html[data-theme="white"] .survey-root [style*="border: 1px solid rgba(255,255,255,0.08)"],
+html[data-theme="white"] .survey-root [style*="border: 1px solid rgba(255, 255, 255, 0.08)"] {
+  border-color: rgba(0,0,0,0.08) !important;
+}
+
+/* Timer/source bar */
+html[data-theme="white"] .survey-root [style*="background: rgba(15,32,39"],
+html[data-theme="white"] .survey-root [style*="background: rgba(15, 32, 39"] {
+  background: rgba(255,255,255,0.95) !important;
+  border-bottom-color: rgba(0,0,0,0.08) !important;
+}
+
+/* Unselected option buttons text */
+html[data-theme="white"] .survey-root button[style*="color: #94a3b8"] {
+  color: #64748b !important;
+}
+
+/* Back button and misc controls */
+html[data-theme="white"] .survey-root [style*="background: rgba(255,255,255,0.08)"] {
+  background: rgba(0,0,0,0.06) !important;
+}
+
+/* Sidebar */
+html[data-theme="white"] .survey-root [style*="background: rgba(255,255,255,0.06)"] {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+
+/* Likert scale legend text */
+html[data-theme="white"] .survey-root [style*="color: rgb(148, 163, 184)"] {
+  color: #64748b !important;
+}
+
+/* Footer */
+html[data-theme="white"] .survey-root [style*="background: rgba(0,0,0,0.2)"],
+html[data-theme="white"] .survey-root [style*="background: rgba(0, 0, 0, 0.2)"] {
+  background: rgba(0,0,0,0.04) !important;
 }
 
 @keyframes spin {
