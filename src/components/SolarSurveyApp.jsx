@@ -364,7 +364,114 @@ function PDPAConsent({ onAccept }) {
   );
 }
 
-function ProgressBar({ current, total }) {
+function ScreeningQuestion({ onPass, onFail }) {
+  const [answer, setAnswer] = useState(null);
+
+  return (
+    <div style={{
+      minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
+      background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+      padding: 20, fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif",
+    }}>
+      <div style={{
+        maxWidth: 520, width: "100%", background: "rgba(255,255,255,0.97)",
+        borderRadius: 20, padding: "40px 32px",
+        boxShadow: "0 25px 80px rgba(0,0,0,0.3)",
+      }}>
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <img src={logoTRU} alt="มหาวิทยาลัยธนบุรี" style={{ height: 56, marginBottom: 12, objectFit: "contain" }} />
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1e293b", margin: "0 0 8px" }}>
+            คำถามคัดกรอง
+          </h2>
+          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+            Screening Question
+          </p>
+        </div>
+
+        <div style={{
+          background: "#fffbeb", borderRadius: 12, padding: "20px 24px",
+          border: "1px solid #fde68a", marginBottom: 24,
+        }}>
+          <p style={{ fontSize: 15, fontWeight: 700, color: "#92400e", margin: "0 0 16px", lineHeight: 1.7 }}>
+            ท่านเป็นผู้ที่ได้ติดตั้งระบบโซลาร์รูฟท็อป (Solar Rooftop) ในที่พักอาศัยของท่านหรือไม่?
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {[
+              { value: "yes", label: "ใช่ ฉันได้ติดตั้งโซลาร์รูฟท็อปในบ้านแล้ว", icon: "✓" },
+              { value: "no", label: "ไม่ ฉันยังไม่ได้ติดตั้งโซลาร์รูฟท็อป", icon: "✕" },
+            ].map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => setAnswer(opt.value)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12,
+                  padding: "14px 20px", borderRadius: 12, border: answer === opt.value
+                    ? (opt.value === "yes" ? "2px solid #10b981" : "2px solid #ef4444")
+                    : "2px solid #e2e8f0",
+                  background: answer === opt.value
+                    ? (opt.value === "yes" ? "#ecfdf5" : "#fef2f2")
+                    : "#fff",
+                  cursor: "pointer", fontSize: 14, fontWeight: answer === opt.value ? 700 : 400,
+                  color: "#1e293b", textAlign: "left", transition: "all 0.2s",
+                }}
+              >
+                <span style={{
+                  width: 28, height: 28, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+                  background: answer === opt.value
+                    ? (opt.value === "yes" ? "#10b981" : "#ef4444")
+                    : "#e2e8f0",
+                  color: answer === opt.value ? "#fff" : "#94a3b8",
+                  fontSize: 14, fontWeight: 700, flexShrink: 0,
+                }}>{opt.icon}</span>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {answer === "yes" && (
+          <button
+            onClick={onPass}
+            style={{
+              width: "100%", padding: 16, border: "none", borderRadius: 12,
+              background: "linear-gradient(135deg, #10b981, #059669)",
+              color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer",
+              boxShadow: "0 4px 15px rgba(16,185,129,0.4)",
+            }}
+          >
+            ดำเนินการต่อ →
+          </button>
+        )}
+
+        {answer === "no" && (
+          <div style={{
+            background: "#fef2f2", borderRadius: 12, padding: 20,
+            border: "1px solid #fecaca", textAlign: "center",
+          }}>
+            <p style={{ fontSize: 15, fontWeight: 600, color: "#991b1b", margin: "0 0 8px" }}>
+              ขอบคุณที่สนใจ
+            </p>
+            <p style={{ fontSize: 13, color: "#b91c1c", margin: "0 0 16px", lineHeight: 1.7 }}>
+              แบบสอบถามนี้จัดทำขึ้นสำหรับผู้ที่ได้ติดตั้งระบบโซลาร์รูฟท็อปในบ้านแล้วเท่านั้น<br />
+              ขอขอบคุณที่ให้ความสนใจในงานวิจัยนี้
+            </p>
+            <button
+              onClick={onFail}
+              style={{
+                padding: "10px 28px", border: "none", borderRadius: 10,
+                background: "#94a3b8", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer",
+              }}
+            >
+              กลับหน้าแรก
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
   const pct = Math.round((current / total) * 100);
   return (
     <div style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(15,32,39,0.95)", backdropFilter: "blur(10px)", padding: "12px 20px" }}>
