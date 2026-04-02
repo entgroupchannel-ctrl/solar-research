@@ -2115,7 +2115,7 @@ OUTPUT:
 
             {/* Add custom source */}
             <div style={{ ...chartCardStyle, marginBottom: 24 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#64748b", margin: "0 0 12px" }}>➕ เพิ่มแหล่งที่มาเพิ่มเติม (กรณีพิเศษ)</h3>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#64748b", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 6 }}><Plus size={16} /> เพิ่มแหล่งที่มาเพิ่มเติม (กรณีพิเศษ)</h3>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
                 <input
                   type="text"
