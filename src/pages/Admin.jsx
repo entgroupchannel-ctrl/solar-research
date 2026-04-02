@@ -294,24 +294,24 @@ const AdminPage = () => {
 
 
 
-  // Source management
+  // Source management via edge function
   const addSource = async () => {
     if (!newSourceName.trim()) return;
     setAddingSource(true);
-    const nextCode = "src" + String(sources.length + 1).padStart(2, "0");
-    const { error } = await supabase.from("survey_sources").insert({
-      code: nextCode,
-      name: newSourceName.trim(),
-      region: newSourceRegion.trim() || null,
-      target: parseInt(newSourceTarget) || 0,
-    });
-    if (!error) {
+    try {
+      const nextCode = "src" + String(sources.length + 1).padStart(2, "0");
+      await adminApi("add_source", {
+        code: nextCode,
+        name: newSourceName.trim(),
+        region: newSourceRegion.trim() || null,
+        target: parseInt(newSourceTarget) || 0,
+      });
       setNewSourceName("");
       setNewSourceRegion("");
       setNewSourceTarget("");
       loadData();
-    } else {
-      alert("เกิดข้อผิดพลาด: " + error.message);
+    } catch (e) {
+      alert("เกิดข้อผิดพลาด: " + e.message);
     }
     setAddingSource(false);
   };
@@ -326,22 +326,29 @@ const AdminPage = () => {
       setGeneratingAll(false);
       return;
     }
-    const rows = toCreate.map(r => ({
-      code: r.code,
-      name: r.name,
-      region: r.name,
-      target: r.target,
-    }));
-    const { error } = await supabase.from("survey_sources").insert(rows);
-    if (error) alert("เกิดข้อผิดพลาด: " + error.message);
-    else alert(`สร้างลิงก์สำเร็จ ${toCreate.length} ภาค`);
-    loadData();
+    try {
+      const rows = toCreate.map(r => ({
+        code: r.code,
+        name: r.name,
+        region: r.name,
+        target: r.target,
+      }));
+      await adminApi("add_sources_batch", { rows });
+      alert(`สร้างลิงก์สำเร็จ ${toCreate.length} ภาค`);
+      loadData();
+    } catch (e) {
+      alert("เกิดข้อผิดพลาด: " + e.message);
+    }
     setGeneratingAll(false);
   };
 
   const toggleSource = async (id, currentActive) => {
-    await supabase.from("survey_sources").update({ is_active: !currentActive }).eq("id", id);
-    loadData();
+    try {
+      await adminApi("toggle_source", { id, is_active: !currentActive });
+      loadData();
+    } catch (e) {
+      alert("เกิดข้อผิดพลาด: " + e.message);
+    }
   };
 
   const deleteSource = async (id, code) => {
@@ -351,8 +358,12 @@ const AdminPage = () => {
       return;
     }
     if (!confirm("ยืนยันการลบแหล่งที่มานี้?")) return;
-    await supabase.from("survey_sources").delete().eq("id", id);
-    loadData();
+    try {
+      await adminApi("delete_source", { id });
+      loadData();
+    } catch (e) {
+      alert("เกิดข้อผิดพลาด: " + e.message);
+    }
   };
 
   const getSurveyLink = (code) => {
