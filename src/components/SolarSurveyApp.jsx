@@ -757,10 +757,10 @@ function ThankYou({ responseId, timeTaken }) {
           display: "flex", alignItems: "center", justifyContent: "center",
           margin: "0 auto 24px", fontSize: 40,
         }}>✓</div>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: "#1e293b", margin: "0 0 12px" }}>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: "#059669", margin: "0 0 12px" }}>
           ขอบคุณที่สละเวลาตอบแบบสอบถาม
         </h1>
-        <p style={{ color: "#64748b", fontSize: 15, lineHeight: 1.7, margin: "0 0 24px" }}>
+        <p style={{ color: "#334155", fontSize: 15, lineHeight: 1.7, margin: "0 0 24px" }}>
           คำตอบของท่านได้รับการบันทึกเรียบร้อยแล้ว<br />
           ข้อมูลจะถูกเก็บรักษาเป็นความลับตามนโยบาย PDPA
         </p>
@@ -817,18 +817,18 @@ function ThankYou({ responseId, timeTaken }) {
         </div>
 
         <div style={{
-          background: "#f8fafc", borderRadius: 12, padding: 20,
+          background: "#1e293b", borderRadius: 12, padding: 20,
           display: "flex", gap: 20, justifyContent: "center",
-          border: "1px solid #e2e8f0",
+          border: "1px solid #334155",
         }}>
           <div>
             <div style={{ fontSize: 12, color: "#94a3b8" }}>รหัสอ้างอิง</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#1e293b", fontFamily: "monospace" }}>{responseId}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0", fontFamily: "monospace" }}>{responseId}</div>
           </div>
-          <div style={{ width: 1, background: "#e2e8f0" }} />
+          <div style={{ width: 1, background: "#334155" }} />
           <div>
             <div style={{ fontSize: 12, color: "#94a3b8" }}>เวลาที่ใช้</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#1e293b" }}>{formatTime(timeTaken)}</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0" }}>{formatTime(timeTaken)}</div>
           </div>
         </div>
 
