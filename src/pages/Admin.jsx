@@ -7,6 +7,12 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   PieChart, Pie, Cell, Legend,
 } from "recharts";
+import {
+  Lock, LayoutDashboard, Eye, RefreshCw, TrendingUp, Target, Users,
+  BarChart3, ClipboardList, FileText, Link2, PieChart as PieChartIcon,
+  BarChartHorizontal, Radar as RadarIcon, Copy, Printer, Download,
+  Table2, ArrowLeft,
+} from "lucide-react";
 
 const PERSONAL_QUESTIONS = [
   { id: "gender", text: "เพศ", options: ["ชาย", "หญิง", "อื่น ๆ"] },
