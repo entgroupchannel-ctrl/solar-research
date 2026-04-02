@@ -1132,10 +1132,10 @@ OUTPUT:
                   <tbody>
                     {regionProjections.sort((a, b) => (b.collected / b.target) - (a.collected / a.target)).map((reg, i) => {
                       const pct = reg.target > 0 ? (reg.collected / reg.target) * 100 : 0;
-                      const statusLabel = reg.status === "done" ? "✅ ครบแล้ว"
-                        : reg.status === "stalled" ? "⏸ หยุดชะงัก"
-                        : reg.status === "insufficient" ? "📊 รอข้อมูล"
-                        : pct >= 75 ? "🔥 ใกล้ครบ" : pct >= 50 ? "🚀 กำลังดี" : pct >= 25 ? "📈 เริ่มต้น" : "⏳ เริ่มต้น";
+                      const statusLabel = reg.status === "done" ? "ครบแล้ว"
+                        : reg.status === "stalled" ? "หยุดชะงัก"
+                        : reg.status === "insufficient" ? "รอข้อมูล"
+                        : pct >= 75 ? "ใกล้ครบ" : pct >= 50 ? "กำลังดี" : pct >= 25 ? "เริ่มต้น" : "เริ่มต้น";
                       const statusColor = reg.status === "done" ? "#10b981"
                         : reg.status === "stalled" ? "#ef4444"
                         : pct >= 75 ? "#f59e0b" : pct >= 50 ? "#3b82f6" : "#64748b";
