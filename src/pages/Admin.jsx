@@ -873,7 +873,7 @@ OUTPUT:
               padding: "8px 20px", border: "1px solid #d1d5db",
               borderRadius: 8, background: "#fff", color: "#1e293b",
               cursor: "pointer", fontSize: 13,
-            }}>🔄 รีเฟรช</button>
+            }}><RefreshCw size={14} style={{ marginRight: 4 }} /> รีเฟรช</button>
             <button onClick={() => navigate("/")} style={{
               padding: "8px 20px", border: "1px solid #d1d5db",
               borderRadius: 8, background: "#fff", color: "#1e293b",
