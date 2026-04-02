@@ -1170,7 +1170,7 @@ function SpeechToTextButton({ onResult }) {
 
 // ============================================================
 export default function SolarSurveyApp() {
-  const [page, setPage] = useState("pdpa"); // pdpa | survey | thanks | admin
+  const [page, setPage] = useState("pdpa"); // pdpa | screening | survey | thanks | admin
   const [source] = useState(getSourceFromURL);
   const [uid] = useState(generateUID);
   const [personal, setPersonal] = useState({});
