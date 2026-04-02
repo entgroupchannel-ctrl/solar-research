@@ -264,6 +264,69 @@ All colors MUST be HSL.
   }
 }
 
+/* White theme overrides for survey form */
+[data-theme="white"] {
+  --survey-bg: #f8fafc;
+  --survey-text: #1e293b;
+  --survey-text-muted: #475569;
+  --survey-border: rgba(0,0,0,0.1);
+  --survey-card-bg: rgba(255,255,255,0.9);
+  --survey-hover-bg: rgba(0,0,0,0.03);
+}
+
+/* Override hardcoded dark colors in white theme */
+html[data-theme="white"] .survey-root {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f8fafc 100%) !important;
+  color: #1e293b !important;
+}
+
+html[data-theme="white"] .survey-root p,
+html[data-theme="white"] .survey-root span,
+html[data-theme="white"] .survey-root label,
+html[data-theme="white"] .survey-root div,
+html[data-theme="white"] .survey-root h1,
+html[data-theme="white"] .survey-root h2,
+html[data-theme="white"] .survey-root h3 {
+  color: inherit;
+}
+
+html[data-theme="white"] .survey-root .survey-section-title {
+  color: #1e293b !important;
+}
+
+html[data-theme="white"] .survey-root .survey-item-text {
+  color: #334155 !important;
+}
+
+html[data-theme="white"] .survey-root .survey-muted {
+  color: #64748b !important;
+}
+
+html[data-theme="white"] .survey-root .survey-timer-bar {
+  background: rgba(255,255,255,0.95) !important;
+  border-bottom-color: rgba(0,0,0,0.08) !important;
+}
+
+html[data-theme="white"] .survey-root .survey-likert-row {
+  border-bottom-color: rgba(0,0,0,0.06) !important;
+}
+
+html[data-theme="white"] .survey-root .survey-likert-btn:not(.selected) {
+  border-color: rgba(0,0,0,0.12) !important;
+  background: rgba(0,0,0,0.02) !important;
+  color: #64748b !important;
+}
+
+html[data-theme="white"] .survey-root .survey-card {
+  background: rgba(255,255,255,0.85) !important;
+  border-color: rgba(0,0,0,0.08) !important;
+}
+
+html[data-theme="white"] .survey-root .survey-personal-btn:not(.selected) {
+  border-color: rgba(0,0,0,0.12) !important;
+  color: #475569 !important;
+}
+
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
