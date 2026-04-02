@@ -817,9 +817,9 @@ function ThankYou({ responseId, timeTaken }) {
         </div>
 
         <div style={{
-          background: "#f8fafc", borderRadius: 12, padding: 20,
+          background: "#1e293b", borderRadius: 12, padding: 20,
           display: "flex", gap: 20, justifyContent: "center",
-          border: "1px solid #e2e8f0",
+          border: "1px solid #334155",
         }}>
           <div>
             <div style={{ fontSize: 12, color: "#64748b" }}>รหัสอ้างอิง</div>
