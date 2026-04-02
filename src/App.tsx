@@ -7,6 +7,7 @@ import Index from "./pages/Index.tsx";
 import Admin from "./pages/Admin.jsx";
 import QRCodes from "./pages/QRCodes.jsx";
 import NotFound from "./pages/NotFound.tsx";
+import AccessibilityToolbar from "./components/AccessibilityToolbar.jsx";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      <AccessibilityToolbar />
     </TooltipProvider>
   </QueryClientProvider>
 );
