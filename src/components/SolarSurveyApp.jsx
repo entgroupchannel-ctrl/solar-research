@@ -965,12 +965,49 @@ export default function SolarSurveyApp() {
   const answeredLikert = Object.keys(likert).length;
   const answeredTotal = answeredPersonal + answeredLikert + (suggestion.trim() ? 1 : 0);
 
+  const sectionRefs = useRef({});
+
+  const scrollToSection = useCallback((sectionKey) => {
+    setTimeout(() => {
+      const el = sectionRefs.current[sectionKey];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 300);
+  }, []);
+
   const handlePersonalChange = (id, value) => {
-    setPersonal(prev => ({ ...prev, [id]: value }));
+    setPersonal(prev => {
+      const next = { ...prev, [id]: value };
+      const allAnswered = PERSONAL_QUESTIONS.every(q => next[q.id]);
+      if (allAnswered) {
+        scrollToSection("likert_0");
+      }
+      return next;
+    });
   };
 
   const handleLikertChange = (id, value) => {
-    setLikert(prev => ({ ...prev, [id]: value }));
+    setLikert(prev => {
+      const next = { ...prev, [id]: value };
+      for (let si = 0; si < LIKERT_SECTIONS.length; si++) {
+        const sec = LIKERT_SECTIONS[si];
+        const allItems = sec.subsections.flatMap(sub => sub.items);
+        const lastItem = allItems[allItems.length - 1];
+        if (id === lastItem.id) {
+          const allAnswered = allItems.every(item => next[item.id] != null);
+          if (allAnswered) {
+            if (si < LIKERT_SECTIONS.length - 1) {
+              scrollToSection("likert_" + (si + 1));
+            } else {
+              scrollToSection("suggestion");
+            }
+          }
+          break;
+        }
+      }
+      return next;
+    });
   };
 
   const validate = () => {
