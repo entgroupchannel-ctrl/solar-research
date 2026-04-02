@@ -412,7 +412,178 @@ const AdminPage = () => {
     a.click(); URL.revokeObjectURL(url);
   };
 
-  const tabStyle = (isActive) => ({
+  // --- Mplus Export ---
+  const MPLUS_PERSONAL_MAP = {
+    gender: "GENDER", age: "AGE", education: "EDUC",
+    occupation: "OCCUP", income: "INCOME", experience: "EXPER",
+  };
+
+  const encodePersonal = (qId, value) => {
+    const q = PERSONAL_QUESTIONS.find(p => p.id === qId);
+    if (!q || !value) return -999;
+    const idx = q.options.indexOf(value);
+    return idx >= 0 ? idx + 1 : -999;
+  };
+
+  const getMplusVarNames = () => {
+    const likertIds = getAllLikertIds();
+    const personalVars = PERSONAL_QUESTIONS.map(q => MPLUS_PERSONAL_MAP[q.id]);
+    const likertVars = likertIds.map(id => id.toUpperCase());
+    return { personalVars, likertVars, allVars: [...personalVars, ...likertVars], likertIds };
+  };
+
+  const exportMplusDat = (data) => {
+    if (!data.length) return alert("ไม่มีข้อมูลให้ export");
+    const { likertIds } = getMplusVarNames();
+    const lines = data.map(r => {
+      const personal = r.personal_data || {};
+      const likert = r.likert_data || {};
+      const personalVals = PERSONAL_QUESTIONS.map(q => encodePersonal(q.id, personal[q.id]));
+      const likertVals = likertIds.map(id => {
+        const v = likert[id];
+        return (v != null && v !== "") ? v : -999;
+      });
+      return [...personalVals, ...likertVals].join(" ");
+    });
+    const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url;
+    a.download = `solar_survey.dat`;
+    a.click(); URL.revokeObjectURL(url);
+  };
+
+  const exportMplusInp = (data) => {
+    const { allVars, personalVars, likertVars } = getMplusVarNames();
+    const n = data.length;
+    const varLine = allVars.join(" ");
+
+    const inp = `TITLE: Solar Rooftop Brand Trust SEM
+  Influence of Brand Trust as Mediator on Solar Rooftop
+  Installation Decision among Thai Consumers
+  N = ${n};
+
+DATA: FILE IS solar_survey.dat;
+
+VARIABLE:
+  NAMES ARE
+    ${personalVars.join(" ")}
+    ${likertVars.join("\n    ")};
+  USEVARIABLES ARE
+    ${likertVars.join("\n    ")};
+  MISSING ARE ALL (-999);
+  ! Categorical for personal data if needed:
+  ! CATEGORICAL ARE ${personalVars.join(" ")};
+
+ANALYSIS:
+  TYPE = GENERAL;
+  ESTIMATOR = MLR;
+  ! Use WLSMV if treating as ordinal:
+  ! ESTIMATOR = WLSMV;
+
+MODEL:
+  ! ===== Service Quality (SQ) - First Order =====
+  ! Tangibility
+  TANG BY SQ1_1 SQ1_2 SQ1_3;
+  ! Reliability
+  RELI BY SQ2_1 SQ2_2 SQ2_3;
+  ! Responsiveness
+  RESP BY SQ3_1 SQ3_2 SQ3_3;
+  ! Assurance
+  ASSU BY SQ4_1 SQ4_2 SQ4_3;
+  ! Empathy
+  EMPA BY SQ5_1 SQ5_2 SQ5_3;
+
+  ! ===== Service Quality (SQ) - Second Order =====
+  SQ BY TANG RELI RESP ASSU EMPA;
+
+  ! ===== Product Quality (PQ) - First Order =====
+  ! System Reliability
+  SREL BY PQ1_1 PQ1_2 PQ1_3;
+  ! Warranty
+  WARR BY PQ2_1 PQ2_2 PQ2_3;
+  ! Standards & Certification
+  STAN BY PQ3_1 PQ3_2 PQ3_3;
+  ! Value for Money
+  VALU BY PQ4_1 PQ4_2 PQ4_3;
+
+  ! ===== Product Quality (PQ) - Second Order =====
+  PQ BY SREL WARR STAN VALU;
+
+  ! ===== Brand Trust (BT) - First Order =====
+  ! Brand Credibility
+  BCRE BY BT1_1 BT1_2 BT1_3;
+  ! Brand Benevolence
+  BBEN BY BT2_1 BT2_2 BT2_3;
+
+  ! ===== Brand Trust (BT) - Second Order =====
+  BT BY BCRE BBEN;
+
+  ! ===== Decision (DC) - First Order =====
+  ! Problem Recognition
+  PREC BY DC1_1 DC1_2 DC1_3;
+  ! Information Search
+  INFO BY DC2_1 DC2_2 DC2_3;
+  ! Evaluation of Alternatives
+  EVAL BY DC3_1 DC3_2 DC3_3;
+  ! Purchase Decision
+  PURC BY DC4_1 DC4_2 DC4_3;
+  ! Post-Purchase Behavior
+  POST BY DC5_1 DC5_2 DC5_3;
+
+  ! ===== Decision (DC) - Second Order =====
+  DC BY PREC INFO EVAL PURC POST;
+
+  ! ===== Structural Model =====
+  ! Direct effects
+  BT ON SQ PQ;
+  DC ON SQ PQ BT;
+
+  ! ===== Indirect Effects (Mediation) =====
+MODEL INDIRECT:
+  DC IND SQ;
+  DC IND PQ;
+
+OUTPUT:
+  SAMPSTAT STANDARDIZED MODINDICES(3.84)
+  CINTERVAL RESIDUAL TECH1 TECH4;
+
+! Variable Mapping Reference:
+! SQ1_1-SQ1_3 = Tangibility (ความเป็นรูปธรรม)
+! SQ2_1-SQ2_3 = Reliability (ความน่าเชื่อถือ)
+! SQ3_1-SQ3_3 = Responsiveness (การตอบสนอง)
+! SQ4_1-SQ4_3 = Assurance (ความมั่นใจ)
+! SQ5_1-SQ5_3 = Empathy (ความเห็นอกเห็นใจ)
+! PQ1_1-PQ1_3 = System Reliability (ความน่าเชื่อถือของระบบ)
+! PQ2_1-PQ2_3 = Warranty (การรับประกัน)
+! PQ3_1-PQ3_3 = Standards (มาตรฐานและการรับรอง)
+! PQ4_1-PQ4_3 = Value for Money (ประสิทธิภาพเทียบราคา)
+! BT1_1-BT1_3 = Brand Credibility (ความน่าเชื่อถือตราสินค้า)
+! BT2_1-BT2_3 = Brand Benevolence (เจตนาดีตราสินค้า)
+! DC1_1-DC1_3 = Problem Recognition (การรับรู้ปัญหา)
+! DC2_1-DC2_3 = Information Search (การค้นหาข้อมูล)
+! DC3_1-DC3_3 = Evaluation (การประเมินทางเลือก)
+! DC4_1-DC4_3 = Purchase Decision (การตัดสินใจซื้อ)
+! DC5_1-DC5_3 = Post-Purchase (พฤติกรรมหลังการซื้อ)
+! GENDER = เพศ (1=ชาย, 2=หญิง, 3=อื่นๆ)
+! AGE = อายุ (1=<30, 2=30-39, 3=40-49, 4=50-59, 5=60+)
+! EDUC = การศึกษา (1=ต่ำกว่า ป.ตรี, 2=ป.ตรี, 3=สูงกว่า ป.ตรี, 4=อื่นๆ)
+! OCCUP = อาชีพ (1=เอกชน, 2=ราชการ, 3=เจ้าของกิจการ, 4=เกษตรกร, 5=อื่นๆ)
+! INCOME = รายได้ (1=<15k, 2=15-30k, 3=30-50k, 4=50k+)
+! EXPER = ประสบการณ์ (1=<1ปี, 2=1-2ปี, 3=3-5ปี, 4=>5ปี)
+`;
+    const blob = new Blob([inp], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url;
+    a.download = `solar_survey.inp`;
+    a.click(); URL.revokeObjectURL(url);
+  };
+
+  const exportMplusBoth = (data) => {
+    exportMplusDat(data);
+    setTimeout(() => exportMplusInp(data), 500);
+  };
+
+
     padding: "10px 24px", borderRadius: 10, border: "none", cursor: "pointer",
     background: isActive ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.05)",
     color: isActive ? "#f59e0b" : "#94a3b8", fontSize: 13, fontWeight: isActive ? 700 : 400,
