@@ -75,8 +75,8 @@ const QRCodesPage = () => {
           background: "#fff", borderRadius: 16, padding: "16px 24px", marginBottom: 32,
           border: "1px solid #e2e8f0", textAlign: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
         }}>
-          <p style={{ margin: 0, fontSize: 14, color: "#334155" }}>
-            📱 สแกน QR Code หรือคลิกลิงก์ของภาคที่ท่านอยู่ เพื่อเริ่มทำแบบสอบถาม
+          <p style={{ margin: 0, fontSize: 14, color: "#334155", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            <ScanLine size={18} color="#059669" /> สแกน QR Code หรือคลิกลิงก์ของภาคที่ท่านอยู่ เพื่อเริ่มทำแบบสอบถาม
           </p>
         </div>
 
