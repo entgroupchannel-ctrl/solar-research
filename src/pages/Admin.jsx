@@ -693,6 +693,11 @@ OUTPUT:
               borderRadius: 8, background: "rgba(59,130,246,0.1)", color: "#3b82f6",
               cursor: "pointer", fontSize: 13, fontWeight: 600,
             }}>📥 Export Excel</button>
+            <button onClick={() => exportMplusBoth(filtered)} style={{
+              padding: "8px 20px", border: "1px solid rgba(168,85,247,0.4)",
+              borderRadius: 8, background: "rgba(168,85,247,0.1)", color: "#a855f7",
+              cursor: "pointer", fontSize: 13, fontWeight: 600,
+            }}>📥 Mplus (.dat + .inp)</button>
             <button onClick={loadData} style={{
               padding: "8px 20px", border: "1px solid rgba(255,255,255,0.2)",
               borderRadius: 8, background: "transparent", color: "#e2e8f0",
