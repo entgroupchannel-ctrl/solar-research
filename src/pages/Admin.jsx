@@ -1068,6 +1068,127 @@ OUTPUT:
           </div>
         ))}
 
+        {/* INDIVIDUAL RESPONSES TAB */}
+        {activeTab === "individual" && filtered.length > 0 && (
+          <div>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#f59e0b", marginBottom: 16 }}>
+              คำตอบรายบุคคล ({filtered.length} ราย)
+            </h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {filtered.map((r, idx) => {
+                const isExpanded = expandedResponse === r.uid;
+                const personal = r.personal || r.personal_data || {};
+                const likert = r.likert || r.likert_data || {};
+                return (
+                  <div key={r.uid} style={{
+                    background: "rgba(255,255,255,0.03)", borderRadius: 12,
+                    border: isExpanded ? "1px solid rgba(245,158,11,0.4)" : "1px solid rgba(255,255,255,0.08)",
+                    overflow: "hidden",
+                  }}>
+                    {/* Row header - clickable */}
+                    <div
+                      onClick={() => setExpandedResponse(isExpanded ? null : r.uid)}
+                      style={{
+                        padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12,
+                        background: isExpanded ? "rgba(245,158,11,0.08)" : "transparent",
+                      }}
+                    >
+                      <span style={{ fontSize: 13, color: "#64748b", minWidth: 30 }}>#{idx + 1}</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0", flex: 1 }}>
+                        {personal.gender || "-"} · {personal.age || "-"} · {personal.province || (SOURCES[r.source] || r.source)}
+                      </span>
+                      <span style={{ fontSize: 11, color: "#94a3b8" }}>{r.timestamp}</span>
+                      <span style={{ fontSize: 11, color: "#64748b", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: 6 }}>
+                        ⏱ {formatTime(r.timeTaken)}
+                      </span>
+                      {r.want_results && <span style={{ fontSize: 11, color: "#10b981" }}>📧</span>}
+                      <span style={{ color: "#94a3b8", fontSize: 16, transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</span>
+                    </div>
+
+                    {/* Expanded detail */}
+                    {isExpanded && (
+                      <div style={{ padding: "0 16px 16px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                        {/* Personal data */}
+                        <div style={{ marginTop: 12, marginBottom: 16 }}>
+                          <h4 style={{ fontSize: 13, fontWeight: 700, color: "#3b82f6", margin: "0 0 8px" }}>ข้อมูลทั่วไป</h4>
+                          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 6 }}>
+                            {PERSONAL_QUESTIONS.map(q => (
+                              <div key={q.id} style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "rgba(255,255,255,0.03)", borderRadius: 8, fontSize: 12 }}>
+                                <span style={{ color: "#94a3b8" }}>{q.text}</span>
+                                <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{personal[q.id] || "-"}</span>
+                              </div>
+                            ))}
+                            {personal.province && (
+                              <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "rgba(255,255,255,0.03)", borderRadius: 8, fontSize: 12 }}>
+                                <span style={{ color: "#94a3b8" }}>จังหวัด</span>
+                                <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{personal.province}</span>
+                              </div>
+                            )}
+                          </div>
+                          {r.email && (
+                            <div style={{ marginTop: 6, padding: "6px 10px", background: "rgba(16,185,129,0.08)", borderRadius: 8, fontSize: 12, color: "#10b981" }}>
+                              📧 {r.email} (ต้องการรับผลวิจัย)
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Likert data by section */}
+                        {LIKERT_SECTIONS.map((sec, si) => (
+                          <div key={sec.id} style={{ marginBottom: 12 }}>
+                            <h4 style={{ fontSize: 13, fontWeight: 700, color: SECTION_COLORS[si], margin: "0 0 6px" }}>{sec.title}</h4>
+                            {sec.subsections.map(sub => (
+                              <div key={sub.id} style={{ marginBottom: 8 }}>
+                                <div style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8", marginBottom: 4, paddingLeft: 8 }}>{sub.title}</div>
+                                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                                  {sub.items.map(item => {
+                                    const val = likert[item.id];
+                                    return (
+                                      <div key={item.id} style={{
+                                        display: "flex", alignItems: "center", gap: 8, padding: "4px 10px",
+                                        background: "rgba(255,255,255,0.02)", borderRadius: 6, fontSize: 12,
+                                      }}>
+                                        <span style={{ flex: 1, color: "#cbd5e1", lineHeight: 1.4 }}>{item.text}</span>
+                                        <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
+                                          {[1,2,3,4,5].map(n => (
+                                            <span key={n} style={{
+                                              width: 22, height: 22, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center",
+                                              fontSize: 11, fontWeight: 700,
+                                              background: val === n ? SECTION_COLORS[si] : "rgba(255,255,255,0.05)",
+                                              color: val === n ? "#fff" : "#64748b",
+                                            }}>{n}</span>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ))}
+
+                        {/* Suggestion */}
+                        {r.suggestion && (
+                          <div style={{ marginTop: 8, padding: "8px 12px", background: "rgba(245,158,11,0.08)", borderRadius: 8, fontSize: 12, color: "#f59e0b", lineHeight: 1.6 }}>
+                            💬 {r.suggestion}
+                          </div>
+                        )}
+
+                        {/* Meta */}
+                        <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 11, color: "#64748b" }}>
+                          <span>UID: {r.uid}</span>
+                          <span>Source: {r.source_code || r.source}</span>
+                          <span>Version: {r.survey_version}</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* LINKS TAB */}
         {activeTab === "links" && (
           <div>
