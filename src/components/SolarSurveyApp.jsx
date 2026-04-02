@@ -1258,8 +1258,9 @@ export default function SolarSurveyApp() {
   }, [personal, likert, suggestion, timer, page, uid]);
 
   // Count answered
-  const answeredPersonal = PERSONAL_QUESTIONS.filter(q => personal[q.id]).length;
+  const answeredPersonal = PERSONAL_QUESTIONS.filter(q => personal[q.id]).length + (regionInfo && personal.province ? 1 : 0);
   const answeredLikert = Object.keys(likert).length;
+  const totalRequired = PERSONAL_QUESTIONS.length + (regionInfo ? 1 : 0) + TOTAL_LIKERT + 1;
   const answeredTotal = answeredPersonal + answeredLikert + (suggestion.trim() ? 1 : 0);
 
   const sectionRefs = useRef({});
