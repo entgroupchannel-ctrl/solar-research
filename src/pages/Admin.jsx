@@ -731,17 +731,17 @@ OUTPUT:
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#94a3b8" }}>รายงานผลแบบสอบถาม (Supabase)</p>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <button onClick={() => exportCSV(filtered)} style={{
+            <button onClick={() => exportCSV(responses)} style={{
               padding: "8px 20px", border: "1px solid rgba(16,185,129,0.4)",
               borderRadius: 8, background: "rgba(16,185,129,0.1)", color: "#10b981",
               cursor: "pointer", fontSize: 13, fontWeight: 600,
-            }}>📥 Export CSV</button>
-            <button onClick={() => exportExcel(filtered)} style={{
+            }}>📥 Export CSV (ทั้งหมด)</button>
+            <button onClick={() => exportExcel(responses)} style={{
               padding: "8px 20px", border: "1px solid rgba(59,130,246,0.4)",
               borderRadius: 8, background: "rgba(59,130,246,0.1)", color: "#3b82f6",
               cursor: "pointer", fontSize: 13, fontWeight: 600,
-            }}>📥 Export Excel</button>
-            <button onClick={() => exportMplusBoth(filtered)} style={{
+            }}>📥 Export Excel (ทั้งหมด)</button>
+            <button onClick={() => exportMplusBoth(responses)} style={{
               padding: "8px 20px", border: "1px solid rgba(168,85,247,0.4)",
               borderRadius: 8, background: "rgba(168,85,247,0.1)", color: "#a855f7",
               cursor: "pointer", fontSize: 13, fontWeight: 600,
