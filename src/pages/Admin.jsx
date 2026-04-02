@@ -292,25 +292,25 @@ const AdminPage = () => {
     setAddingSource(false);
   };
 
-  // Generate all province links at once
-  const generateAllProvinceLinks = async () => {
+  // Generate all region links at once
+  const generateAllRegionLinks = async () => {
     setGeneratingAll(true);
     const existingCodes = sources.map(s => s.code);
-    const toCreate = PROVINCE_DATA.filter(p => !existingCodes.includes(p.code));
+    const toCreate = REGION_DATA.filter(r => !existingCodes.includes(r.code));
     if (toCreate.length === 0) {
-      alert("ลิงก์ครบทุกจังหวัดแล้ว");
+      alert("ลิงก์ครบทุกภาคแล้ว");
       setGeneratingAll(false);
       return;
     }
-    const rows = toCreate.map(p => ({
-      code: p.code,
-      name: p.province,
-      region: p.region,
-      target: p.target,
+    const rows = toCreate.map(r => ({
+      code: r.code,
+      name: r.name,
+      region: r.name,
+      target: r.target,
     }));
     const { error } = await supabase.from("survey_sources").insert(rows);
     if (error) alert("เกิดข้อผิดพลาด: " + error.message);
-    else alert(`สร้างลิงก์สำเร็จ ${toCreate.length} จังหวัด`);
+    else alert(`สร้างลิงก์สำเร็จ ${toCreate.length} ภาค`);
     loadData();
     setGeneratingAll(false);
   };
