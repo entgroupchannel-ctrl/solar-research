@@ -453,6 +453,7 @@ function ThankYou({ responseId, timeTaken }) {
         borderRadius: 20, padding: "48px 32px", textAlign: "center",
         boxShadow: "0 25px 80px rgba(0,0,0,0.3)",
       }}>
+        <img src={logoTRU} alt="มหาวิทยาลัยธนบุรี" style={{ height: 64, marginBottom: 16, objectFit: "contain" }} />
         <div style={{
           width: 80, height: 80, borderRadius: "50%",
           background: "linear-gradient(135deg, #10b981, #059669)",
