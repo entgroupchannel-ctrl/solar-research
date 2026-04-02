@@ -1255,15 +1255,61 @@ function SpeechToTextButton({ onResult }) {
 
 // ============================================================
 export default function SolarSurveyApp() {
-  const [page, setPage] = useState("pdpa"); // pdpa | screening | survey | thanks | admin
+  // Restore saved progress from localStorage for resume capability
   const [source] = useState(getSourceFromURL);
-  // Get provinces for the current region source
   const regionInfo = REGION_PROVINCES[source] || null;
-  const [uid] = useState(generateUID);
-  const [personal, setPersonal] = useState({});
-  const [likert, setLikert] = useState({});
-  const [suggestion, setSuggestion] = useState("");
-  const [timer, setTimer] = useState(0);
+
+  const [uid] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.uid && !data.submitted) return data.uid;
+      }
+    } catch(e) {}
+    return generateUID();
+  });
+
+  const [page, setPage] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.uid && !data.submitted && data.page === "survey") return "survey";
+      }
+    } catch(e) {}
+    return "pdpa";
+  });
+
+  const [personal, setPersonal] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) { const d = JSON.parse(saved); if (!d.submitted && d.personal) return d.personal; }
+    } catch(e) {}
+    return {};
+  });
+  const [likert, setLikert] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) { const d = JSON.parse(saved); if (!d.submitted && d.likert) return d.likert; }
+    } catch(e) {}
+    return {};
+  });
+  const [suggestion, setSuggestion] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) { const d = JSON.parse(saved); if (!d.submitted && d.suggestion) return d.suggestion; }
+    } catch(e) {}
+    return "";
+  });
+  const [timer, setTimer] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) { const d = JSON.parse(saved); if (!d.submitted && d.timer) return d.timer; }
+    } catch(e) {}
+    return 0;
+  });
+
   const [showValidation, setShowValidation] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
   const [responses, setResponses] = useState([]);
