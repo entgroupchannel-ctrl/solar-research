@@ -1429,13 +1429,13 @@ OUTPUT:
                         {/* Personal data */}
                         <div style={{ marginTop: 12, marginBottom: 16 }}>
                           <h4 style={{ fontSize: 13, fontWeight: 700, color: "#3b82f6", margin: "0 0 8px" }}>ข้อมูลทั่วไป</h4>
-                          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 6 }}>
-                            {PERSONAL_QUESTIONS.map(q => (
-                              <div key={q.id} style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "#f8fafc", borderRadius: 8, fontSize: 12 }}>
-                                <span style={{ color: "#64748b" }}>{q.text}</span>
-                                <span style={{ color: "#1e293b", fontWeight: 600 }}>{personal[q.id] || "-"}</span>
-                              </div>
-                            ))}
+                           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 0 }}>
+                             {PERSONAL_QUESTIONS.map((q, qi) => (
+                               <div key={q.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 10px", background: qi % 2 === 0 ? "#f8fafc" : "#fff", borderBottom: "1px solid #f1f5f9", fontSize: 12 }}>
+                                 <span style={{ color: "#64748b" }}>{q.text}</span>
+                                 <span style={{ color: "#1e293b", fontWeight: 600 }}>{personal[q.id] || "-"}</span>
+                               </div>
+                             ))}
                             {personal.province && (
                               <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "#f8fafc", borderRadius: 8, fontSize: 12 }}>
                                 <span style={{ color: "#64748b" }}>จังหวัด</span>
