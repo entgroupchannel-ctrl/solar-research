@@ -885,7 +885,7 @@ function AdminDashboard({ responses, onBack }) {
   const sourceDistribution = useMemo(() => {
     const counts = {};
     filtered.forEach(r => {
-      const name = REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source;
+      const name = REGION_PROVINCES[r.source]?.name || r.source;
       counts[name] = (counts[name] || 0) + 1;
     });
     return Object.entries(counts).map(([name, value]) => ({ name, value }));
