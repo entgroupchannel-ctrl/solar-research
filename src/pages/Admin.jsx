@@ -770,8 +770,8 @@ OUTPUT:
             { label: "คะแนนเฉลี่ยรวม", value: filtered.length ? calcMean(sectionAverages.map(s => s.mean)).toFixed(2) : "-", icon: "⭐" },
           ].map((card, i) => (
             <div key={i} style={{
-              background: "#f1f5f9", borderRadius: 12, padding: 20,
-              border: "1px solid #e2e8f0",
+              background: "#fff", borderRadius: 12, padding: 20,
+              border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
             }}>
               <div style={{ fontSize: 28, marginBottom: 8 }}>{card.icon}</div>
               <div style={{ fontSize: 24, fontWeight: 700, color: "#059669" }}>{card.value}</div>
