@@ -1331,7 +1331,8 @@ export default function SolarSurveyApp() {
     if (missing.length > 0) {
       setMissingFields(missing);
       setShowValidation(true);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Scroll to first missing field
+      setTimeout(() => scrollToMissing(missing[0]), 300);
       return;
     }
     setSubmitting(true);
