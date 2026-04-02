@@ -184,6 +184,7 @@ const AdminPage = () => {
   const [sources, setSources] = useState([]);
   const [crossRowVar, setCrossRowVar] = useState("housing");
   const [crossColVar, setCrossColVar] = useState("electricity_bill");
+  const [demoChartType, setDemoChartType] = useState("pie");
   const [loading, setLoading] = useState(true);
   const [newSourceName, setNewSourceName] = useState("");
   const [newSourceRegion, setNewSourceRegion] = useState("");
