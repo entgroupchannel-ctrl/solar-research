@@ -347,7 +347,7 @@ function PDPAConsent({ onAccept }) {
           <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, background: "linear-gradient(135deg, #0f2027, #2c5364)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             นโยบายความเป็นส่วนตัว (PDPA)
           </h1>
-          <p style={{ fontSize: 12, color: "#94a3b8", margin: "6px 0 0" }}>มหาวิทยาลัยธนบุรี | Thonburi University</p>
+          <p style={{ fontSize: 12, color: "#475569", margin: "6px 0 0" }}>มหาวิทยาลัยธนบุรี | Thonburi University</p>
         </div>
         <div style={{
           background: "#f8fafc", borderRadius: 12, padding: "20px 24px",
