@@ -1672,7 +1672,7 @@ export default function SolarSurveyApp() {
                 borderRadius: 6, padding: "4px 10px", color: "#fca5a5", fontSize: 12,
                 cursor: "pointer", textAlign: "left", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200,
               }}>
-                📌 {f.text}
+                <MapPin size={12} style={{ marginRight: 2, flexShrink: 0 }} /> {f.text}
               </button>
             ))}
           </div>
