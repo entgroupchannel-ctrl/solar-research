@@ -453,7 +453,7 @@ function ScreeningQuestion({ onPass, onFail }) {
           <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1e293b", margin: "0 0 8px", background: "linear-gradient(135deg, #0f2027, #2c5364)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             คำถามคัดกรอง
           </h2>
-          <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+          <p style={{ fontSize: 13, color: "#475569", margin: 0 }}>
             Screening Question
           </p>
         </div>
