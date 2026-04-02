@@ -845,9 +845,10 @@ OUTPUT:
   return (
     <div style={{
       minHeight: "100vh",
-      background: "#f8fafc",
+      background: "linear-gradient(160deg, #f0fdf4 0%, #ecfdf5 25%, #f8fafc 50%, #f0fdf4 75%, #e8f5e9 100%)",
       padding: "20px", fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif",
       color: "#1e293b",
+      borderTop: "4px solid #059669",
     }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         {/* Header */}
