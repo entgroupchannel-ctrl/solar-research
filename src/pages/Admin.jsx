@@ -489,7 +489,7 @@ const AdminPage = () => {
       .link{font-size:11px;color:#999;word-break:break-all;margin-top:16px}
     </style></head><body>
       <h2>แบบสอบถามวิจัย</h2>
-      <p style="font-size:18px;font-weight:700;color:#f59e0b">📍 ${province}</p>
+      <p style="font-size:18px;font-weight:700;color:#f59e0b">${province}</p>
       <p>โซลาร์รูฟท็อป — มหาวิทยาลัยธนบุรี</p>
       <div class="qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(link)}" width="300" height="300"/></div>
       <p>สแกน QR Code เพื่อทำแบบสอบถาม</p>
