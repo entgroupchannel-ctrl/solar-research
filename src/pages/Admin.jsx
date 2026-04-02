@@ -310,9 +310,13 @@ const AdminPage = () => {
     const { error } = await supabase.from("survey_sources").insert({
       code: nextCode,
       name: newSourceName.trim(),
+      region: newSourceRegion.trim() || null,
+      target: parseInt(newSourceTarget) || 0,
     });
     if (!error) {
       setNewSourceName("");
+      setNewSourceRegion("");
+      setNewSourceTarget("");
       loadData();
     } else {
       alert("เกิดข้อผิดพลาด: " + error.message);
