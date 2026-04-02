@@ -1052,115 +1052,169 @@ OUTPUT:
 
         {/* LINKS TAB */}
         {activeTab === "links" && (
-          <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.08)" }}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 8px" }}>🔗 จัดการลิงก์แบบสอบถาม</h2>
-            <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 20px" }}>
-              สร้างลิงก์ตามแหล่งที่มา เมื่อผู้ตอบกดลิงก์ ระบบจะบันทึกว่าคำตอบมาจากแหล่งไหน
-            </p>
-
-            {/* Add new source */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: 8, marginBottom: 24, alignItems: "center" }}>
-              <input
-                type="text"
-                value={newSourceName}
-                onChange={e => setNewSourceName(e.target.value)}
-                placeholder="ชื่อแหล่งที่มา เช่น สาขาขอนแก่น"
-                style={{
-                  padding: "10px 16px", borderRadius: 10,
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  background: "rgba(255,255,255,0.05)", color: "#e2e8f0",
-                  fontSize: 14, outline: "none",
-                }}
-              />
-              <select
-                value={newSourceRegion}
-                onChange={e => setNewSourceRegion(e.target.value)}
-                style={{
-                  padding: "10px 12px", borderRadius: 10,
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  background: "rgba(255,255,255,0.05)", color: "#e2e8f0",
-                  fontSize: 13, outline: "none",
-                }}
-              >
-                <option value="">-- ภาค --</option>
-                {REGION_QUOTAS.map(rq => <option key={rq.region} value={rq.region}>{rq.region}</option>)}
-              </select>
-              <input
-                type="number"
-                value={newSourceTarget}
-                onChange={e => setNewSourceTarget(e.target.value)}
-                placeholder="เป้าหมาย"
-                style={{
-                  width: 90, padding: "10px 12px", borderRadius: 10,
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  background: "rgba(255,255,255,0.05)", color: "#e2e8f0",
-                  fontSize: 13, outline: "none", textAlign: "center",
-                }}
-              />
+          <div>
+            {/* Actions bar */}
+            <div style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap", alignItems: "center" }}>
               <button
-                onClick={addSource}
-                disabled={addingSource || !newSourceName.trim()}
+                onClick={generateAllProvinceLinks}
+                disabled={generatingAll}
                 style={{
-                  padding: "10px 24px", borderRadius: 10, border: "none",
-                  background: newSourceName.trim() ? "#f59e0b" : "rgba(255,255,255,0.1)",
-                  color: newSourceName.trim() ? "#000" : "#64748b",
-                  fontSize: 14, fontWeight: 700, cursor: newSourceName.trim() ? "pointer" : "not-allowed",
+                  padding: "12px 28px", borderRadius: 12, border: "none",
+                  background: "linear-gradient(135deg, #f59e0b, #f97316)",
+                  color: "#fff", fontSize: 15, fontWeight: 700, cursor: generatingAll ? "not-allowed" : "pointer",
                 }}
               >
-                {addingSource ? "..." : "+ เพิ่ม"}
+                {generatingAll ? "⏳ กำลังสร้าง..." : `🚀 สร้างลิงก์ทุกจังหวัด (${PROVINCE_DATA.length} สาขา)`}
               </button>
+              <span style={{ fontSize: 13, color: "#94a3b8" }}>
+                ลิงก์ที่สร้างแล้ว: <strong style={{ color: "#f59e0b" }}>{sources.length}</strong> / {PROVINCE_DATA.length}
+              </span>
             </div>
 
-            {/* Source list */}
-            <div style={{ display: "grid", gap: 8 }}>
-              {sources.map(src => {
-                const count = responses.filter(r => r.source === src.code).length;
-                const tgt = src.target || 0;
-                const pct = tgt > 0 ? Math.min((count / tgt) * 100, 100) : 0;
-                return (
-                  <div key={src.id} style={{
-                    background: src.is_active ? "rgba(255,255,255,0.03)" : "rgba(255,0,0,0.05)",
-                    borderRadius: 10, padding: "12px 16px", fontSize: 13,
-                    border: `1px solid ${src.is_active ? "rgba(255,255,255,0.06)" : "rgba(255,0,0,0.15)"}`,
-                  }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: tgt > 0 ? 8 : 0 }}>
-                      <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 45 }}>{src.code}</span>
-                      <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{src.name}</span>
-                      {src.region && <span style={{ fontSize: 11, color: "#64748b", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: 6 }}>{src.region}</span>}
-                      <span style={{ flex: 1 }} />
-                      <span style={{
-                        background: "rgba(245,158,11,0.15)", color: "#f59e0b",
-                        padding: "2px 10px", borderRadius: 12, fontSize: 11, fontWeight: 700,
-                      }}>{count}{tgt > 0 ? ` / ${tgt}` : ""} คำตอบ</span>
-                      <button onClick={() => copyLink(src.code)} style={{
-                        padding: "6px 12px", borderRadius: 8, border: "none",
-                        background: "rgba(59,130,246,0.15)", color: "#3b82f6",
-                        cursor: "pointer", fontSize: 11, fontWeight: 600,
-                      }}>📋 คัดลอกลิงก์</button>
-                      <button onClick={() => toggleSource(src.id, src.is_active)} style={{
-                        padding: "6px 12px", borderRadius: 8, border: "none",
-                        background: src.is_active ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)",
-                        color: src.is_active ? "#10b981" : "#ef4444",
-                        cursor: "pointer", fontSize: 11, fontWeight: 600,
-                      }}>{src.is_active ? "✅ เปิด" : "❌ ปิด"}</button>
-                      <button onClick={() => deleteSource(src.id, src.code)} style={{
-                        padding: "6px 12px", borderRadius: 8, border: "none",
-                        background: "rgba(239,68,68,0.1)", color: "#ef4444",
-                        cursor: "pointer", fontSize: 11, fontWeight: 600,
-                      }}>🗑</button>
-                    </div>
-                    {tgt > 0 && (
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 57 }}>
-                        <div style={{ flex: 1, background: "rgba(255,255,255,0.1)", borderRadius: 6, height: 10, overflow: "hidden", position: "relative" }}>
-                          <div style={{ width: `${pct}%`, height: "100%", borderRadius: 6, background: count >= tgt ? "#10b981" : "#f59e0b", transition: "width 0.3s" }} />
-                        </div>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: count >= tgt ? "#10b981" : "#94a3b8" }}>{pct.toFixed(0)}%</span>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+            {/* Add custom source */}
+            <div style={{ ...chartCardStyle, marginBottom: 24 }}>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#94a3b8", margin: "0 0 12px" }}>➕ เพิ่มแหล่งที่มาเพิ่มเติม (กรณีพิเศษ)</h3>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                <input
+                  type="text"
+                  value={newSourceName}
+                  onChange={e => setNewSourceName(e.target.value)}
+                  placeholder="ชื่อแหล่ง"
+                  style={{ flex: 1, minWidth: 150, padding: "10px 14px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.05)", color: "#e2e8f0", fontSize: 13, outline: "none" }}
+                />
+                <select value={newSourceRegion} onChange={e => setNewSourceRegion(e.target.value)}
+                  style={{ padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.05)", color: "#e2e8f0", fontSize: 13, outline: "none" }}>
+                  <option value="">-- ภาค --</option>
+                  {REGIONS.map(r => <option key={r.name} value={r.name}>{r.name}</option>)}
+                </select>
+                <input type="number" value={newSourceTarget} onChange={e => setNewSourceTarget(e.target.value)} placeholder="เป้าหมาย"
+                  style={{ width: 80, padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.05)", color: "#e2e8f0", fontSize: 13, outline: "none", textAlign: "center" }} />
+                <button onClick={addSource} disabled={addingSource || !newSourceName.trim()}
+                  style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: newSourceName.trim() ? "#f59e0b" : "rgba(255,255,255,0.1)", color: newSourceName.trim() ? "#000" : "#64748b", fontSize: 13, fontWeight: 700, cursor: newSourceName.trim() ? "pointer" : "not-allowed" }}>
+                  {addingSource ? "..." : "+ เพิ่ม"}
+                </button>
+              </div>
             </div>
+
+            {/* Province links grouped by region */}
+            {REGIONS.map(reg => {
+              const regionSources = sources.filter(s => s.region === reg.name);
+              if (regionSources.length === 0) return null;
+              return (
+                <div key={reg.name} style={{ marginBottom: 24 }}>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, color: reg.color, margin: "0 0 12px", display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ display: "inline-block", width: 12, height: 12, borderRadius: 3, background: reg.color }} />
+                    {reg.name} ({regionSources.length} ลิงก์)
+                  </h3>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
+                    {regionSources.map(src => {
+                      const count = responses.filter(r => r.source === src.code).length;
+                      const tgt = src.target || 0;
+                      const pct = tgt > 0 ? Math.min((count / tgt) * 100, 100) : 0;
+                      const link = getSurveyLink(src.code);
+                      return (
+                        <div key={src.id} style={{
+                          background: "rgba(255,255,255,0.03)", borderRadius: 14, padding: 16,
+                          border: `1px solid ${count >= tgt && tgt > 0 ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`,
+                        }}>
+                          {/* Header */}
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                            <div>
+                              <span style={{ fontSize: 15, fontWeight: 700, color: "#e2e8f0" }}>📍 {src.name}</span>
+                              <span style={{ fontSize: 11, color: "#64748b", marginLeft: 8, background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: 6 }}>{src.code}</span>
+                            </div>
+                            <span style={{
+                              background: count >= tgt && tgt > 0 ? "rgba(16,185,129,0.15)" : "rgba(245,158,11,0.15)",
+                              color: count >= tgt && tgt > 0 ? "#10b981" : "#f59e0b",
+                              padding: "4px 12px", borderRadius: 12, fontSize: 12, fontWeight: 700,
+                            }}>{count}{tgt > 0 ? ` / ${tgt}` : ""}</span>
+                          </div>
+
+                          {/* Progress bar */}
+                          {tgt > 0 && (
+                            <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 6, height: 8, overflow: "hidden", marginBottom: 12 }}>
+                              <div style={{ width: `${pct}%`, height: "100%", borderRadius: 6, background: count >= tgt ? "#10b981" : reg.color, transition: "width 0.3s" }} />
+                            </div>
+                          )}
+
+                          {/* QR Code */}
+                          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+                            <div style={{ background: "#fff", borderRadius: 10, padding: 8, flexShrink: 0 }}>
+                              <QRCodeSVG value={link} size={100} level="M" />
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: 11, color: "#64748b", marginBottom: 8, wordBreak: "break-all", lineHeight: 1.5 }}>{link}</div>
+                              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                                <button onClick={() => copyLink(src.code)} style={{
+                                  padding: "6px 14px", borderRadius: 8, border: "none",
+                                  background: "rgba(59,130,246,0.15)", color: "#3b82f6",
+                                  cursor: "pointer", fontSize: 11, fontWeight: 600,
+                                }}>📋 คัดลอก</button>
+                                <button onClick={() => printQR(src.name, src.code)} style={{
+                                  padding: "6px 14px", borderRadius: 8, border: "none",
+                                  background: "rgba(168,85,247,0.15)", color: "#a855f7",
+                                  cursor: "pointer", fontSize: 11, fontWeight: 600,
+                                }}>🖨️ พิมพ์ QR</button>
+                                <button onClick={() => toggleSource(src.id, src.is_active)} style={{
+                                  padding: "6px 14px", borderRadius: 8, border: "none",
+                                  background: src.is_active ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)",
+                                  color: src.is_active ? "#10b981" : "#ef4444",
+                                  cursor: "pointer", fontSize: 11, fontWeight: 600,
+                                }}>{src.is_active ? "✅" : "❌"}</button>
+                                <button onClick={() => deleteSource(src.id, src.code)} style={{
+                                  padding: "6px 14px", borderRadius: 8, border: "none",
+                                  background: "rgba(239,68,68,0.1)", color: "#ef4444",
+                                  cursor: "pointer", fontSize: 11, fontWeight: 600,
+                                }}>🗑</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Other sources not matching any region */}
+            {(() => {
+              const regionNames = REGIONS.map(r => r.name);
+              const otherSources = sources.filter(s => !regionNames.includes(s.region));
+              if (otherSources.length === 0) return null;
+              return (
+                <div style={{ marginBottom: 24 }}>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, color: "#94a3b8", margin: "0 0 12px" }}>📎 แหล่งอื่น ๆ</h3>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
+                    {otherSources.map(src => {
+                      const count = responses.filter(r => r.source === src.code).length;
+                      const link = getSurveyLink(src.code);
+                      return (
+                        <div key={src.id} style={{ background: "rgba(255,255,255,0.03)", borderRadius: 14, padding: 16, border: "1px solid rgba(255,255,255,0.08)" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0" }}>{src.name}</span>
+                            <span style={{ fontSize: 12, color: "#f59e0b", fontWeight: 700 }}>{count} คำตอบ</span>
+                          </div>
+                          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+                            <div style={{ background: "#fff", borderRadius: 10, padding: 8 }}>
+                              <QRCodeSVG value={link} size={80} level="M" />
+                            </div>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontSize: 11, color: "#64748b", marginBottom: 8, wordBreak: "break-all" }}>{link}</div>
+                              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                                <button onClick={() => copyLink(src.code)} style={{ padding: "6px 14px", borderRadius: 8, border: "none", background: "rgba(59,130,246,0.15)", color: "#3b82f6", cursor: "pointer", fontSize: 11, fontWeight: 600 }}>📋 คัดลอก</button>
+                                <button onClick={() => printQR(src.name, src.code)} style={{ padding: "6px 14px", borderRadius: 8, border: "none", background: "rgba(168,85,247,0.15)", color: "#a855f7", cursor: "pointer", fontSize: 11, fontWeight: 600 }}>🖨️ พิมพ์ QR</button>
+                                <button onClick={() => deleteSource(src.id, src.code)} style={{ padding: "6px 14px", borderRadius: 8, border: "none", background: "rgba(239,68,68,0.1)", color: "#ef4444", cursor: "pointer", fontSize: 11, fontWeight: 600 }}>🗑</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
