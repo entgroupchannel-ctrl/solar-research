@@ -533,9 +533,12 @@ function ScreeningQuestion({ onPass, onFail }) {
 function ProgressBar({ current, total }) {
   const pct = Math.round((current / total) * 100);
 
-  // Accessibility state
-  const [isDark, setIsDark] = useState(() => {
-    try { return localStorage.getItem("theme") === "dark"; } catch { return false; }
+  // Theme: "default" (dark gradient), "dark", "white"
+  const THEMES = ["default", "dark", "white"];
+  const THEME_ICONS = { default: "🌊", dark: "🌙", white: "☀️" };
+  const THEME_LABELS = { default: "ปกติ", dark: "มืด", white: "สว่าง" };
+  const [theme, setTheme] = useState(() => {
+    try { return localStorage.getItem("theme") || "default"; } catch { return "default"; }
   });
   const [fontIdx, setFontIdx] = useState(() => {
     try {
@@ -545,10 +548,16 @@ function ProgressBar({ current, total }) {
   });
   const FONT_SIZES = [14, 15, 16, 18, 20];
 
+  const cycleTheme = () => {
+    const idx = THEMES.indexOf(theme);
+    const next = THEMES[(idx + 1) % THEMES.length];
+    setTheme(next);
+  };
+
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  }, [isDark]);
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     document.documentElement.style.fontSize = FONT_SIZES[fontIdx] + "px";
@@ -556,12 +565,12 @@ function ProgressBar({ current, total }) {
   }, [fontIdx]);
 
   return (
-    <div style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(15,32,39,0.95)", backdropFilter: "blur(10px)" }}>
+    <div style={{ position: "sticky", top: 0, zIndex: 100, background: theme === "white" ? "rgba(255,255,255,0.95)" : "rgba(15,32,39,0.95)", backdropFilter: "blur(10px)", transition: "background 0.3s" }}>
       {/* Top row: progress label + accessibility controls */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 16px 4px" }}>
         {/* Left: progress info */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600 }}>ความคืบหน้า</span>
+          <span style={{ fontSize: 12, color: theme === "white" ? "#64748b" : "#94a3b8", fontWeight: 600 }}>ความคืบหน้า</span>
           <span style={{
             fontSize: 12, fontWeight: 800, color: "#f59e0b",
             background: "rgba(245,158,11,0.12)", padding: "2px 8px", borderRadius: 6,
@@ -576,7 +585,7 @@ function ProgressBar({ current, total }) {
             disabled={fontIdx === 0}
             style={{
               width: 28, height: 28, borderRadius: 6, border: "none", cursor: fontIdx === 0 ? "default" : "pointer",
-              background: "rgba(255,255,255,0.08)", color: "#94a3b8",
+              background: theme === "white" ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.08)", color: theme === "white" ? "#475569" : "#94a3b8",
               display: "flex", alignItems: "center", justifyContent: "center",
               opacity: fontIdx === 0 ? 0.3 : 1, transition: "all 0.2s", fontSize: 13, fontWeight: 700,
             }}
@@ -585,7 +594,7 @@ function ProgressBar({ current, total }) {
 
           {/* Font size label */}
           <span style={{
-            fontSize: 10, color: "#64748b", fontWeight: 600, minWidth: 28, textAlign: "center",
+            fontSize: 10, color: theme === "white" ? "#64748b" : "#64748b", fontWeight: 600, minWidth: 28, textAlign: "center",
           }}>{FONT_SIZES[fontIdx]}px</span>
 
           {/* Font increase */}
@@ -594,7 +603,7 @@ function ProgressBar({ current, total }) {
             disabled={fontIdx === FONT_SIZES.length - 1}
             style={{
               width: 28, height: 28, borderRadius: 6, border: "none", cursor: fontIdx === FONT_SIZES.length - 1 ? "default" : "pointer",
-              background: "rgba(255,255,255,0.08)", color: "#94a3b8",
+              background: theme === "white" ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.08)", color: theme === "white" ? "#475569" : "#94a3b8",
               display: "flex", alignItems: "center", justifyContent: "center",
               opacity: fontIdx === FONT_SIZES.length - 1 ? 0.3 : 1, transition: "all 0.2s", fontSize: 13, fontWeight: 700,
             }}
@@ -602,28 +611,29 @@ function ProgressBar({ current, total }) {
           >A+</button>
 
           {/* Divider */}
-          <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.1)", margin: "0 4px" }} />
+          <div style={{ width: 1, height: 16, background: theme === "white" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)", margin: "0 4px" }} />
 
-          {/* Dark/Light toggle */}
+          {/* Theme cycle button */}
           <button
-            onClick={() => setIsDark(!isDark)}
+            onClick={cycleTheme}
             style={{
-              width: 28, height: 28, borderRadius: 6, border: "none", cursor: "pointer",
-              background: isDark ? "rgba(250,204,21,0.15)" : "rgba(255,255,255,0.08)",
-              color: isDark ? "#facc15" : "#94a3b8",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              transition: "all 0.2s", fontSize: 14,
+              height: 28, borderRadius: 6, border: "none", cursor: "pointer",
+              background: theme === "white" ? "rgba(5,150,105,0.1)" : theme === "dark" ? "rgba(250,204,21,0.15)" : "rgba(255,255,255,0.08)",
+              color: theme === "white" ? "#059669" : theme === "dark" ? "#facc15" : "#94a3b8",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 4,
+              transition: "all 0.2s", fontSize: 12, fontWeight: 600, padding: "0 10px",
             }}
-            title={isDark ? "เปลี่ยนเป็น Light Mode" : "เปลี่ยนเป็น Dark Mode"}
+            title={`เปลี่ยนโหมด: ${THEME_LABELS[THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length]]}`}
           >
-            {isDark ? "☀️" : "🌙"}
+            {THEME_ICONS[theme]}
+            <span style={{ fontSize: 10 }}>{THEME_LABELS[theme]}</span>
           </button>
         </div>
       </div>
 
       {/* Progress bar */}
       <div style={{ padding: "0 16px 8px" }}>
-        <div style={{ height: 5, background: "rgba(255,255,255,0.08)", borderRadius: 3, overflow: "hidden" }}>
+        <div style={{ height: 5, background: theme === "white" ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.08)", borderRadius: 3, overflow: "hidden" }}>
           <div style={{
             height: "100%", width: `${pct}%`, borderRadius: 3,
             background: "linear-gradient(90deg, #f59e0b, #f97316)",

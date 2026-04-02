@@ -195,6 +195,65 @@ All colors MUST be HSL.
   filter: none !important;
 }
 
+/* ===== White Mode for inline-styled components ===== */
+[data-theme="white"] div[style*="min-height: 100vh"] {
+  background: linear-gradient(160deg, #f0fdf4 0%, #ecfdf5 25%, #f8fafc 50%, #ecfdf5 75%, #f0fdf4 100%) !important;
+}
+
+[data-theme="white"] div[style*="background: linear-gradient(135deg, #0f2027"] {
+  background: linear-gradient(160deg, #f0fdf4 0%, #ecfdf5 25%, #f8fafc 50%, #ecfdf5 75%, #f0fdf4 100%) !important;
+  color: #1e293b !important;
+}
+
+[data-theme="white"] div[style*="color: #e2e8f0"],
+[data-theme="white"] span[style*="color: #e2e8f0"],
+[data-theme="white"] p[style*="color: #e2e8f0"] {
+  color: #1e293b !important;
+}
+
+[data-theme="white"] div[style*="color: #cbd5e1"],
+[data-theme="white"] span[style*="color: #cbd5e1"] {
+  color: #334155 !important;
+}
+
+[data-theme="white"] div[style*="color: #94a3b8"],
+[data-theme="white"] span[style*="color: #94a3b8"],
+[data-theme="white"] p[style*="color: #94a3b8"] {
+  color: #64748b !important;
+}
+
+[data-theme="white"] h1, [data-theme="white"] h2, [data-theme="white"] h3, [data-theme="white"] h4 {
+  color: #0f172a !important;
+}
+
+[data-theme="white"] div[style*="background: rgba(255,255,255,0.06)"],
+[data-theme="white"] div[style*="background: rgba(255,255,255,0.04)"],
+[data-theme="white"] div[style*="background: rgba(255,255,255,0.03)"] {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+}
+
+[data-theme="white"] div[style*="border: 1px solid rgba(255,255,255,0.1)"],
+[data-theme="white"] div[style*="border: 1px solid rgba(255,255,255,0.08)"] {
+  border-color: #e2e8f0 !important;
+}
+
+[data-theme="white"] input, [data-theme="white"] select, [data-theme="white"] textarea {
+  background: #fff !important;
+  color: #1e293b !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="white"] div[style*="background: rgba(15,32,39"] {
+  background: rgba(255,255,255,0.9) !important;
+  color: #1e293b !important;
+}
+
+[data-theme="white"] div[style*="border-bottom: 1px solid rgba(255,255,255,0.05)"] {
+  border-color: #e2e8f0 !important;
+}
+
 @layer base {
   * {
     @apply border-border;
