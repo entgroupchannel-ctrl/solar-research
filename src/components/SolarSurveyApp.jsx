@@ -403,7 +403,7 @@ function PDPAConsent({ onAccept }) {
           onMouseOver={(e) => { e.target.style.transform = "translateY(-2px)"; e.target.style.boxShadow = "0 8px 25px rgba(249,115,22,0.5)"; }}
           onMouseOut={(e) => { e.target.style.transform = ""; e.target.style.boxShadow = "0 4px 15px rgba(249,115,22,0.4)"; }}
         >
-          ✓ ยอมรับและเริ่มทำแบบสอบถาม
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Check size={18} /> ยอมรับและเริ่มทำแบบสอบถาม</span>
         </button>
         <p style={{ textAlign: "center", fontSize: 12, color: "#94a3b8", marginTop: 12, marginBottom: 0 }}>
           การกดปุ่มด้านบนถือว่าท่านยินยอมตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
