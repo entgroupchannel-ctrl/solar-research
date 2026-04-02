@@ -1611,7 +1611,7 @@ OUTPUT:
                     <span style={{ display: "inline-block", width: 12, height: 12, borderRadius: 3, background: reg.color }} />
                     {reg.name} ({regionSources.length} ลิงก์)
                   </h3>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
                     {regionSources.map(src => {
                       const count = responses.filter(r => r.source === src.code).length;
                       const tgt = src.target || 0;
