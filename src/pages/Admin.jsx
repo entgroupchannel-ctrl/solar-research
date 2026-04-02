@@ -1758,7 +1758,7 @@ OUTPUT:
                 <button onClick={() => { exportExcel(responses); setShowPreview(false); }} style={{
                   padding: "10px 24px", borderRadius: 10, border: "1px solid rgba(59,130,246,0.4)",
                   background: "rgba(59,130,246,0.1)", color: "#3b82f6", cursor: "pointer", fontSize: 13, fontWeight: 600,
-                }}>📥 Excel</button>
+                }}><Download size={14} style={{ marginRight: 4 }} /> Excel</button>
                 <button onClick={() => { exportMplusBoth(responses); setShowPreview(false); }} style={{
                   padding: "10px 24px", borderRadius: 10, border: "1px solid rgba(168,85,247,0.4)",
                   background: "rgba(168,85,247,0.1)", color: "#a855f7", cursor: "pointer", fontSize: 13, fontWeight: 600,
