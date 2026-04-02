@@ -54,6 +54,19 @@ const QRCodesPage = () => {
           <p style={{ fontSize: 13, color: "#059669", margin: "8px 0 0", fontWeight: 600 }}>
             🎓 หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี
           </p>
+          <a
+            href="/"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              marginTop: 16, padding: "10px 24px", borderRadius: 10,
+              background: "#fff", border: "1.5px solid #e2e8f0",
+              color: "#334155", fontSize: 14, fontWeight: 600, textDecoration: "none",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              transition: "all 0.2s",
+            }}
+          >
+            ← กลับหน้าแบบสอบถาม
+          </a>
         </div>
 
         {/* Instruction */}
