@@ -407,6 +407,19 @@ function PDPAConsent({ onAccept }) {
         <p style={{ textAlign: "center", fontSize: 12, color: "#94a3b8", marginTop: 12, marginBottom: 0 }}>
           การกดปุ่มด้านบนถือว่าท่านยินยอมตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
         </p>
+        <div style={{ textAlign: "center", marginTop: 16 }}>
+          <a
+            href="/qr"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              padding: "10px 24px", borderRadius: 10,
+              background: "#ecfdf5", border: "1px solid #a7f3d0",
+              color: "#059669", fontSize: 14, fontWeight: 600, textDecoration: "none",
+            }}
+          >
+            📱 ดู QR Code แยกตามภาค (7 ภาค)
+          </a>
+        </div>
       </div>
     </div>
   );
