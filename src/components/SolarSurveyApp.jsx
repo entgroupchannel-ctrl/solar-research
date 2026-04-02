@@ -1599,7 +1599,7 @@ export default function SolarSurveyApp() {
                     {done && "✓"}
                   </div>
                   {/* Content */}
-                  <button onClick={() => scrollToSection(m.id)} style={{
+                  <button onClick={() => scrollToMilestone(m.id)} style={{
                     background: "none", border: "none", cursor: "pointer", textAlign: "left",
                     padding: "2px 0 16px", display: "block", width: "100%",
                   }}>
