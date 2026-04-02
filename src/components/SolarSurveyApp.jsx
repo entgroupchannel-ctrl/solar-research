@@ -895,7 +895,10 @@ function AdminDashboard({ responses, onBack }) {
 
   const sourceDistribution = useMemo(() => {
     const counts = {};
-    filtered.forEach(r => { const name = SOURCES[r.source] || r.source; counts[name] = (counts[name] || 0) + 1; });
+    filtered.forEach(r => {
+      const name = REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source;
+      counts[name] = (counts[name] || 0) + 1;
+    });
     return Object.entries(counts).map(([name, value]) => ({ name, value }));
   }, [filtered]);
 
@@ -907,7 +910,7 @@ function AdminDashboard({ responses, onBack }) {
     const headers = ["response_id", "source", "source_name", "timestamp", "time_seconds",
       ...PERSONAL_QUESTIONS.map(q => q.id), ...allLikertIds, "suggestion"];
     const rows = filtered.map(r => [
-      r.id, r.source, SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
+      r.id, r.source, REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
       ...PERSONAL_QUESTIONS.map(q => r.personal?.[q.id] || ""),
       ...allLikertIds.map(id => r.likert?.[id] || ""),
       `"${(r.suggestion || "").replace(/"/g, '""')}"`,
@@ -923,7 +926,7 @@ function AdminDashboard({ responses, onBack }) {
     txt += `Export Date: ${new Date().toLocaleString("th-TH")}\n\n`;
     filtered.forEach((r, i) => {
       txt += `--- Response #${i + 1} (${r.id}) ---\n`;
-      txt += `Source: ${SOURCES[r.source] || r.source}\n`;
+      txt += `Source: ${REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source}\n`;
       txt += `Time: ${r.timestamp}\n`;
       txt += `Duration: ${formatTime(r.timeTaken)}\n`;
       PERSONAL_QUESTIONS.forEach(q => { txt += `${q.text}: ${r.personal?.[q.id] || "-"}\n`; });
@@ -945,7 +948,7 @@ function AdminDashboard({ responses, onBack }) {
     const headers = ["ID", "แหล่งที่มา", "วันเวลา", "เวลา(วินาที)",
       ...PERSONAL_QUESTIONS.map(q => q.text), ...allLikertTexts, "ข้อเสนอแนะ"];
     const rows = filtered.map(r => [
-      r.id, SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
+      r.id, REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
       ...PERSONAL_QUESTIONS.map(q => r.personal?.[q.id] || ""),
       ...allLikertIds.map(id => r.likert?.[id] || ""),
       (r.suggestion || "").replace(/\t/g, " "),
@@ -1241,17 +1244,17 @@ function AdminDashboard({ responses, onBack }) {
         {/* LINKS TAB */}
         {activeTab === "links" && (
           <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.08)" }}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 16px" }}>🔗 ลิงก์แบบสอบถาม (10 แหล่ง)</h2>
-            <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 16px" }}>คัดลอกลิงก์ด้านล่างเพื่อแจกจ่ายตามแหล่งที่ต้องการ (เพิ่ม ?src=srcXX ต่อท้าย URL)</p>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 16px" }}>🔗 ลิงก์แบบสอบถามตามภาค (7 ภาค)</h2>
+            <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 16px" }}>คัดลอกลิงก์ด้านล่างเพื่อแจกจ่ายตามภาค (เพิ่ม ?src=region ต่อท้าย URL)</p>
             <div style={{ display: "grid", gap: 8 }}>
-              {Object.entries(SOURCES).map(([key, name]) => (
+              {Object.entries(REGION_PROVINCES).map(([key, region]) => (
                 <div key={key} style={{
                   display: "flex", alignItems: "center", gap: 12,
                   background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "10px 16px",
                   fontSize: 13,
                 }}>
-                  <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 40 }}>{key}</span>
-                  <span style={{ color: "#e2e8f0", flex: 1 }}>{name}</span>
+                  <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 80 }}>{key}</span>
+                  <span style={{ color: "#e2e8f0", flex: 1 }}>{region.name}</span>
                   <code style={{ color: "#94a3b8", fontSize: 11 }}>?src={key}</code>
                 </div>
               ))}
@@ -1610,7 +1613,7 @@ export default function SolarSurveyApp() {
       }}>
         <span style={{ color: "#94a3b8", display: "flex", alignItems: "center", gap: 6 }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(16,185,129,0.2)" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3" fill="none"/></svg>
-          {regionInfo ? regionInfo.name : (SOURCES[source] || "Direct")}
+          {regionInfo ? regionInfo.name : (REGION_PROVINCES[source]?.name || SOURCES[source] || "Direct")}
         </span>
         <span style={{ color: "#f59e0b", fontWeight: 700, fontFamily: "monospace" }}>
           ⏱ {formatTime(timer)}
