@@ -721,16 +721,16 @@ OUTPUT:
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+      background: "#f8fafc",
       padding: "20px", fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif",
-      color: "#e2e8f0",
+      color: "#1e293b",
     }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#f59e0b" }}>📊 Admin Dashboard</h1>
-            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#94a3b8" }}>รายงานผลแบบสอบถาม (Supabase)</p>
+            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#059669" }}>📊 Admin Dashboard</h1>
+            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b" }}>รายงานผลแบบสอบถาม</p>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <button onClick={() => exportCSV(responses)} style={{
