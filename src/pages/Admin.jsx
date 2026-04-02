@@ -1200,7 +1200,7 @@ OUTPUT:
                       </td>
                       <td style={{ textAlign: "center", padding: "10px 8px" }}>
                         <span style={{ padding: "3px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, background: responses.length >= TOTAL_TARGET ? "#10b98118" : "#05966918", color: responses.length >= TOTAL_TARGET ? "#10b981" : "#059669" }}>
-                          {responses.length >= TOTAL_TARGET ? "✅ ครบแล้ว" : `⏳ ${((responses.length / TOTAL_TARGET) * 100).toFixed(0)}%`}
+                          {responses.length >= TOTAL_TARGET ? "ครบแล้ว" : `${((responses.length / TOTAL_TARGET) * 100).toFixed(0)}%`}
                         </span>
                       </td>
                     </tr>
