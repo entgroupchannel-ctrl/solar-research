@@ -1668,7 +1668,7 @@ OUTPUT:
               {/* Modal Header */}
               <div style={{ padding: "20px 24px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#1e293b" }}>👁 ตัวอย่างข้อมูลก่อน Export</h2>
+                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#1e293b", display: "flex", alignItems: "center", gap: 8 }}><Eye size={20} /> ตัวอย่างข้อมูลก่อน Export</h2>
                   <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b" }}>แสดง 10 รายการแรกจากทั้งหมด {previewData.length} รายการ · {headers.length} คอลัมน์</p>
                 </div>
                 <button onClick={() => setShowPreview(false)} style={{
