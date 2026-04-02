@@ -668,6 +668,7 @@ OUTPUT:
           <form onSubmit={(e) => {
             e.preventDefault();
             if (passwordInput === ADMIN_PASSWORD) {
+              sessionStorage.setItem("admin_pw", passwordInput);
               setAuthenticated(true);
               setPasswordError("");
             } else {
