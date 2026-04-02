@@ -633,7 +633,7 @@ function ProgressBar({ current, total }) {
 
       {/* Progress bar */}
       <div style={{ padding: "0 16px 8px" }}>
-        <div style={{ height: 5, background: "rgba(255,255,255,0.08)", borderRadius: 3, overflow: "hidden" }}>
+        <div style={{ height: 5, background: theme === "white" ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.08)", borderRadius: 3, overflow: "hidden" }}>
           <div style={{
             height: "100%", width: `${pct}%`, borderRadius: 3,
             background: "linear-gradient(90deg, #f59e0b, #f97316)",
