@@ -1810,18 +1810,18 @@ OUTPUT:
           // For Cronbach's Alpha: always use ALL responses (not filtered by region)
           const getItemArraysAll = (items) => getItemArrays(items, responses);
 
-          // === SECTION 1: Cronbach's Alpha ===
+          // === SECTION 1: Cronbach's Alpha (ใช้ข้อมูลทั้งหมด ไม่กรองตามภาค) ===
           const alphaResults = subsectionGroups.map(sec => {
             const sectionResult = {
               title: sec.title,
               subsections: sec.subsections.map(sub => {
-                const { arrays, n } = getItemArrays(sub.items);
+                const { arrays, n } = getItemArraysAll(sub.items);
                 const alpha = n >= 2 ? calcCronbachAlpha(arrays) : null;
                 return { title: sub.title, alpha, n, k: sub.items.length };
               }),
             };
             // Overall section alpha
-            const { arrays: allArrays, n: allN } = getItemArrays(sec.allItems);
+            const { arrays: allArrays, n: allN } = getItemArraysAll(sec.allItems);
             sectionResult.overallAlpha = allN >= 2 ? calcCronbachAlpha(allArrays) : null;
             sectionResult.overallN = allN;
             sectionResult.overallK = sec.allItems.length;
