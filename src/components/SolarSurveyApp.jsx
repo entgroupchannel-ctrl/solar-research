@@ -1029,10 +1029,10 @@ function AdminDashboard({ responses, onBack }) {
         {/* Summary Cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 24 }}>
           {[
-            { label: "ตอบทั้งหมด", value: filtered.length, icon: "📝" },
-            { label: "เวลาเฉลี่ย", value: filtered.length ? formatTime(Math.round(calcMean(filtered.map(r => r.timeTaken)))) : "-", icon: "⏱" },
-            { label: "แหล่งที่มา", value: new Set(filtered.map(r => r.source)).size, icon: "🔗" },
-            { label: "คะแนนเฉลี่ยรวม", value: filtered.length ? calcMean(sectionAverages.map(s => s.mean)).toFixed(2) : "-", icon: "⭐" },
+            { label: "ตอบทั้งหมด", value: filtered.length, icon: <FileText size={28} color="#f59e0b" /> },
+            { label: "เวลาเฉลี่ย", value: filtered.length ? formatTime(Math.round(calcMean(filtered.map(r => r.timeTaken)))) : "-", icon: <Clock size={28} color="#f59e0b" /> },
+            { label: "แหล่งที่มา", value: new Set(filtered.map(r => r.source)).size, icon: <Link2 size={28} color="#f59e0b" /> },
+            { label: "คะแนนเฉลี่ยรวม", value: filtered.length ? calcMean(sectionAverages.map(s => s.mean)).toFixed(2) : "-", icon: <Star size={28} color="#f59e0b" /> },
           ].map((card, i) => (
             <div key={i} style={{
               background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 20,
