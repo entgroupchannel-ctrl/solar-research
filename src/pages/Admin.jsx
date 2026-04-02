@@ -878,7 +878,7 @@ OUTPUT:
               padding: "8px 20px", border: "1px solid #d1d5db",
               borderRadius: 8, background: "#fff", color: "#1e293b",
               cursor: "pointer", fontSize: 13,
-            }}>← กลับ</button>
+            }}><ArrowLeft size={14} style={{ marginRight: 4 }} /> กลับ</button>
           </div>
         </div>
 
