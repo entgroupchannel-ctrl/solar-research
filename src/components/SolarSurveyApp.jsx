@@ -25,19 +25,8 @@ const REGION_PROVINCES = {
   west: { name: "ภาคตะวันตก", provinces: ["เพชรบุรี", "กาญจนบุรี", "ราชบุรี"] },
 };
 
-// 10 unique source links (legacy fallback)
-const SOURCES = {
-  src01: "Facebook Ads",
-  src02: "LINE OA",
-  src03: "Email Campaign",
-  src04: "Website Banner",
-  src05: "QR Code (Event)",
-  src06: "QR Code (Print)",
-  src07: "Sales Team",
-  src08: "Partner Referral",
-  src09: "Google Ads",
-  src10: "Direct Link",
-};
+
+
 
 // Likert scale
 const LIKERT = [
@@ -896,7 +885,7 @@ function AdminDashboard({ responses, onBack }) {
   const sourceDistribution = useMemo(() => {
     const counts = {};
     filtered.forEach(r => {
-      const name = REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source;
+      const name = REGION_PROVINCES[r.source]?.name || r.source;
       counts[name] = (counts[name] || 0) + 1;
     });
     return Object.entries(counts).map(([name, value]) => ({ name, value }));
@@ -910,7 +899,7 @@ function AdminDashboard({ responses, onBack }) {
     const headers = ["response_id", "source", "source_name", "timestamp", "time_seconds",
       ...PERSONAL_QUESTIONS.map(q => q.id), ...allLikertIds, "suggestion"];
     const rows = filtered.map(r => [
-      r.id, r.source, REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
+      r.id, r.source, REGION_PROVINCES[r.source]?.name || r.source, r.timestamp, r.timeTaken,
       ...PERSONAL_QUESTIONS.map(q => r.personal?.[q.id] || ""),
       ...allLikertIds.map(id => r.likert?.[id] || ""),
       `"${(r.suggestion || "").replace(/"/g, '""')}"`,
@@ -926,7 +915,7 @@ function AdminDashboard({ responses, onBack }) {
     txt += `Export Date: ${new Date().toLocaleString("th-TH")}\n\n`;
     filtered.forEach((r, i) => {
       txt += `--- Response #${i + 1} (${r.id}) ---\n`;
-      txt += `Source: ${REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source}\n`;
+      txt += `Source: ${REGION_PROVINCES[r.source]?.name || r.source}\n`;
       txt += `Time: ${r.timestamp}\n`;
       txt += `Duration: ${formatTime(r.timeTaken)}\n`;
       PERSONAL_QUESTIONS.forEach(q => { txt += `${q.text}: ${r.personal?.[q.id] || "-"}\n`; });
@@ -948,7 +937,7 @@ function AdminDashboard({ responses, onBack }) {
     const headers = ["ID", "แหล่งที่มา", "วันเวลา", "เวลา(วินาที)",
       ...PERSONAL_QUESTIONS.map(q => q.text), ...allLikertTexts, "ข้อเสนอแนะ"];
     const rows = filtered.map(r => [
-      r.id, REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
+      r.id, REGION_PROVINCES[r.source]?.name || r.source, r.timestamp, r.timeTaken,
       ...PERSONAL_QUESTIONS.map(q => r.personal?.[q.id] || ""),
       ...allLikertIds.map(id => r.likert?.[id] || ""),
       (r.suggestion || "").replace(/\t/g, " "),
@@ -1613,7 +1602,7 @@ export default function SolarSurveyApp() {
       }}>
         <span style={{ color: "#94a3b8", display: "flex", alignItems: "center", gap: 6 }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(16,185,129,0.2)" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3" fill="none"/></svg>
-          {regionInfo ? regionInfo.name : (REGION_PROVINCES[source]?.name || SOURCES[source] || "Direct")}
+          {regionInfo ? regionInfo.name : (REGION_PROVINCES[source]?.name || "Direct")}
         </span>
         <span style={{ color: "#f59e0b", fontWeight: 700, fontFamily: "monospace" }}>
           ⏱ {formatTime(timer)}
