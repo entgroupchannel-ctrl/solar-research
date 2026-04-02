@@ -1603,7 +1603,7 @@ export default function SolarSurveyApp() {
     {
       id: "suggestion", label: "ส่วนที่ 4", title: "ข้อเสนอแนะ",
       answered: suggestion.trim() ? 1 : 0, total: 1,
-      color: "#ec4899", icon: "💬",
+      color: "#ec4899", icon: <MessageSquare size={14} />,
     },
   ];
 
