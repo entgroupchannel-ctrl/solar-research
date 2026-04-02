@@ -813,6 +813,7 @@ OUTPUT:
               ))}
             </div>
 
+            {/* Overall progress */}
             <div style={chartCardStyle}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: "#10b981", margin: 0 }}>ความคืบหน้าการเก็บข้อมูลรวม</h3>
@@ -833,105 +834,71 @@ OUTPUT:
               </div>
             </div>
 
-            <div style={chartCardStyle}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#3b82f6", margin: "0 0 8px" }}>การจัดสรรกลุ่มตัวอย่าง — Proportional Quota Sampling</h3>
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-                  <thead>
-                    <tr style={{ background: "rgba(255,255,255,0.05)" }}>
-                      <th style={{ textAlign: "left", padding: "10px 12px", color: "#94a3b8", fontWeight: 600 }}>ภาค / สาขา</th>
-                      <th style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8", fontWeight: 600, width: 60 }}>ร้าน</th>
-                      <th style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8", fontWeight: 600, width: 70 }}>สัดส่วน</th>
-                      <th style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8", fontWeight: 600, width: 70 }}>เป้าหมาย</th>
-                      <th style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8", fontWeight: 600, width: 70 }}>เก็บได้</th>
-                      <th style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8", fontWeight: 600, width: 100 }}>ความคืบหน้า</th>
-                      <th style={{ textAlign: "left", padding: "10px 12px", color: "#94a3b8", fontWeight: 600 }}>สาขาหลัก (จำนวน)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {REGION_QUOTAS.map((rq, i) => {
-                      const regionSources = sources.filter(s => s.region === rq.region).map(s => s.code);
-                      const collected = responses.filter(r => regionSources.includes(r.source)).length;
-                      const pct = rq.target > 0 ? Math.min((collected / rq.target) * 100, 100) : 0;
+            {/* Region-level progress with province breakdown */}
+            {REGIONS.map(reg => {
+              const provinces = PROVINCE_DATA.filter(p => p.region === reg.name);
+              const regionTarget = provinces.reduce((s, p) => s + p.target, 0);
+              const regionShops = provinces.reduce((s, p) => s + p.shops, 0);
+              const regionCollected = provinces.reduce((s, p) => {
+                return s + responses.filter(r => r.source === p.code).length;
+              }, 0);
+              const regionPct = regionTarget > 0 ? Math.min((regionCollected / regionTarget) * 100, 100) : 0;
+
+              return (
+                <div key={reg.name} style={{ ...chartCardStyle, borderLeft: `4px solid ${reg.color}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                    <div>
+                      <h3 style={{ fontSize: 15, fontWeight: 700, color: reg.color, margin: 0 }}>{reg.name}</h3>
+                      <span style={{ fontSize: 12, color: "#94a3b8" }}>{regionShops} ร้าน · สัดส่วน {((regionShops / TOTAL_SHOPS) * 100).toFixed(1)}%</span>
+                    </div>
+                    <span style={{ fontSize: 20, fontWeight: 800, color: regionCollected >= regionTarget ? "#10b981" : reg.color }}>
+                      {regionCollected} / {regionTarget}
+                    </span>
+                  </div>
+                  <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 8, height: 16, overflow: "hidden", position: "relative", marginBottom: 16 }}>
+                    <div style={{ width: `${regionPct}%`, height: "100%", borderRadius: 8, background: regionCollected >= regionTarget ? "#10b981" : reg.color, transition: "width 0.3s" }} />
+                    <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 10, fontWeight: 700, color: "#fff" }}>{regionPct.toFixed(0)}%</span>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 8 }}>
+                    {provinces.map(prov => {
+                      const collected = responses.filter(r => r.source === prov.code).length;
+                      const pct = prov.target > 0 ? Math.min((collected / prov.target) * 100, 100) : 0;
+                      const hasLink = sources.some(s => s.code === prov.code);
                       return (
-                        <tr key={i} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                          <td style={{ padding: "10px 12px", color: "#e2e8f0", fontWeight: 600 }}>
-                            <span style={{ display: "inline-block", width: 10, height: 10, borderRadius: 3, background: rq.color, marginRight: 8, verticalAlign: "middle" }} />
-                            {rq.region}
-                          </td>
-                          <td style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8" }}>{rq.shops}</td>
-                          <td style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8" }}>{rq.ratio}</td>
-                          <td style={{ textAlign: "center", padding: "10px 12px", color: "#e2e8f0", fontWeight: 700 }}>{rq.target}</td>
-                          <td style={{ textAlign: "center", padding: "10px 12px", color: collected >= rq.target ? "#10b981" : "#f59e0b", fontWeight: 700, fontSize: 16 }}>{collected}</td>
-                          <td style={{ padding: "10px 12px" }}>
-                            <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 6, height: 14, overflow: "hidden", position: "relative" }}>
-                              <div style={{ width: `${pct}%`, height: "100%", borderRadius: 6, background: collected >= rq.target ? "#10b981" : rq.color, transition: "width 0.3s" }} />
-                              <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 9, fontWeight: 700, color: "#fff" }}>{pct.toFixed(0)}%</span>
-                            </div>
-                          </td>
-                          <td style={{ padding: "10px 12px", color: "#94a3b8", fontSize: 12, lineHeight: 1.6 }}>{rq.branches}</td>
-                        </tr>
+                        <div key={prov.code} style={{
+                          background: "rgba(255,255,255,0.03)", borderRadius: 10, padding: "10px 14px",
+                          border: `1px solid ${collected >= prov.target ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.06)"}`,
+                        }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0" }}>📍 {prov.province}</span>
+                            <span style={{ fontSize: 12, fontWeight: 700, color: collected >= prov.target ? "#10b981" : "#f59e0b" }}>
+                              {collected}/{prov.target}
+                            </span>
+                          </div>
+                          <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 4, height: 6, overflow: "hidden" }}>
+                            <div style={{ width: `${pct}%`, height: "100%", borderRadius: 4, background: collected >= prov.target ? "#10b981" : reg.color }} />
+                          </div>
+                          {!hasLink && <span style={{ fontSize: 10, color: "#64748b", marginTop: 4, display: "block" }}>⚠️ ยังไม่มีลิงก์</span>}
+                        </div>
                       );
                     })}
-                    <tr style={{ background: "rgba(255,255,255,0.05)", fontWeight: 700 }}>
-                      <td style={{ padding: "10px 12px", color: "#e2e8f0" }}>รวมทั้งหมด</td>
-                      <td style={{ textAlign: "center", padding: "10px 12px", color: "#e2e8f0" }}>{TOTAL_SHOPS}</td>
-                      <td style={{ textAlign: "center", padding: "10px 12px", color: "#e2e8f0" }}>100%</td>
-                      <td style={{ textAlign: "center", padding: "10px 12px", color: "#f59e0b" }}>{TOTAL_TARGET}</td>
-                      <td style={{ textAlign: "center", padding: "10px 12px", color: responses.length >= TOTAL_TARGET ? "#10b981" : "#f59e0b", fontSize: 16 }}>{responses.length}</td>
-                      <td style={{ padding: "10px 12px" }}>
-                        <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 6, height: 14, overflow: "hidden", position: "relative" }}>
-                          <div style={{ width: `${Math.min((responses.length / TOTAL_TARGET) * 100, 100)}%`, height: "100%", borderRadius: 6, background: responses.length >= TOTAL_TARGET ? "#10b981" : "#f59e0b" }} />
-                          <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 9, fontWeight: 700, color: "#fff" }}>{((responses.length / TOTAL_TARGET) * 100).toFixed(1)}%</span>
-                        </div>
-                      </td>
-                      <td style={{ padding: "10px 12px", color: "#94a3b8", fontSize: 12 }}>22 สาขาทั่วประเทศ</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                  </div>
+                </div>
+              );
+            })}
 
+            {/* Methodology */}
             <div style={chartCardStyle}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: "#e2e8f0", margin: "0 0 12px" }}>วิธีการสุ่มตัวอย่าง</h3>
               <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 20, border: "1px solid rgba(255,255,255,0.06)", lineHeight: 2, fontSize: 14, color: "#cbd5e1" }}>
                 <p style={{ margin: "0 0 8px" }}>ใช้ <strong style={{ color: "#f59e0b" }}>Proportional Stratified Sampling</strong> (การสุ่มแบบแบ่งชั้นภูมิตามสัดส่วน) โดย:</p>
                 <ol style={{ paddingLeft: 24, margin: 0 }}>
-                  <li>แบ่งชั้นภูมิ (strata) ตามภูมิภาค 7 ภาค</li>
-                  <li>คำนวณสัดส่วนจากจำนวนร้านติดตั้ง PSI ในแต่ละภาค (ประชากร = {TOTAL_SHOPS} ร้าน)</li>
+                  <li>แบ่งชั้นภูมิ (strata) ตามภูมิภาค 7 ภาค, {PROVINCE_DATA.length} จังหวัด/สาขา</li>
+                  <li>คำนวณสัดส่วนจากจำนวนร้านติดตั้ง PSI ในแต่ละสาขา (ประชากร = {TOTAL_SHOPS} ร้าน)</li>
                   <li>จัดสรรกลุ่มตัวอย่าง {TOTAL_TARGET} คน ตามสัดส่วน : n<sub>h</sub> = (N<sub>h</sub> / N) × {TOTAL_TARGET}</li>
-                  <li>ภายในแต่ละภาค กระจายตามสาขาย่อยตามสัดส่วนอีกชั้นหนึ่ง</li>
-                  <li>ปัดเศษด้วย largest remainder method เพื่อให้รวมครบ {TOTAL_TARGET} พอดี</li>
+                  <li>แต่ละจังหวัดมี QR Code และลิงก์เฉพาะ เพื่อตรวจสอบย้อนกลับแหล่งข้อมูล</li>
                 </ol>
-              </div>
-              <p style={{ fontSize: 12, color: "#64748b", margin: "12px 0 0", lineHeight: 1.7 }}>
-                * ข้อมูลประชากรอ้างอิงจาก armservice.psisat.com (ร้านตัวแทนติดตั้ง PSI ทั่วประเทศ {TOTAL_SHOPS} ร้าน)<br />
-                ** จำนวนกลุ่มตัวอย่างในแต่ละสาขาปัดเศษเพื่อให้รวม {TOTAL_TARGET} พอดี
-              </p>
-            </div>
-
-            <div style={chartCardStyle}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#8b5cf6", margin: "0 0 16px" }}>ความคืบหน้าแยกตามลิงก์แหล่งที่มา</h3>
-              <div style={{ display: "grid", gap: 8 }}>
-                {sources.filter(s => s.is_active).map(src => {
-                  const count = responses.filter(r => r.source === src.code).length;
-                  const tgt = src.target || 0;
-                  const pct = tgt > 0 ? Math.min((count / tgt) * 100, 100) : 0;
-                  return (
-                    <div key={src.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 0" }}>
-                      <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 45, fontSize: 12 }}>{src.code}</span>
-                      <span style={{ color: "#e2e8f0", minWidth: 140, fontSize: 13, fontWeight: 600 }}>{src.name}</span>
-                      {src.region && <span style={{ fontSize: 11, color: "#64748b", minWidth: 100 }}>{src.region}</span>}
-                      <div style={{ flex: 1, background: "rgba(255,255,255,0.1)", borderRadius: 6, height: 16, overflow: "hidden", position: "relative" }}>
-                        <div style={{ width: tgt > 0 ? `${pct}%` : "0%", height: "100%", borderRadius: 6, background: count >= tgt && tgt > 0 ? "#10b981" : "#8b5cf6", transition: "width 0.3s" }} />
-                        {tgt > 0 && <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 10, fontWeight: 700, color: "#fff" }}>{pct.toFixed(0)}%</span>}
-                      </div>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: count >= tgt && tgt > 0 ? "#10b981" : "#e2e8f0", minWidth: 60, textAlign: "right" }}>
-                        {count}{tgt > 0 ? ` / ${tgt}` : ""}
-                      </span>
-                    </div>
-                  );
-                })}
               </div>
             </div>
           </>
