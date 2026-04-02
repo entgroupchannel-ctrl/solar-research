@@ -351,12 +351,36 @@ const AdminPage = () => {
     loadData();
   };
 
+  const getSurveyLink = (code) => {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}?src=${code}`;
+  };
+
   const copyLink = (code) => {
-    const baseUrl = window.location.origin + window.location.pathname;
-    const link = `${baseUrl}?src=${code}`;
-    navigator.clipboard.writeText(link).then(() => {
+    navigator.clipboard.writeText(getSurveyLink(code)).then(() => {
       alert("คัดลอกลิงก์แล้ว!");
     });
+  };
+
+  const printQR = (province, code) => {
+    const link = getSurveyLink(code);
+    const w = window.open("", "_blank", "width=500,height=700");
+    w.document.write(`<html><head><title>QR - ${province}</title><style>
+      body{font-family:'Sarabun',sans-serif;text-align:center;padding:40px}
+      h2{margin:0 0 8px;font-size:22px}
+      p{color:#666;font-size:14px;margin:4px 0}
+      .qr{margin:24px auto}
+      .link{font-size:11px;color:#999;word-break:break-all;margin-top:16px}
+    </style></head><body>
+      <h2>แบบสอบถามวิจัย</h2>
+      <p style="font-size:18px;font-weight:700;color:#f59e0b">📍 ${province}</p>
+      <p>โซลาร์รูฟท็อป — มหาวิทยาลัยธนบุรี</p>
+      <div class="qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(link)}" width="300" height="300"/></div>
+      <p>สแกน QR Code เพื่อทำแบบสอบถาม</p>
+      <p class="link">${link}</p>
+      <script>setTimeout(()=>window.print(),600)</script>
+    </body></html>`);
+    w.document.close();
   };
 
   // --- Export helpers ---
