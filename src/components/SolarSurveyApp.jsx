@@ -324,6 +324,7 @@ function calcSD(arr) {
 
 function PDPAConsent({ onAccept }) {
   return (
+    <>
     <div style={{
       minHeight: "100vh",
       display: "flex",
