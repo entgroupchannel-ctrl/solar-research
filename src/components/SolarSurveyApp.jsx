@@ -291,9 +291,9 @@ const TOTAL_QUESTIONS = PERSONAL_QUESTIONS.length + TOTAL_LIKERT + 1; // +1 for 
 function getSourceFromURL() {
   if (typeof window !== "undefined") {
     const params = new URLSearchParams(window.location.search);
-    return params.get("src") || "src10";
+    return params.get("src") || "";
   }
-  return "src10";
+  return "";
 }
 
 function generateUID() {
@@ -1023,7 +1023,7 @@ function AdminDashboard({ responses, onBack }) {
           ))}
         </div>
 
-        {/* Source Filter - regions only */}
+        {/* Source Filter - only show regions that have responses */}
         <div style={{ marginBottom: 24, display: "flex", flexWrap: "wrap", gap: 8 }}>
           <button onClick={() => setSelectedSource("all")} style={{
             padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer",
@@ -1032,6 +1032,7 @@ function AdminDashboard({ responses, onBack }) {
           }}>ทั้งหมด ({responses.length})</button>
           {Object.entries(REGION_PROVINCES).map(([key, region]) => {
             const count = responses.filter(r => r.source === key).length;
+            if (count === 0) return null;
             return (
               <button key={key} onClick={() => setSelectedSource(key)} style={{
                 padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer",
