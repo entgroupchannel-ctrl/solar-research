@@ -1220,7 +1220,7 @@ OUTPUT:
           return (
             <div style={chartCardStyle}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
-                <h2 style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: 0 }}>📊 Cross-Tabulation</h2>
+                <h2 style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: 0, display: "flex", alignItems: "center", gap: 8 }}><Table2 size={18} /> Cross-Tabulation</h2>
                 <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
                   <label style={{ fontSize: 13, color: "#64748b" }}>
                     แถว:
