@@ -1421,7 +1421,7 @@ export default function SolarSurveyApp() {
         fontSize: 12, borderBottom: "1px solid rgba(255,255,255,0.05)",
       }}>
         <span style={{ color: "#94a3b8" }}>
-          📍 {SOURCES[source] || "Direct"}
+          📍 {regionInfo ? regionInfo.name : (SOURCES[source] || "Direct")}
         </span>
         <span style={{ color: "#f59e0b", fontWeight: 700, fontFamily: "monospace" }}>
           ⏱ {formatTime(timer)}
