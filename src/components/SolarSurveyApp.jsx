@@ -603,7 +603,7 @@ function ProgressBar({ current, total }) {
             disabled={fontIdx === FONT_SIZES.length - 1}
             style={{
               width: 28, height: 28, borderRadius: 6, border: "none", cursor: fontIdx === FONT_SIZES.length - 1 ? "default" : "pointer",
-              background: "rgba(255,255,255,0.08)", color: "#94a3b8",
+              background: theme === "white" ? "rgba(0,0,0,0.06)" : "rgba(255,255,255,0.08)", color: theme === "white" ? "#475569" : "#94a3b8",
               display: "flex", alignItems: "center", justifyContent: "center",
               opacity: fontIdx === FONT_SIZES.length - 1 ? 0.3 : 1, transition: "all 0.2s", fontSize: 13, fontWeight: 700,
             }}
