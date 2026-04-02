@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import logoTRU from "@/assets/logo-tru.png";
 import logoUThon from "@/assets/logo-u-thon.png";
 import {
@@ -1021,7 +1022,9 @@ export default function SolarSurveyApp() {
     return missing;
   };
 
-  const handleSubmit = () => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
     const missing = validate();
     if (missing.length > 0) {
       setMissingFields(missing);
@@ -1029,23 +1032,31 @@ export default function SolarSurveyApp() {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    const response = {
-      id: uid,
-      source,
-      sourceName: SOURCES[source] || source,
-      timestamp: new Date().toLocaleString("th-TH"),
-      timeTaken: timer,
-      personal,
-      likert,
-      suggestion,
-      version: SURVEY_VERSION,
-    };
-    const newResponses = [...responses, response];
-    setResponses(newResponses);
-    try { sessionStorage.setItem("survey_responses", JSON.stringify(newResponses)); } catch(e) {}
-    try { sessionStorage.removeItem("survey_progress_" + uid); } catch(e) {}
-    setSubmitted(true);
-    setPage("thanks");
+    setSubmitting(true);
+    try {
+      const { error } = await supabase.from("survey_responses").insert({
+        uid,
+        source_code: source,
+        personal_data: personal,
+        likert_data: likert,
+        suggestion: suggestion || "",
+        time_taken: timer,
+        survey_version: SURVEY_VERSION,
+      });
+      if (error) {
+        console.error("Submit error:", error);
+        alert("เกิดข้อผิดพลาดในการบันทึก กรุณาลองอีกครั้ง");
+        setSubmitting(false);
+        return;
+      }
+      try { sessionStorage.removeItem("survey_progress_" + uid); } catch(e) {}
+      setSubmitted(true);
+      setPage("thanks");
+    } catch (err) {
+      console.error("Submit error:", err);
+      alert("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองอีกครั้ง");
+    }
+    setSubmitting(false);
   };
 
   // Keyboard shortcut for admin
@@ -1265,18 +1276,21 @@ export default function SolarSurveyApp() {
           </div>
           <button
             onClick={handleSubmit}
+            disabled={submitting}
             style={{
               padding: "16px 48px", border: "none", borderRadius: 14,
-              background: "linear-gradient(135deg, #f59e0b, #f97316)",
-              color: "white", fontSize: 18, fontWeight: 700, cursor: "pointer",
+              background: submitting ? "#64748b" : "linear-gradient(135deg, #f59e0b, #f97316)",
+              color: "white", fontSize: 18, fontWeight: 700,
+              cursor: submitting ? "not-allowed" : "pointer",
               boxShadow: "0 4px 20px rgba(249,115,22,0.4)",
               transition: "transform 0.15s, box-shadow 0.15s",
               width: "100%", maxWidth: 400,
+              opacity: submitting ? 0.7 : 1,
             }}
-            onMouseOver={e => { e.target.style.transform = "translateY(-2px)"; e.target.style.boxShadow = "0 8px 30px rgba(249,115,22,0.5)"; }}
+            onMouseOver={e => { if (!submitting) { e.target.style.transform = "translateY(-2px)"; e.target.style.boxShadow = "0 8px 30px rgba(249,115,22,0.5)"; } }}
             onMouseOut={e => { e.target.style.transform = ""; e.target.style.boxShadow = "0 4px 20px rgba(249,115,22,0.4)"; }}
           >
-            ส่งแบบสอบถาม
+            {submitting ? "กำลังบันทึก..." : "ส่งแบบสอบถาม"}
           </button>
           <p style={{ fontSize: 11, color: "#64748b", marginTop: 12 }}>
             กด Ctrl+Shift+A เพื่อเข้าหน้า Admin Dashboard
