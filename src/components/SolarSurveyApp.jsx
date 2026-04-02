@@ -850,7 +850,7 @@ function ThankYou({ responseId, timeTaken }) {
             rel="noopener noreferrer"
             style={{ fontSize: 13, color: "#f59e0b", textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}
           >
-            🎓 หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี →
+            <GraduationCap size={14} style={{ marginRight: 4 }} /> หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี →
           </a>
         </div>
       </div>
