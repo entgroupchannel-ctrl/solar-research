@@ -980,7 +980,88 @@ function AdminDashboard({ responses, onBack }) {
 // ============================================================
 // Main App
 // ============================================================
+// Speech-to-Text Button using Web Speech API
+// ============================================================
+function SpeechToTextButton({ onResult }) {
+  const [listening, setListening] = useState(false);
+  const [supported, setSupported] = useState(true);
+  const recognitionRef = useRef(null);
 
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setSupported(false);
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "th-TH";
+    recognition.continuous = true;
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map(r => r[0].transcript)
+        .join("");
+      if (transcript.trim()) onResult(transcript.trim());
+    };
+    recognition.onerror = () => setListening(false);
+    recognition.onend = () => setListening(false);
+    recognitionRef.current = recognition;
+
+    return () => { try { recognition.stop(); } catch(e) {} };
+  }, []);
+
+  if (!supported) return null;
+
+  const toggle = () => {
+    if (listening) {
+      recognitionRef.current?.stop();
+      setListening(false);
+    } else {
+      try { recognitionRef.current?.start(); setListening(true); } catch(e) {}
+    }
+  };
+
+  return (
+    <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 10 }}>
+      <button
+        type="button"
+        onClick={toggle}
+        style={{
+          display: "flex", alignItems: "center", gap: 8,
+          padding: "10px 18px", borderRadius: 10, border: "none",
+          background: listening
+            ? "linear-gradient(135deg, #ef4444, #dc2626)"
+            : "linear-gradient(135deg, #6366f1, #4f46e5)",
+          color: "#fff", fontWeight: 600, fontSize: 14,
+          cursor: "pointer", fontFamily: "inherit",
+          animation: listening ? "pulse-mic 1.5s infinite" : "none",
+        }}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+        {listening ? "กำลังฟัง... กดเพื่อหยุด" : "กดเพื่อพูดข้อเสนอแนะ"}
+      </button>
+      {listening && (
+        <span style={{ fontSize: 13, color: "#f87171", fontWeight: 500 }}>
+          ● กำลังบันทึกเสียง
+        </span>
+      )}
+      <style>{`
+        @keyframes pulse-mic {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+          50% { box-shadow: 0 0 0 12px rgba(239,68,68,0); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+// ============================================================
 export default function SolarSurveyApp() {
   const [page, setPage] = useState("pdpa"); // pdpa | survey | thanks | admin
   const [source] = useState(getSourceFromURL);
@@ -1321,7 +1402,7 @@ export default function SolarSurveyApp() {
               value={suggestion}
               onChange={e => setSuggestion(e.target.value)}
               rows={4}
-              placeholder="พิมพ์ข้อเสนอแนะของท่านที่นี่..."
+              placeholder="พิมพ์ข้อเสนอแนะของท่านที่นี่ หรือกดปุ่มไมค์เพื่อพูด..."
               style={{
                 width: "100%", padding: 16, borderRadius: 12,
                 border: "2px solid rgba(255,255,255,0.1)",
@@ -1333,6 +1414,7 @@ export default function SolarSurveyApp() {
               onFocus={e => e.target.style.borderColor = "#ec4899"}
               onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.1)"}
             />
+            <SpeechToTextButton onResult={(text) => setSuggestion(prev => prev ? prev + " " + text : text)} />
           </div>
         </div>
 
