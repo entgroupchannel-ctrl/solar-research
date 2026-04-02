@@ -1038,7 +1038,7 @@ function AdminDashboard({ responses, onBack }) {
               background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 20,
               border: "1px solid rgba(255,255,255,0.08)",
             }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>{card.icon}</div>
+              <div style={{ marginBottom: 8 }}>{card.icon}</div>
               <div style={{ fontSize: 24, fontWeight: 700, color: "#f59e0b" }}>{card.value}</div>
               <div style={{ fontSize: 12, color: "#94a3b8" }}>{card.label}</div>
             </div>
