@@ -533,9 +533,12 @@ function ScreeningQuestion({ onPass, onFail }) {
 function ProgressBar({ current, total }) {
   const pct = Math.round((current / total) * 100);
 
-  // Accessibility state
-  const [isDark, setIsDark] = useState(() => {
-    try { return localStorage.getItem("theme") === "dark"; } catch { return false; }
+  // Theme: "default" (dark gradient), "dark", "white"
+  const THEMES = ["default", "dark", "white"];
+  const THEME_ICONS = { default: "🌊", dark: "🌙", white: "☀️" };
+  const THEME_LABELS = { default: "ปกติ", dark: "มืด", white: "สว่าง" };
+  const [theme, setTheme] = useState(() => {
+    try { return localStorage.getItem("theme") || "default"; } catch { return "default"; }
   });
   const [fontIdx, setFontIdx] = useState(() => {
     try {
@@ -545,10 +548,16 @@ function ProgressBar({ current, total }) {
   });
   const FONT_SIZES = [14, 15, 16, 18, 20];
 
+  const cycleTheme = () => {
+    const idx = THEMES.indexOf(theme);
+    const next = THEMES[(idx + 1) % THEMES.length];
+    setTheme(next);
+  };
+
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  }, [isDark]);
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     document.documentElement.style.fontSize = FONT_SIZES[fontIdx] + "px";
