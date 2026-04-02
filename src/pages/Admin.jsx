@@ -1762,7 +1762,7 @@ OUTPUT:
                 <button onClick={() => { exportMplusBoth(responses); setShowPreview(false); }} style={{
                   padding: "10px 24px", borderRadius: 10, border: "1px solid rgba(168,85,247,0.4)",
                   background: "rgba(168,85,247,0.1)", color: "#a855f7", cursor: "pointer", fontSize: 13, fontWeight: 600,
-                }}>📥 Mplus (CFA + SEM)</button>
+                }}><Download size={14} style={{ marginRight: 4 }} /> Mplus (CFA + SEM)</button>
               </div>
             </div>
           </div>
