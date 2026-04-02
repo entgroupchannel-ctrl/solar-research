@@ -488,6 +488,7 @@ function ThankYou({ responseId, timeTaken }) {
     </div>
   );
 }
+const SECTION_COLORS_CONST = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981"];
 
 // Admin Dashboard
 function AdminDashboard({ responses, onBack }) {
