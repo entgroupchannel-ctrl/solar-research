@@ -1529,6 +1529,39 @@ OUTPUT:
                       )}
                     </ResponsiveContainer>
 
+                    {/* Mode & Median summary */}
+                    {(() => {
+                      const sorted = [...chart.data].sort((a, b) => b.value - a.value);
+                      const modeVal = sorted[0];
+                      const modeCount = sorted.filter(d => d.value === modeVal.value);
+                      // Median: find the middle value in the ordered list of all responses
+                      let medianName = "-";
+                      if (total > 0) {
+                        const midPoint = Math.ceil(total / 2);
+                        let cumul = 0;
+                        for (const d of chart.data) {
+                          cumul += d.value;
+                          if (cumul >= midPoint) { medianName = d.name; break; }
+                        }
+                      }
+                      return (
+                        <div style={{ display: "flex", gap: 12, marginTop: 16, marginBottom: 8 }}>
+                          <div style={{ flex: 1, background: "#f0fdf4", borderRadius: 10, padding: "12px 16px", border: "1px solid #bbf7d0" }}>
+                            <div style={{ fontSize: 11, color: "#64748b", fontWeight: 600, marginBottom: 4 }}>Mode (ฐานนิยม)</div>
+                            <div style={{ fontSize: 15, fontWeight: 700, color: "#059669" }}>
+                              {modeCount.length > 1 ? modeCount.map(m => m.name).join(", ") : modeVal.name}
+                            </div>
+                            <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>{modeVal.value} คน ({total > 0 ? ((modeVal.value / total) * 100).toFixed(1) : 0}%)</div>
+                          </div>
+                          <div style={{ flex: 1, background: "#eff6ff", borderRadius: 10, padding: "12px 16px", border: "1px solid #bfdbfe" }}>
+                            <div style={{ fontSize: 11, color: "#64748b", fontWeight: 600, marginBottom: 4 }}>Median (มัธยฐาน)</div>
+                            <div style={{ fontSize: 15, fontWeight: 700, color: "#2563eb" }}>{medianName}</div>
+                            <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>ค่ากลางลำดับที่ {Math.ceil(total / 2)} จาก {total}</div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
                     {/* Data table below chart */}
                     <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 16, fontSize: 13 }}>
                       <thead>
