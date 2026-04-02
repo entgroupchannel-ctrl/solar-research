@@ -822,13 +822,13 @@ function ThankYou({ responseId, timeTaken }) {
           border: "1px solid #334155",
         }}>
           <div>
-            <div style={{ fontSize: 12, color: "#64748b" }}>รหัสอ้างอิง</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a", fontFamily: "monospace" }}>{responseId}</div>
+            <div style={{ fontSize: 12, color: "#94a3b8" }}>รหัสอ้างอิง</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0", fontFamily: "monospace" }}>{responseId}</div>
           </div>
-          <div style={{ width: 1, background: "#e2e8f0" }} />
+          <div style={{ width: 1, background: "#334155" }} />
           <div>
-            <div style={{ fontSize: 12, color: "#64748b" }}>เวลาที่ใช้</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#0f172a" }}>{formatTime(timeTaken)}</div>
+            <div style={{ fontSize: 12, color: "#94a3b8" }}>เวลาที่ใช้</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0" }}>{formatTime(timeTaken)}</div>
           </div>
         </div>
 
