@@ -1724,6 +1724,21 @@ export default function SolarSurveyApp() {
           <p style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.7, margin: 0, maxWidth: 540, marginLeft: "auto", marginRight: "auto", fontWeight: 400, fontStyle: "italic" }}>
             The Influence of Brand Trust as a Mediating Variable on the Decision to Install Solar Rooftop Systems in Homes of Consumers in Thailand
           </p>
+          {/* Link to QR Codes page */}
+          <a
+            href="/qr"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              marginTop: 12, padding: "8px 20px", borderRadius: 10,
+              background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.25)",
+              color: "#10b981", fontSize: 13, fontWeight: 600, textDecoration: "none",
+              transition: "all 0.2s",
+            }}
+            onMouseOver={e => { e.currentTarget.style.background = "rgba(16,185,129,0.25)"; }}
+            onMouseOut={e => { e.currentTarget.style.background = "rgba(16,185,129,0.12)"; }}
+          >
+            📱 ดู QR Code แยกตามภาค
+          </a>
         </div>
 
         {/* Part 1: Personal */}
