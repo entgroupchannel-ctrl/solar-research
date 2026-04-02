@@ -131,7 +131,7 @@ const QRCodesPage = () => {
                       flex: 1, padding: "8px 0", borderRadius: 10, border: "none",
                       background: region.color, color: "#fff", cursor: "pointer", fontSize: 12, fontWeight: 600,
                     }}
-                  >🖨️ พิมพ์</button>
+                  ><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Printer size={14} /> พิมพ์</span></button>
                 </div>
               </div>
             );
