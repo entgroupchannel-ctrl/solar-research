@@ -837,29 +837,19 @@ OUTPUT:
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b" }}>รายงานผลแบบสอบถาม</p>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <button onClick={() => exportCSV(responses)} style={{
+            <button onClick={() => setShowPreview(true)} style={{
               padding: "8px 20px", border: "1px solid rgba(16,185,129,0.4)",
-              borderRadius: 8, background: "rgba(16,185,129,0.1)", color: "#10b981",
-              cursor: "pointer", fontSize: 13, fontWeight: 600,
-            }}>📥 Export CSV (ทั้งหมด)</button>
-            <button onClick={() => exportExcel(responses)} style={{
-              padding: "8px 20px", border: "1px solid rgba(59,130,246,0.4)",
-              borderRadius: 8, background: "rgba(59,130,246,0.1)", color: "#3b82f6",
-              cursor: "pointer", fontSize: 13, fontWeight: 600,
-            }}>📥 Export Excel (ทั้งหมด)</button>
-            <button onClick={() => exportMplusBoth(responses)} style={{
-              padding: "8px 20px", border: "1px solid rgba(168,85,247,0.4)",
-              borderRadius: 8, background: "rgba(168,85,247,0.1)", color: "#a855f7",
-              cursor: "pointer", fontSize: 13, fontWeight: 600,
-            }}>📥 Mplus (.dat + CFA + SEM)</button>
+              borderRadius: 8, background: "linear-gradient(135deg, #059669, #10b981)", color: "#fff",
+              cursor: "pointer", fontSize: 13, fontWeight: 700,
+            }}>👁 Preview & Export ({responses.length} รายการ)</button>
             <button onClick={loadData} style={{
               padding: "8px 20px", border: "1px solid #d1d5db",
-              borderRadius: 8, background: "transparent", color: "#1e293b",
+              borderRadius: 8, background: "#fff", color: "#1e293b",
               cursor: "pointer", fontSize: 13,
             }}>🔄 รีเฟรช</button>
             <button onClick={() => navigate("/")} style={{
               padding: "8px 20px", border: "1px solid #d1d5db",
-              borderRadius: 8, background: "transparent", color: "#1e293b",
+              borderRadius: 8, background: "#fff", color: "#1e293b",
               cursor: "pointer", fontSize: 13,
             }}>← กลับ</button>
           </div>
