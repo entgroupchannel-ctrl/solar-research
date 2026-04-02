@@ -613,19 +613,20 @@ function ProgressBar({ current, total }) {
           {/* Divider */}
           <div style={{ width: 1, height: 16, background: theme === "white" ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)", margin: "0 4px" }} />
 
-          {/* Dark/Light toggle */}
+          {/* Theme cycle button */}
           <button
-            onClick={() => setIsDark(!isDark)}
+            onClick={cycleTheme}
             style={{
-              width: 28, height: 28, borderRadius: 6, border: "none", cursor: "pointer",
-              background: isDark ? "rgba(250,204,21,0.15)" : "rgba(255,255,255,0.08)",
-              color: isDark ? "#facc15" : "#94a3b8",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              transition: "all 0.2s", fontSize: 14,
+              height: 28, borderRadius: 6, border: "none", cursor: "pointer",
+              background: theme === "white" ? "rgba(5,150,105,0.1)" : theme === "dark" ? "rgba(250,204,21,0.15)" : "rgba(255,255,255,0.08)",
+              color: theme === "white" ? "#059669" : theme === "dark" ? "#facc15" : "#94a3b8",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 4,
+              transition: "all 0.2s", fontSize: 12, fontWeight: 600, padding: "0 10px",
             }}
-            title={isDark ? "เปลี่ยนเป็น Light Mode" : "เปลี่ยนเป็น Dark Mode"}
+            title={`เปลี่ยนโหมด: ${THEME_LABELS[THEMES[(THEMES.indexOf(theme) + 1) % THEMES.length]]}`}
           >
-            {isDark ? "☀️" : "🌙"}
+            {THEME_ICONS[theme]}
+            <span style={{ fontSize: 10 }}>{THEME_LABELS[theme]}</span>
           </button>
         </div>
       </div>
