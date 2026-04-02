@@ -1429,13 +1429,13 @@ OUTPUT:
                         {/* Personal data */}
                         <div style={{ marginTop: 12, marginBottom: 16 }}>
                           <h4 style={{ fontSize: 13, fontWeight: 700, color: "#3b82f6", margin: "0 0 8px" }}>ข้อมูลทั่วไป</h4>
-                          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 6 }}>
-                            {PERSONAL_QUESTIONS.map(q => (
-                              <div key={q.id} style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "#f8fafc", borderRadius: 8, fontSize: 12 }}>
-                                <span style={{ color: "#64748b" }}>{q.text}</span>
-                                <span style={{ color: "#1e293b", fontWeight: 600 }}>{personal[q.id] || "-"}</span>
-                              </div>
-                            ))}
+                           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 0 }}>
+                             {PERSONAL_QUESTIONS.map((q, qi) => (
+                               <div key={q.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 10px", background: qi % 2 === 0 ? "#f8fafc" : "#fff", borderBottom: "1px solid #f1f5f9", fontSize: 12 }}>
+                                 <span style={{ color: "#64748b" }}>{q.text}</span>
+                                 <span style={{ color: "#1e293b", fontWeight: 600 }}>{personal[q.id] || "-"}</span>
+                               </div>
+                             ))}
                             {personal.province && (
                               <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "#f8fafc", borderRadius: 8, fontSize: 12 }}>
                                 <span style={{ color: "#64748b" }}>จังหวัด</span>
@@ -1455,16 +1455,17 @@ OUTPUT:
                           <div key={sec.id} style={{ marginBottom: 12 }}>
                             <h4 style={{ fontSize: 13, fontWeight: 700, color: SECTION_COLORS[si], margin: "0 0 6px" }}>{sec.title}</h4>
                             {sec.subsections.map(sub => (
-                              <div key={sub.id} style={{ marginBottom: 8 }}>
-                                <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", marginBottom: 4, paddingLeft: 8 }}>{sub.title}</div>
-                                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                                  {sub.items.map(item => {
-                                    const val = likert[item.id];
-                                    return (
-                                      <div key={item.id} style={{
-                                        display: "flex", alignItems: "center", gap: 8, padding: "4px 10px",
-                                        background: "#fafafa", borderRadius: 6, fontSize: 12,
-                                      }}>
+                               <div key={sub.id} style={{ marginBottom: 8 }}>
+                                 <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", marginBottom: 4, paddingLeft: 8, borderBottom: "1px solid #e2e8f0", paddingBottom: 4 }}>{sub.title}</div>
+                                 <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                                   {sub.items.map((item, itemIdx) => {
+                                     const val = likert[item.id];
+                                     return (
+                                       <div key={item.id} style={{
+                                         display: "flex", alignItems: "center", gap: 8, padding: "6px 10px",
+                                         background: itemIdx % 2 === 0 ? "#fafafa" : "#fff",
+                                         borderBottom: "1px solid #f1f5f9", fontSize: 12,
+                                       }}>
                                         <span style={{ flex: 1, color: "#334155", lineHeight: 1.4 }}>{item.text}</span>
                                         <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
                                           {[1,2,3,4,5].map(n => (
