@@ -1411,7 +1411,7 @@ export default function SolarSurveyApp() {
     }}>
       
 
-      <ProgressBar current={answeredTotal} total={TOTAL_QUESTIONS} />
+      <ProgressBar current={answeredTotal} total={totalRequired} />
 
       {/* Timer & Source Badge */}
       <div style={{
