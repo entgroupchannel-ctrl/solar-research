@@ -44,8 +44,8 @@ const QRCodesPage = () => {
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <div style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center",
-            width: 64, height: 64, borderRadius: 16, background: "#ecfdf5", marginBottom: 16, fontSize: 28,
-          }}>☀️</div>
+            width: 64, height: 64, borderRadius: 16, background: "#ecfdf5", marginBottom: 16,
+          }}><Sun size={32} color="#059669" /></div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1e293b", margin: "0 0 8px" }}>
             แบบสอบถามวิจัย Solar Rooftop
           </h1>
