@@ -1080,7 +1080,7 @@ function AdminDashboard({ responses, onBack }) {
             }}
               onMouseOver={e => e.target.style.background = "rgba(245,158,11,0.2)"}
               onMouseOut={e => e.target.style.background = "rgba(255,255,255,0.05)"}
-            >{btn.label}</button>
+            >{btn.icon} <span style={{ marginLeft: 4 }}>{btn.label}</span></button>
           ))}
         </div>
 
