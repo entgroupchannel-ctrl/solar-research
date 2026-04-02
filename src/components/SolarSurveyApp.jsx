@@ -1219,7 +1219,7 @@ export default function SolarSurveyApp() {
         ))}
 
         {/* Part 4: Suggestion */}
-        <div style={{
+        <div ref={el => sectionRefs.current["suggestion"] = el} style={{
           background: "rgba(255,255,255,0.04)", borderRadius: 16,
           border: "1px solid rgba(255,255,255,0.08)", marginBottom: 32, overflow: "hidden",
         }}>
