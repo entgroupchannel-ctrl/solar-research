@@ -523,7 +523,11 @@ function LikertRow({ item, value, onChange, index, sectionColor }) {
     setTimeout(() => {
       const next = ref.current?.nextElementSibling;
       if (next) {
-        next.scrollIntoView({ behavior: "smooth", block: "center" });
+        const rect = next.getBoundingClientRect();
+        const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+        if (!isVisible) {
+          next.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
       }
     }, 200);
   };
