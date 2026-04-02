@@ -13,6 +13,8 @@ import {
   BarChartHorizontal, Radar as RadarIcon, Copy, Printer, Download,
   Table2, ArrowLeft, FlaskConical, Rocket, Loader2, Plus, MapPin,
   CircleCheck, CircleX, Trash2, ToggleLeft, ToggleRight,
+  Inbox, Clock, Mail, MessageSquare, AlertTriangle, CheckCircle2,
+  Pause, Flame, Timer, ChevronUp,
 } from "lucide-react";
 
 const PERSONAL_QUESTIONS = [
