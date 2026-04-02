@@ -565,7 +565,7 @@ function ProgressBar({ current, total }) {
   }, [fontIdx]);
 
   return (
-    <div style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(15,32,39,0.95)", backdropFilter: "blur(10px)" }}>
+    <div style={{ position: "sticky", top: 0, zIndex: 100, background: theme === "white" ? "rgba(255,255,255,0.95)" : "rgba(15,32,39,0.95)", backdropFilter: "blur(10px)", transition: "background 0.3s" }}>
       {/* Top row: progress label + accessibility controls */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 16px 4px" }}>
         {/* Left: progress info */}
