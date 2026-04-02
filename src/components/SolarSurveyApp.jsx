@@ -1444,7 +1444,7 @@ export default function SolarSurveyApp() {
         setSubmitting(false);
         return;
       }
-      try { sessionStorage.removeItem("survey_progress_" + uid); } catch(e) {}
+      try { localStorage.removeItem("survey_draft"); } catch(e) {}
       setSubmitted(true);
       setPage("thanks");
     } catch (err) {
