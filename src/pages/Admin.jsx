@@ -340,6 +340,8 @@ const AdminPage = () => {
   const [crossRowVar, setCrossRowVar] = useState("housing");
   const [crossColVar, setCrossColVar] = useState("electricity_bill");
   const [demoChartType, setDemoChartType] = useState("pie");
+  const [demoViewMode, setDemoViewMode] = useState("grid"); // "grid" or "single"
+  const [selectedDemoIdx, setSelectedDemoIdx] = useState(0);
   const [loading, setLoading] = useState(true);
   const [newSourceName, setNewSourceName] = useState("");
   const [newSourceRegion, setNewSourceRegion] = useState("");
@@ -1428,72 +1430,202 @@ OUTPUT:
         {/* DEMOGRAPHICS TAB */}
         {activeTab === "demographics" && filtered.length > 0 && (
           <div>
-            {/* Chart type selector */}
-            <div style={{ display: "flex", gap: 6, marginBottom: 20, background: "#f0fdf4", padding: 6, borderRadius: 12, width: "fit-content" }}>
-              {[
-                 { key: "pie", icon: <PieChartIcon size={14} />, label: "Donut" },
-                 { key: "bar", icon: <BarChart3 size={14} />, label: "Bar" },
-                 { key: "hbar", icon: <BarChartHorizontal size={14} />, label: "Horizontal" },
-                 { key: "radar", icon: <RadarIcon size={14} />, label: "Radar" },
-              ].map(t => (
-                <button key={t.key} onClick={() => setDemoChartType(t.key)}
-                  style={{
-                    padding: "8px 16px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600,
-                    background: demoChartType === t.key ? "#059669" : "transparent",
-                    color: demoChartType === t.key ? "#fff" : "#64748b",
-                    transition: "all 0.2s",
-                  }}>
-                  {t.icon} {t.label}
+            {/* View mode + Chart type selector */}
+            <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap", alignItems: "center" }}>
+              <div style={{ display: "flex", gap: 4, background: "#f0fdf4", padding: 4, borderRadius: 10 }}>
+                <button onClick={() => setDemoViewMode("grid")}
+                  style={{ padding: "6px 14px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600,
+                    background: demoViewMode === "grid" ? "#059669" : "transparent", color: demoViewMode === "grid" ? "#fff" : "#64748b" }}>
+                  แสดงทั้งหมด
                 </button>
-              ))}
+                <button onClick={() => setDemoViewMode("single")}
+                  style={{ padding: "6px 14px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600,
+                    background: demoViewMode === "single" ? "#059669" : "transparent", color: demoViewMode === "single" ? "#fff" : "#64748b" }}>
+                  แยกรายตัว
+                </button>
+              </div>
+              <div style={{ display: "flex", gap: 4, background: "#f0fdf4", padding: 4, borderRadius: 10 }}>
+                {[
+                   { key: "pie", icon: <PieChartIcon size={14} />, label: "Donut" },
+                   { key: "bar", icon: <BarChart3 size={14} />, label: "Bar" },
+                   { key: "hbar", icon: <BarChartHorizontal size={14} />, label: "Horizontal" },
+                   { key: "radar", icon: <RadarIcon size={14} />, label: "Radar" },
+                ].map(t => (
+                  <button key={t.key} onClick={() => setDemoChartType(t.key)}
+                    style={{
+                      padding: "6px 14px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600,
+                      background: demoChartType === t.key ? "#059669" : "transparent",
+                      color: demoChartType === t.key ? "#fff" : "#64748b",
+                      transition: "all 0.2s", display: "flex", alignItems: "center", gap: 4,
+                    }}>
+                    {t.icon} {t.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 20 }}>
-              {personalCharts.map((chart, ci) => (
-                <div key={ci} style={chartCardStyle}>
-                  <h3 style={{ fontSize: 14, fontWeight: 700, color: "#1e293b", margin: "0 0 16px" }}>{chart.question}</h3>
-                  <ResponsiveContainer width="100%" height={250}>
-                    {demoChartType === "pie" ? (
-                      <PieChart>
-                        <Pie data={chart.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={40}
-                          label={({ name, percent }) => percent > 0 ? `${name} ${(percent * 100).toFixed(0)}%` : ""}>
-                          {chart.data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-                        </Pie>
-                        <Tooltip content={<CustomTooltip />} />
-                      </PieChart>
-                    ) : demoChartType === "bar" ? (
-                      <BarChart data={chart.data} margin={{ top: 5, right: 10, left: 0, bottom: 40 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                        <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#64748b" }} angle={-25} textAnchor="end" interval={0} />
-                        <YAxis tick={{ fontSize: 11, fill: "#64748b" }} allowDecimals={false} />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Bar dataKey="value" name="จำนวน" radius={[6, 6, 0, 0]}>
-                          {chart.data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-                        </Bar>
-                      </BarChart>
-                    ) : demoChartType === "hbar" ? (
-                      <BarChart data={chart.data} layout="vertical" margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                        <XAxis type="number" tick={{ fontSize: 11, fill: "#64748b" }} allowDecimals={false} />
-                        <YAxis dataKey="name" type="category" tick={{ fontSize: 11, fill: "#64748b" }} width={120} />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Bar dataKey="value" name="จำนวน" radius={[0, 6, 6, 0]}>
-                          {chart.data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
-                        </Bar>
-                      </BarChart>
-                    ) : (
-                      <RadarChart cx="50%" cy="50%" outerRadius={80} data={chart.data}>
-                        <PolarGrid stroke="#e2e8f0" />
-                        <PolarAngleAxis dataKey="name" tick={{ fontSize: 10, fill: "#64748b" }} />
-                        <PolarRadiusAxis tick={{ fontSize: 10, fill: "#94a3b8" }} />
-                        <Radar dataKey="value" name="จำนวน" stroke="#059669" fill="#059669" fillOpacity={0.3} />
-                        <Tooltip content={<CustomTooltip />} />
-                      </RadarChart>
-                    )}
-                  </ResponsiveContainer>
+            {/* Single view mode */}
+            {demoViewMode === "single" && (() => {
+              const chart = personalCharts[selectedDemoIdx];
+              if (!chart) return null;
+              const total = chart.data.reduce((s, d) => s + d.value, 0);
+              return (
+                <div>
+                  {/* Question selector pills */}
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 20 }}>
+                    {PERSONAL_QUESTIONS.map((q, qi) => (
+                      <button key={q.id} onClick={() => setSelectedDemoIdx(qi)}
+                        style={{
+                          padding: "6px 14px", borderRadius: 20, border: selectedDemoIdx === qi ? "2px solid #059669" : "1px solid #e2e8f0",
+                          background: selectedDemoIdx === qi ? "#ecfdf5" : "#fff", color: selectedDemoIdx === qi ? "#059669" : "#64748b",
+                          fontSize: 12, fontWeight: selectedDemoIdx === qi ? 700 : 500, cursor: "pointer", transition: "all 0.2s",
+                        }}>
+                        {q.text}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ ...chartCardStyle, maxWidth: 700 }}>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: "0 0 4px" }}>{chart.question}</h3>
+                    <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 20px" }}>ผู้ตอบทั้งหมด {total} คน</p>
+                    <ResponsiveContainer width="100%" height={350}>
+                      {demoChartType === "pie" ? (
+                        <PieChart>
+                          <Pie data={chart.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} innerRadius={60}
+                            label={({ name, percent }) => percent > 0 ? `${name} ${(percent * 100).toFixed(0)}%` : ""}>
+                            {chart.data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                          </Pie>
+                          <Tooltip content={<CustomTooltip />} />
+                          <Legend />
+                        </PieChart>
+                      ) : demoChartType === "bar" ? (
+                        <BarChart data={chart.data} margin={{ top: 5, right: 10, left: 0, bottom: 50 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis dataKey="name" tick={{ fontSize: 12, fill: "#64748b" }} angle={-25} textAnchor="end" interval={0} />
+                          <YAxis tick={{ fontSize: 12, fill: "#64748b" }} allowDecimals={false} />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Bar dataKey="value" name="จำนวน" radius={[6, 6, 0, 0]}>
+                            {chart.data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                          </Bar>
+                        </BarChart>
+                      ) : demoChartType === "hbar" ? (
+                        <BarChart data={chart.data} layout="vertical" margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis type="number" tick={{ fontSize: 12, fill: "#64748b" }} allowDecimals={false} />
+                          <YAxis dataKey="name" type="category" tick={{ fontSize: 12, fill: "#64748b" }} width={160} />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Bar dataKey="value" name="จำนวน" radius={[0, 6, 6, 0]}>
+                            {chart.data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                          </Bar>
+                        </BarChart>
+                      ) : (
+                        <RadarChart cx="50%" cy="50%" outerRadius={120} data={chart.data}>
+                          <PolarGrid stroke="#e2e8f0" />
+                          <PolarAngleAxis dataKey="name" tick={{ fontSize: 11, fill: "#64748b" }} />
+                          <PolarRadiusAxis tick={{ fontSize: 10, fill: "#94a3b8" }} />
+                          <Radar dataKey="value" name="จำนวน" stroke="#059669" fill="#059669" fillOpacity={0.3} />
+                          <Tooltip content={<CustomTooltip />} />
+                        </RadarChart>
+                      )}
+                    </ResponsiveContainer>
+
+                    {/* Data table below chart */}
+                    <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 16, fontSize: 13 }}>
+                      <thead>
+                        <tr style={{ borderBottom: "2px solid #e2e8f0" }}>
+                          <th style={{ textAlign: "left", padding: "8px 12px", color: "#475569", fontWeight: 600 }}>ตัวเลือก</th>
+                          <th style={{ textAlign: "right", padding: "8px 12px", color: "#475569", fontWeight: 600 }}>จำนวน</th>
+                          <th style={{ textAlign: "right", padding: "8px 12px", color: "#475569", fontWeight: 600 }}>ร้อยละ</th>
+                          <th style={{ textAlign: "left", padding: "8px 12px", color: "#475569", fontWeight: 600, width: "40%" }}>สัดส่วน</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {chart.data.map((d, di) => (
+                          <tr key={di} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                            <td style={{ padding: "8px 12px", color: "#1e293b" }}>
+                              <span style={{ display: "inline-block", width: 10, height: 10, borderRadius: 2, background: PIE_COLORS[di % PIE_COLORS.length], marginRight: 8, verticalAlign: "middle" }} />
+                              {d.name}
+                            </td>
+                            <td style={{ textAlign: "right", padding: "8px 12px", fontWeight: 600, color: "#1e293b" }}>{d.value}</td>
+                            <td style={{ textAlign: "right", padding: "8px 12px", color: "#64748b" }}>{total > 0 ? ((d.value / total) * 100).toFixed(1) : 0}%</td>
+                            <td style={{ padding: "8px 12px" }}>
+                              <div style={{ background: "#f1f5f9", borderRadius: 4, height: 16, overflow: "hidden" }}>
+                                <div style={{ background: PIE_COLORS[di % PIE_COLORS.length], height: "100%", width: total > 0 ? `${(d.value / total) * 100}%` : "0%", borderRadius: 4, transition: "width 0.5s" }} />
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    {/* Prev/Next buttons */}
+                    <div style={{ display: "flex", justifyContent: "space-between", marginTop: 16 }}>
+                      <button onClick={() => setSelectedDemoIdx(Math.max(0, selectedDemoIdx - 1))}
+                        disabled={selectedDemoIdx === 0}
+                        style={{ padding: "8px 20px", borderRadius: 8, border: "1px solid #e2e8f0", background: "#fff", cursor: selectedDemoIdx === 0 ? "default" : "pointer", opacity: selectedDemoIdx === 0 ? 0.4 : 1, fontSize: 13, fontWeight: 600, color: "#475569" }}>
+                        ← ก่อนหน้า
+                      </button>
+                      <span style={{ fontSize: 12, color: "#94a3b8", alignSelf: "center" }}>{selectedDemoIdx + 1} / {PERSONAL_QUESTIONS.length}</span>
+                      <button onClick={() => setSelectedDemoIdx(Math.min(PERSONAL_QUESTIONS.length - 1, selectedDemoIdx + 1))}
+                        disabled={selectedDemoIdx === PERSONAL_QUESTIONS.length - 1}
+                        style={{ padding: "8px 20px", borderRadius: 8, border: "1px solid #e2e8f0", background: "#fff", cursor: selectedDemoIdx === PERSONAL_QUESTIONS.length - 1 ? "default" : "pointer", opacity: selectedDemoIdx === PERSONAL_QUESTIONS.length - 1 ? 0.4 : 1, fontSize: 13, fontWeight: 600, color: "#475569" }}>
+                        ถัดไป →
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
+              );
+            })()}
+
+            {/* Grid view mode (original) */}
+            {demoViewMode === "grid" && (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 20 }}>
+                {personalCharts.map((chart, ci) => (
+                  <div key={ci} style={{ ...chartCardStyle, cursor: "pointer" }} onClick={() => { setDemoViewMode("single"); setSelectedDemoIdx(ci); }}>
+                    <h3 style={{ fontSize: 14, fontWeight: 700, color: "#1e293b", margin: "0 0 16px" }}>{chart.question}</h3>
+                    <ResponsiveContainer width="100%" height={250}>
+                      {demoChartType === "pie" ? (
+                        <PieChart>
+                          <Pie data={chart.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={40}
+                            label={({ name, percent }) => percent > 0 ? `${name} ${(percent * 100).toFixed(0)}%` : ""}>
+                            {chart.data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                          </Pie>
+                          <Tooltip content={<CustomTooltip />} />
+                        </PieChart>
+                      ) : demoChartType === "bar" ? (
+                        <BarChart data={chart.data} margin={{ top: 5, right: 10, left: 0, bottom: 40 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#64748b" }} angle={-25} textAnchor="end" interval={0} />
+                          <YAxis tick={{ fontSize: 11, fill: "#64748b" }} allowDecimals={false} />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Bar dataKey="value" name="จำนวน" radius={[6, 6, 0, 0]}>
+                            {chart.data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                          </Bar>
+                        </BarChart>
+                      ) : demoChartType === "hbar" ? (
+                        <BarChart data={chart.data} layout="vertical" margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis type="number" tick={{ fontSize: 11, fill: "#64748b" }} allowDecimals={false} />
+                          <YAxis dataKey="name" type="category" tick={{ fontSize: 11, fill: "#64748b" }} width={120} />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Bar dataKey="value" name="จำนวน" radius={[0, 6, 6, 0]}>
+                            {chart.data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                          </Bar>
+                        </BarChart>
+                      ) : (
+                        <RadarChart cx="50%" cy="50%" outerRadius={80} data={chart.data}>
+                          <PolarGrid stroke="#e2e8f0" />
+                          <PolarAngleAxis dataKey="name" tick={{ fontSize: 10, fill: "#64748b" }} />
+                          <PolarRadiusAxis tick={{ fontSize: 10, fill: "#94a3b8" }} />
+                          <Radar dataKey="value" name="จำนวน" stroke="#059669" fill="#059669" fillOpacity={0.3} />
+                          <Tooltip content={<CustomTooltip />} />
+                        </RadarChart>
+                      )}
+                    </ResponsiveContainer>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
