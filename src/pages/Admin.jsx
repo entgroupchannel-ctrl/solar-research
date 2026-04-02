@@ -1391,124 +1391,169 @@ OUTPUT:
         {/* INDIVIDUAL RESPONSES TAB */}
         {activeTab === "individual" && filtered.length > 0 && (
           <div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#059669", marginBottom: 16 }}>
-              คำตอบรายบุคคล ({filtered.length} ราย)
-            </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {filtered.map((r, idx) => {
-                const isExpanded = expandedResponse === r.uid;
-                const personal = r.personal || r.personal_data || {};
-                const likert = r.likert || r.likert_data || {};
-                return (
-                  <div key={r.uid} style={{
-                    background: "#f8fafc", borderRadius: 12,
-                    border: isExpanded ? "1px solid #059669" : "1px solid #e2e8f0",
-                    overflow: "hidden",
-                  }}>
-                    {/* Row header - clickable */}
-                    <div
-                      onClick={() => setExpandedResponse(isExpanded ? null : r.uid)}
-                      style={{
-                        padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12,
-                        background: isExpanded ? "#f0fdf4" : "transparent",
-                      }}
-                    >
-                      <span style={{ fontSize: 13, color: "#64748b", minWidth: 30 }}>#{idx + 1}</span>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b", flex: 1 }}>
-                        {personal.gender || "-"} · {personal.age || "-"} · {personal.province || (SOURCES[r.source] || r.source)}
-                      </span>
-                      <span style={{ fontSize: 11, color: "#64748b" }}>{r.timestamp}</span>
-                      <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>
-                        ⏱ {formatTime(r.timeTaken)}
-                      </span>
-                      {r.want_results && <span style={{ fontSize: 11, color: "#10b981" }}>📧</span>}
-                      <span style={{ color: "#64748b", fontSize: 16, transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</span>
-                    </div>
+           <div>
+             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 12 }}>
+               <h2 style={{ fontSize: 18, fontWeight: 700, color: "#059669", margin: 0 }}>
+                 คำตอบรายบุคคล ({filtered.length} ราย)
+               </h2>
+               <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+                 <span style={{ color: "#64748b" }}>แสดง</span>
+                 {[20, 40, 60, 80, 100].map(n => (
+                   <button key={n} onClick={() => { setIndivPageSize(n); setIndivPage(1); }}
+                     style={{
+                       padding: "4px 10px", borderRadius: 6, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600,
+                       background: indivPageSize === n ? "#059669" : "#f1f5f9",
+                       color: indivPageSize === n ? "#fff" : "#64748b",
+                       transition: "all 0.2s",
+                     }}>{n}</button>
+                 ))}
+                 <span style={{ color: "#64748b" }}>รายการ/หน้า</span>
+               </div>
+             </div>
 
-                    {/* Expanded detail */}
-                    {isExpanded && (
-                      <div style={{ padding: "0 16px 16px", borderTop: "1px solid #e2e8f0" }}>
-                        {/* Personal data */}
-                        <div style={{ marginTop: 12, marginBottom: 16 }}>
-                          <h4 style={{ fontSize: 13, fontWeight: 700, color: "#3b82f6", margin: "0 0 8px" }}>ข้อมูลทั่วไป</h4>
-                           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 0 }}>
-                             {PERSONAL_QUESTIONS.map((q, qi) => (
-                               <div key={q.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 10px", background: qi % 2 === 0 ? "#f8fafc" : "#fff", borderBottom: "1px solid #f1f5f9", fontSize: 12 }}>
-                                 <span style={{ color: "#64748b" }}>{q.text}</span>
-                                 <span style={{ color: "#1e293b", fontWeight: 600 }}>{personal[q.id] || "-"}</span>
+             {(() => {
+               const totalPages = Math.ceil(filtered.length / indivPageSize);
+               const paged = filtered.slice((indivPage - 1) * indivPageSize, indivPage * indivPageSize);
+               const startIdx = (indivPage - 1) * indivPageSize;
+               return (
+                 <>
+                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                     {paged.map((r, idx) => {
+                       const isExpanded = expandedResponse === r.uid;
+                       const personal = r.personal || r.personal_data || {};
+                       const likert = r.likert || r.likert_data || {};
+                       return (
+                         <div key={r.uid} style={{
+                           background: "#f8fafc", borderRadius: 12,
+                           border: isExpanded ? "1px solid #059669" : "1px solid #e2e8f0",
+                           overflow: "hidden",
+                         }}>
+                           {/* Row header - clickable */}
+                           <div
+                             onClick={() => setExpandedResponse(isExpanded ? null : r.uid)}
+                             style={{
+                               padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12,
+                               background: isExpanded ? "#f0fdf4" : "transparent",
+                             }}
+                           >
+                             <span style={{ fontSize: 13, color: "#64748b", minWidth: 30 }}>#{startIdx + idx + 1}</span>
+                             <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b", flex: 1 }}>
+                               {personal.gender || "-"} · {personal.age || "-"} · {personal.province || (SOURCES[r.source] || r.source)}
+                             </span>
+                             <span style={{ fontSize: 11, color: "#64748b" }}>{r.timestamp}</span>
+                             <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>
+                               ⏱ {formatTime(r.timeTaken)}
+                             </span>
+                             {r.want_results && <span style={{ fontSize: 11, color: "#10b981" }}>📧</span>}
+                             <span style={{ color: "#64748b", fontSize: 16, transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</span>
+                           </div>
+
+                           {/* Expanded detail */}
+                           {isExpanded && (
+                             <div style={{ padding: "0 16px 16px", borderTop: "1px solid #e2e8f0" }}>
+                               {/* Personal data */}
+                               <div style={{ marginTop: 12, marginBottom: 16 }}>
+                                 <h4 style={{ fontSize: 13, fontWeight: 700, color: "#3b82f6", margin: "0 0 8px" }}>ข้อมูลทั่วไป</h4>
+                                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 0 }}>
+                                   {PERSONAL_QUESTIONS.map((q, qi) => (
+                                     <div key={q.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 10px", background: qi % 2 === 0 ? "#f8fafc" : "#fff", borderBottom: "1px solid #f1f5f9", fontSize: 12 }}>
+                                       <span style={{ color: "#64748b" }}>{q.text}</span>
+                                       <span style={{ color: "#1e293b", fontWeight: 600 }}>{personal[q.id] || "-"}</span>
+                                     </div>
+                                   ))}
+                                   {personal.province && (
+                                     <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 10px", background: "#fff", borderBottom: "1px solid #f1f5f9", fontSize: 12 }}>
+                                       <span style={{ color: "#64748b" }}>จังหวัด</span>
+                                       <span style={{ color: "#1e293b", fontWeight: 600 }}>{personal.province}</span>
+                                     </div>
+                                   )}
+                                 </div>
+                                 {r.email && (
+                                   <div style={{ marginTop: 6, padding: "6px 10px", background: "rgba(16,185,129,0.08)", borderRadius: 8, fontSize: 12, color: "#10b981" }}>
+                                     📧 {r.email} (ต้องการรับผลวิจัย)
+                                   </div>
+                                 )}
                                </div>
-                             ))}
-                            {personal.province && (
-                              <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "#f8fafc", borderRadius: 8, fontSize: 12 }}>
-                                <span style={{ color: "#64748b" }}>จังหวัด</span>
-                                <span style={{ color: "#1e293b", fontWeight: 600 }}>{personal.province}</span>
-                              </div>
-                            )}
-                          </div>
-                          {r.email && (
-                            <div style={{ marginTop: 6, padding: "6px 10px", background: "rgba(16,185,129,0.08)", borderRadius: 8, fontSize: 12, color: "#10b981" }}>
-                              📧 {r.email} (ต้องการรับผลวิจัย)
-                            </div>
-                          )}
-                        </div>
 
-                        {/* Likert data by section */}
-                        {LIKERT_SECTIONS.map((sec, si) => (
-                          <div key={sec.id} style={{ marginBottom: 12 }}>
-                            <h4 style={{ fontSize: 13, fontWeight: 700, color: SECTION_COLORS[si], margin: "0 0 6px" }}>{sec.title}</h4>
-                            {sec.subsections.map(sub => (
-                               <div key={sub.id} style={{ marginBottom: 8 }}>
-                                 <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", marginBottom: 4, paddingLeft: 8, borderBottom: "1px solid #e2e8f0", paddingBottom: 4 }}>{sub.title}</div>
-                                 <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-                                   {sub.items.map((item, itemIdx) => {
-                                     const val = likert[item.id];
-                                     return (
-                                       <div key={item.id} style={{
-                                         display: "flex", alignItems: "center", gap: 8, padding: "6px 10px",
-                                         background: itemIdx % 2 === 0 ? "#fafafa" : "#fff",
-                                         borderBottom: "1px solid #f1f5f9", fontSize: 12,
-                                       }}>
-                                        <span style={{ flex: 1, color: "#334155", lineHeight: 1.4 }}>{item.text}</span>
-                                        <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
-                                          {[1,2,3,4,5].map(n => (
-                                            <span key={n} style={{
-                                              width: 22, height: 22, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center",
-                                              fontSize: 11, fontWeight: 700,
-                                              background: val === n ? SECTION_COLORS[si] : "#f1f5f9",
-                                              color: val === n ? "#fff" : "#64748b",
-                                            }}>{n}</span>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ))}
+                               {/* Likert data by section */}
+                               {LIKERT_SECTIONS.map((sec, si) => (
+                                 <div key={sec.id} style={{ marginBottom: 12 }}>
+                                   <h4 style={{ fontSize: 13, fontWeight: 700, color: SECTION_COLORS[si], margin: "0 0 6px" }}>{sec.title}</h4>
+                                   {sec.subsections.map(sub => (
+                                     <div key={sub.id} style={{ marginBottom: 8 }}>
+                                       <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", marginBottom: 4, paddingLeft: 8, borderBottom: "1px solid #e2e8f0", paddingBottom: 4 }}>{sub.title}</div>
+                                       <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                                         {sub.items.map((item, itemIdx) => {
+                                           const val = likert[item.id];
+                                           return (
+                                             <div key={item.id} style={{
+                                               display: "flex", alignItems: "center", gap: 8, padding: "6px 10px",
+                                               background: itemIdx % 2 === 0 ? "#fafafa" : "#fff",
+                                               borderBottom: "1px solid #f1f5f9", fontSize: 12,
+                                             }}>
+                                               <span style={{ flex: 1, color: "#334155", lineHeight: 1.4 }}>{item.text}</span>
+                                               <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
+                                                 {[1,2,3,4,5].map(n => (
+                                                   <span key={n} style={{
+                                                     width: 22, height: 22, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center",
+                                                     fontSize: 11, fontWeight: 700,
+                                                     background: val === n ? SECTION_COLORS[si] : "#f1f5f9",
+                                                     color: val === n ? "#fff" : "#64748b",
+                                                   }}>{n}</span>
+                                                 ))}
+                                               </div>
+                                             </div>
+                                           );
+                                         })}
+                                       </div>
+                                     </div>
+                                   ))}
+                                 </div>
+                               ))}
 
-                        {/* Suggestion */}
-                        {r.suggestion && (
-                          <div style={{ marginTop: 8, padding: "8px 12px", background: "#f0fdf4", borderRadius: 8, fontSize: 12, color: "#059669", lineHeight: 1.6 }}>
-                            💬 {r.suggestion}
-                          </div>
-                        )}
+                               {/* Suggestion */}
+                               {r.suggestion && (
+                                 <div style={{ marginTop: 8, padding: "8px 12px", background: "#f0fdf4", borderRadius: 8, fontSize: 12, color: "#059669", lineHeight: 1.6 }}>
+                                   💬 {r.suggestion}
+                                 </div>
+                               )}
 
-                        {/* Meta */}
-                        <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 11, color: "#64748b" }}>
-                          <span>UID: {r.uid}</span>
-                          <span>Source: {r.source_code || r.source}</span>
-                          <span>Version: {r.survey_version}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+                               {/* Meta */}
+                               <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 11, color: "#64748b" }}>
+                                 <span>UID: {r.uid}</span>
+                                 <span>Source: {r.source_code || r.source}</span>
+                                 <span>Version: {r.survey_version}</span>
+                               </div>
+                             </div>
+                           )}
+                         </div>
+                       );
+                     })}
+                   </div>
+
+                   {/* Pagination */}
+                   {totalPages > 1 && (
+                     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 6, marginTop: 20 }}>
+                       <button onClick={() => setIndivPage(p => Math.max(1, p - 1))} disabled={indivPage === 1}
+                         style={{ padding: "6px 12px", borderRadius: 8, border: "1px solid #e2e8f0", background: indivPage === 1 ? "#f8fafc" : "#fff", color: indivPage === 1 ? "#cbd5e1" : "#1e293b", cursor: indivPage === 1 ? "default" : "pointer", fontSize: 13 }}>←</button>
+                       {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                         <button key={p} onClick={() => setIndivPage(p)}
+                           style={{
+                             padding: "6px 12px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600,
+                             background: indivPage === p ? "#059669" : "#f1f5f9",
+                             color: indivPage === p ? "#fff" : "#64748b",
+                           }}>{p}</button>
+                       ))}
+                       <button onClick={() => setIndivPage(p => Math.min(totalPages, p + 1))} disabled={indivPage === totalPages}
+                         style={{ padding: "6px 12px", borderRadius: 8, border: "1px solid #e2e8f0", background: indivPage === totalPages ? "#f8fafc" : "#fff", color: indivPage === totalPages ? "#cbd5e1" : "#1e293b", cursor: indivPage === totalPages ? "default" : "pointer", fontSize: 13 }}>→</button>
+                       <span style={{ fontSize: 12, color: "#64748b", marginLeft: 8 }}>หน้า {indivPage}/{totalPages} · แสดง {startIdx + 1}-{Math.min(indivPage * indivPageSize, filtered.length)} จาก {filtered.length}</span>
+                     </div>
+                   )}
+                 </>
+               );
+             })()}
+           </div>
+         )}
 
         {/* LINKS TAB */}
         {activeTab === "links" && (
