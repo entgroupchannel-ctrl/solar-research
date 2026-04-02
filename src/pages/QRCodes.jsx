@@ -24,7 +24,7 @@ const QRCodesPage = () => {
       .link{font-size:11px;color:#999;word-break:break-all;margin-top:16px}
     </style></head><body>
       <h2>แบบสอบถามวิจัย Solar Rooftop</h2>
-      <p style="font-size:18px;font-weight:700;color:${region.color}">📍 ${region.name}</p>
+      <p style="font-size:18px;font-weight:700;color:${region.color}">${region.name}</p>
       <p>มหาวิทยาลัยธนบุรี</p>
       <div style="margin:24px auto"><img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(link)}" width="300" height="300"/></div>
       <p>สแกน QR Code เพื่อทำแบบสอบถาม</p>

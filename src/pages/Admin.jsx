@@ -1698,7 +1698,7 @@ OUTPUT:
                                  </div>
                                  {r.email && (
                                    <div style={{ marginTop: 6, padding: "6px 10px", background: "rgba(16,185,129,0.08)", borderRadius: 8, fontSize: 12, color: "#10b981" }}>
-                                     📧 {r.email} (ต้องการรับผลวิจัย)
+                                     <Mail size={12} style={{ marginRight: 4, display: "inline" }} /> {r.email} (ต้องการรับผลวิจัย)
                                    </div>
                                  )}
                                </div>
