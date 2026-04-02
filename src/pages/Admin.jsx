@@ -1606,7 +1606,7 @@ OUTPUT:
                                   padding: "6px 14px", borderRadius: 8, border: "none",
                                   background: "rgba(59,130,246,0.15)", color: "#3b82f6",
                                   cursor: "pointer", fontSize: 11, fontWeight: 600,
-                                }}>📋 คัดลอก</button>
+                                }}><Copy size={11} style={{ marginRight: 3 }} /> คัดลอก</button>
                                 <button onClick={() => printQR(src.name, src.code)} style={{
                                   padding: "6px 14px", borderRadius: 8, border: "none",
                                   background: "rgba(168,85,247,0.15)", color: "#a855f7",
