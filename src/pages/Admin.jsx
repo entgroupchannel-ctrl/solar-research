@@ -923,13 +923,13 @@ OUTPUT:
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: 8, marginBottom: 32, borderBottom: "1px solid #e2e8f0", paddingBottom: 12, flexWrap: "wrap" }}>
-          <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}>📈 ภาพรวม</button>
-          <button onClick={() => setActiveTab("sampling")} style={tabStyle(activeTab === "sampling")}>🎯 เป้าหมาย</button>
-          <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}>👥 ข้อมูลผู้ตอบ</button>
-          <button onClick={() => setActiveTab("crosstab")} style={tabStyle(activeTab === "crosstab")}>📊 Cross-tab</button>
-          <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}>📋 ตารางละเอียด</button>
-          <button onClick={() => setActiveTab("individual")} style={tabStyle(activeTab === "individual")}>📝 รายบุคคล</button>
-          <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}>🔗 จัดการลิงก์</button>
+           <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}><TrendingUp size={14} style={{ marginRight: 4 }} /> ภาพรวม</button>
+           <button onClick={() => setActiveTab("sampling")} style={tabStyle(activeTab === "sampling")}><Target size={14} style={{ marginRight: 4 }} /> เป้าหมาย</button>
+           <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}><Users size={14} style={{ marginRight: 4 }} /> ข้อมูลผู้ตอบ</button>
+           <button onClick={() => setActiveTab("crosstab")} style={tabStyle(activeTab === "crosstab")}><Table2 size={14} style={{ marginRight: 4 }} /> Cross-tab</button>
+           <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}><ClipboardList size={14} style={{ marginRight: 4 }} /> ตารางละเอียด</button>
+           <button onClick={() => setActiveTab("individual")} style={tabStyle(activeTab === "individual")}><FileText size={14} style={{ marginRight: 4 }} /> รายบุคคล</button>
+           <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}><Link2 size={14} style={{ marginRight: 4 }} /> จัดการลิงก์</button>
         </div>
 
         {filtered.length === 0 && activeTab !== "links" && activeTab !== "sampling" && (
