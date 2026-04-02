@@ -444,6 +444,24 @@ function LikertRow({ item, value, onChange, index, sectionColor }) {
 }
 
 function ThankYou({ responseId, timeTaken }) {
+  const [wantResults, setWantResults] = useState(false);
+  const [email, setEmail] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [emailError, setEmailError] = useState("");
+
+  const handleSaveEmail = async () => {
+    if (!email.trim()) { setEmailError("กรุณากรอกอีเมล"); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setEmailError("รูปแบบอีเมลไม่ถูกต้อง"); return; }
+    setEmailError("");
+    setSaving(true);
+    try {
+      await supabase.from("survey_responses").update({ want_results: true, email: email.trim() }).eq("uid", responseId);
+      setSaved(true);
+    } catch (e) { console.error(e); }
+    setSaving(false);
+  };
+
   return (
     <div style={{
       minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
@@ -469,6 +487,58 @@ function ThankYou({ responseId, timeTaken }) {
           คำตอบของท่านได้รับการบันทึกเรียบร้อยแล้ว<br />
           ข้อมูลจะถูกเก็บรักษาเป็นความลับตามนโยบาย PDPA
         </p>
+
+        {/* Email opt-in section */}
+        <div style={{
+          background: "#fffbeb", borderRadius: 12, padding: 20, marginBottom: 20,
+          border: "1px solid #fde68a", textAlign: "left",
+        }}>
+          <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", marginBottom: wantResults ? 12 : 0 }}>
+            <input
+              type="checkbox"
+              checked={wantResults}
+              onChange={e => { setWantResults(e.target.checked); setSaved(false); }}
+              disabled={saved}
+              style={{ width: 18, height: 18, accentColor: "#f59e0b", cursor: "pointer" }}
+            />
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#92400e" }}>
+              ต้องการรับผลการวิจัยเมื่อเสร็จสิ้น
+            </span>
+          </label>
+          {wantResults && !saved && (
+            <div>
+              <input
+                type="email"
+                placeholder="กรอกอีเมลของท่าน"
+                value={email}
+                onChange={e => { setEmail(e.target.value); setEmailError(""); }}
+                style={{
+                  width: "100%", padding: "10px 14px", borderRadius: 8,
+                  border: emailError ? "1.5px solid #ef4444" : "1.5px solid #d1d5db",
+                  fontSize: 15, outline: "none", boxSizing: "border-box", marginBottom: 8,
+                }}
+              />
+              {emailError && <div style={{ color: "#ef4444", fontSize: 13, marginBottom: 8 }}>{emailError}</div>}
+              <button
+                onClick={handleSaveEmail}
+                disabled={saving}
+                style={{
+                  width: "100%", padding: "10px 0", borderRadius: 8, border: "none",
+                  background: saving ? "#9ca3af" : "linear-gradient(135deg, #f59e0b, #d97706)",
+                  color: "#fff", fontWeight: 700, fontSize: 15, cursor: saving ? "not-allowed" : "pointer",
+                }}
+              >
+                {saving ? "กำลังบันทึก..." : "บันทึกอีเมล"}
+              </button>
+            </div>
+          )}
+          {saved && (
+            <div style={{ color: "#059669", fontSize: 14, fontWeight: 600, marginTop: 8 }}>
+              ✓ บันทึกอีเมลเรียบร้อยแล้ว ระบบจะจัดส่งผลวิจัยให้ท่านเมื่อเสร็จสิ้น
+            </div>
+          )}
+        </div>
+
         <div style={{
           background: "#f8fafc", borderRadius: 12, padding: 20,
           display: "flex", gap: 20, justifyContent: "center",
