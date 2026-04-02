@@ -1646,7 +1646,7 @@ export default function SolarSurveyApp() {
           </span>
         </div>
         <span style={{ color: "#f59e0b", fontWeight: 700, fontFamily: "monospace" }}>
-          ⏱ {formatTime(timer)}
+          <Clock size={14} style={{ marginRight: 4 }} /> {formatTime(timer)}
         </span>
       </div>
 
