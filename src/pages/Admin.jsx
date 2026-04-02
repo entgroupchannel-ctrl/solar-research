@@ -7,6 +7,12 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   PieChart, Pie, Cell, Legend,
 } from "recharts";
+import {
+  Lock, LayoutDashboard, Eye, RefreshCw, TrendingUp, Target, Users,
+  BarChart3, ClipboardList, FileText, Link2, PieChart as PieChartIcon,
+  BarChartHorizontal, Radar as RadarIcon, Copy, Printer, Download,
+  Table2, ArrowLeft,
+} from "lucide-react";
 
 const PERSONAL_QUESTIONS = [
   { id: "gender", text: "เพศ", options: ["ชาย", "หญิง", "อื่น ๆ"] },
@@ -790,7 +796,7 @@ OUTPUT:
         fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif",
       }}>
         <div style={{ background: "#fff", borderRadius: 20, padding: 40, maxWidth: 380, width: "90%", textAlign: "center", border: "1px solid #e2e8f0", boxShadow: "0 8px 30px rgba(0,0,0,0.06)" }}>
-          <div style={{ width: 64, height: 64, borderRadius: 16, background: "#ecfdf5", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 28 }}>🔒</div>
+          <div style={{ width: 64, height: 64, borderRadius: 16, background: "#ecfdf5", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}><Lock size={28} color="#059669" /></div>
           <h2 style={{ color: "#1e293b", fontSize: 20, fontWeight: 700, margin: "0 0 8px" }}>Admin Access</h2>
           <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 24px" }}>กรุณาใส่รหัสผ่านเพื่อเข้าใช้งาน</p>
           <form onSubmit={(e) => {
@@ -854,7 +860,7 @@ OUTPUT:
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#059669" }}>📊 Admin Dashboard</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#059669", display: "flex", alignItems: "center", gap: 8 }}><LayoutDashboard size={22} /> Admin Dashboard</h1>
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b" }}>รายงานผลแบบสอบถาม</p>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -862,33 +868,33 @@ OUTPUT:
               padding: "8px 20px", border: "1px solid rgba(16,185,129,0.4)",
               borderRadius: 8, background: "linear-gradient(135deg, #059669, #10b981)", color: "#fff",
               cursor: "pointer", fontSize: 13, fontWeight: 700,
-            }}>👁 Preview & Export ({responses.length} รายการ)</button>
+            }}><Eye size={14} style={{ marginRight: 4 }} /> Preview & Export ({responses.length} รายการ)</button>
             <button onClick={loadData} style={{
               padding: "8px 20px", border: "1px solid #d1d5db",
               borderRadius: 8, background: "#fff", color: "#1e293b",
               cursor: "pointer", fontSize: 13,
-            }}>🔄 รีเฟรช</button>
+            }}><RefreshCw size={14} style={{ marginRight: 4 }} /> รีเฟรช</button>
             <button onClick={() => navigate("/")} style={{
               padding: "8px 20px", border: "1px solid #d1d5db",
               borderRadius: 8, background: "#fff", color: "#1e293b",
               cursor: "pointer", fontSize: 13,
-            }}>← กลับ</button>
+            }}><ArrowLeft size={14} style={{ marginRight: 4 }} /> กลับ</button>
           </div>
         </div>
 
         {/* Summary Cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 24 }}>
-          {[
-            { label: "ตอบทั้งหมด", value: filtered.length, icon: "📝" },
-            { label: "เวลาเฉลี่ย", value: filtered.length ? formatTime(Math.round(calcMean(filtered.map(r => r.timeTaken)))) : "-", icon: "⏱" },
-            { label: "แหล่งที่มา", value: new Set(filtered.map(r => r.source)).size, icon: "🔗" },
-            { label: "คะแนนเฉลี่ยรวม", value: filtered.length ? calcMean(sectionAverages.map(s => s.mean)).toFixed(2) : "-", icon: "⭐" },
-          ].map((card, i) => (
-            <div key={i} style={{
-              background: "#fff", borderRadius: 12, padding: 20,
-              border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-            }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>{card.icon}</div>
+           {[
+             { label: "ตอบทั้งหมด", value: filtered.length, icon: <FileText size={24} color="#059669" /> },
+             { label: "เวลาเฉลี่ย", value: filtered.length ? formatTime(Math.round(calcMean(filtered.map(r => r.timeTaken)))) : "-", icon: <ClipboardList size={24} color="#059669" /> },
+             { label: "แหล่งที่มา", value: new Set(filtered.map(r => r.source)).size, icon: <Link2 size={24} color="#059669" /> },
+             { label: "คะแนนเฉลี่ยรวม", value: filtered.length ? calcMean(sectionAverages.map(s => s.mean)).toFixed(2) : "-", icon: <TrendingUp size={24} color="#059669" /> },
+           ].map((card, i) => (
+             <div key={i} style={{
+               background: "#fff", borderRadius: 12, padding: 20,
+               border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+             }}>
+               <div style={{ marginBottom: 8 }}>{card.icon}</div>
               <div style={{ fontSize: 24, fontWeight: 700, color: "#059669" }}>{card.value}</div>
               <div style={{ fontSize: 12, color: "#64748b" }}>{card.label}</div>
             </div>
@@ -917,13 +923,13 @@ OUTPUT:
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: 8, marginBottom: 32, borderBottom: "1px solid #e2e8f0", paddingBottom: 12, flexWrap: "wrap" }}>
-          <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}>📈 ภาพรวม</button>
-          <button onClick={() => setActiveTab("sampling")} style={tabStyle(activeTab === "sampling")}>🎯 เป้าหมาย</button>
-          <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}>👥 ข้อมูลผู้ตอบ</button>
-          <button onClick={() => setActiveTab("crosstab")} style={tabStyle(activeTab === "crosstab")}>📊 Cross-tab</button>
-          <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}>📋 ตารางละเอียด</button>
-          <button onClick={() => setActiveTab("individual")} style={tabStyle(activeTab === "individual")}>📝 รายบุคคล</button>
-          <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}>🔗 จัดการลิงก์</button>
+           <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}><TrendingUp size={14} style={{ marginRight: 4 }} /> ภาพรวม</button>
+           <button onClick={() => setActiveTab("sampling")} style={tabStyle(activeTab === "sampling")}><Target size={14} style={{ marginRight: 4 }} /> เป้าหมาย</button>
+           <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}><Users size={14} style={{ marginRight: 4 }} /> ข้อมูลผู้ตอบ</button>
+           <button onClick={() => setActiveTab("crosstab")} style={tabStyle(activeTab === "crosstab")}><Table2 size={14} style={{ marginRight: 4 }} /> Cross-tab</button>
+           <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}><ClipboardList size={14} style={{ marginRight: 4 }} /> ตารางละเอียด</button>
+           <button onClick={() => setActiveTab("individual")} style={tabStyle(activeTab === "individual")}><FileText size={14} style={{ marginRight: 4 }} /> รายบุคคล</button>
+           <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}><Link2 size={14} style={{ marginRight: 4 }} /> จัดการลิงก์</button>
         </div>
 
         {filtered.length === 0 && activeTab !== "links" && activeTab !== "sampling" && (
@@ -1113,10 +1119,10 @@ OUTPUT:
             {/* Chart type selector */}
             <div style={{ display: "flex", gap: 6, marginBottom: 20, background: "#f0fdf4", padding: 6, borderRadius: 12, width: "fit-content" }}>
               {[
-                { key: "pie", icon: "🍩", label: "Donut" },
-                { key: "bar", icon: "📊", label: "Bar" },
-                { key: "hbar", icon: "📶", label: "Horizontal" },
-                { key: "radar", icon: "🕸️", label: "Radar" },
+                 { key: "pie", icon: <PieChartIcon size={14} />, label: "Donut" },
+                 { key: "bar", icon: <BarChart3 size={14} />, label: "Bar" },
+                 { key: "hbar", icon: <BarChartHorizontal size={14} />, label: "Horizontal" },
+                 { key: "radar", icon: <RadarIcon size={14} />, label: "Radar" },
               ].map(t => (
                 <button key={t.key} onClick={() => setDemoChartType(t.key)}
                   style={{
@@ -1214,7 +1220,7 @@ OUTPUT:
           return (
             <div style={chartCardStyle}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
-                <h2 style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: 0 }}>📊 Cross-Tabulation</h2>
+                <h2 style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: 0, display: "flex", alignItems: "center", gap: 8 }}><Table2 size={18} /> Cross-Tabulation</h2>
                 <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
                   <label style={{ fontSize: 13, color: "#64748b" }}>
                     แถว:
@@ -1600,12 +1606,12 @@ OUTPUT:
                                   padding: "6px 14px", borderRadius: 8, border: "none",
                                   background: "rgba(59,130,246,0.15)", color: "#3b82f6",
                                   cursor: "pointer", fontSize: 11, fontWeight: 600,
-                                }}>📋 คัดลอก</button>
+                                }}><Copy size={11} style={{ marginRight: 3 }} /> คัดลอก</button>
                                 <button onClick={() => printQR(src.name, src.code)} style={{
                                   padding: "6px 14px", borderRadius: 8, border: "none",
                                   background: "rgba(168,85,247,0.15)", color: "#a855f7",
                                   cursor: "pointer", fontSize: 11, fontWeight: 600,
-                                }}>🖨️ พิมพ์ QR</button>
+                                }}><Printer size={11} style={{ marginRight: 3 }} /> พิมพ์ QR</button>
                                 <button onClick={() => toggleSource(src.id, src.is_active)} style={{
                                   padding: "6px 14px", borderRadius: 8, border: "none",
                                   background: src.is_active ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)",
@@ -1662,7 +1668,7 @@ OUTPUT:
               {/* Modal Header */}
               <div style={{ padding: "20px 24px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#1e293b" }}>👁 ตัวอย่างข้อมูลก่อน Export</h2>
+                  <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#1e293b", display: "flex", alignItems: "center", gap: 8 }}><Eye size={20} /> ตัวอย่างข้อมูลก่อน Export</h2>
                   <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b" }}>แสดง 10 รายการแรกจากทั้งหมด {previewData.length} รายการ · {headers.length} คอลัมน์</p>
                 </div>
                 <button onClick={() => setShowPreview(false)} style={{
@@ -1748,15 +1754,15 @@ OUTPUT:
                 <button onClick={() => { exportCSV(responses); setShowPreview(false); }} style={{
                   padding: "10px 24px", borderRadius: 10, border: "1px solid rgba(16,185,129,0.4)",
                   background: "rgba(16,185,129,0.1)", color: "#10b981", cursor: "pointer", fontSize: 13, fontWeight: 600,
-                }}>📥 CSV</button>
+                }}><Download size={14} style={{ marginRight: 4 }} /> CSV</button>
                 <button onClick={() => { exportExcel(responses); setShowPreview(false); }} style={{
                   padding: "10px 24px", borderRadius: 10, border: "1px solid rgba(59,130,246,0.4)",
                   background: "rgba(59,130,246,0.1)", color: "#3b82f6", cursor: "pointer", fontSize: 13, fontWeight: 600,
-                }}>📥 Excel</button>
+                }}><Download size={14} style={{ marginRight: 4 }} /> Excel</button>
                 <button onClick={() => { exportMplusBoth(responses); setShowPreview(false); }} style={{
                   padding: "10px 24px", borderRadius: 10, border: "1px solid rgba(168,85,247,0.4)",
                   background: "rgba(168,85,247,0.1)", color: "#a855f7", cursor: "pointer", fontSize: 13, fontWeight: 600,
-                }}>📥 Mplus (CFA + SEM)</button>
+                }}><Download size={14} style={{ marginRight: 4 }} /> Mplus (CFA + SEM)</button>
               </div>
             </div>
           </div>
