@@ -492,16 +492,55 @@ function ThankYou({ responseId, timeTaken }) {
 // Admin Dashboard
 function AdminDashboard({ responses, onBack }) {
   const [selectedSource, setSelectedSource] = useState("all");
+  const [activeTab, setActiveTab] = useState("overview"); // overview | details | links
 
   const filtered = selectedSource === "all" ? responses : responses.filter(r => r.source === selectedSource);
 
-  // Compute stats for each likert section
   const computeSectionStats = (sectionItems, data) => {
     return sectionItems.map(item => {
       const vals = data.map(r => r.likert?.[item.id]).filter(v => v != null);
       return { id: item.id, text: item.text, n: vals.length, mean: calcMean(vals), sd: calcSD(vals) };
     });
   };
+
+  // Chart data computations
+  const sectionAverages = useMemo(() => {
+    if (!filtered.length) return [];
+    return LIKERT_SECTIONS.map((sec, si) => {
+      const allVals = sec.subsections.flatMap(sub =>
+        sub.items.flatMap(item => filtered.map(r => r.likert?.[item.id]).filter(v => v != null))
+      );
+      return { name: sec.title.replace("ปัจจัยด้าน", ""), mean: parseFloat(calcMean(allVals).toFixed(2)), fill: SECTION_COLORS_CONST[si] };
+    });
+  }, [filtered]);
+
+  const radarData = useMemo(() => {
+    if (!filtered.length) return [];
+    return LIKERT_SECTIONS.flatMap(sec =>
+      sec.subsections.map(sub => {
+        const vals = sub.items.flatMap(item => filtered.map(r => r.likert?.[item.id]).filter(v => v != null));
+        return { subject: sub.title.replace(/^\d+\.\s*/, "").substring(0, 12), mean: parseFloat(calcMean(vals).toFixed(2)), fullMark: 5 };
+      })
+    );
+  }, [filtered]);
+
+  const personalCharts = useMemo(() => {
+    if (!filtered.length) return [];
+    return PERSONAL_QUESTIONS.map(q => {
+      const counts = {};
+      q.options.forEach(opt => counts[opt] = 0);
+      filtered.forEach(r => { if (r.personal?.[q.id]) counts[r.personal[q.id]] = (counts[r.personal[q.id]] || 0) + 1; });
+      return { question: q.text, data: Object.entries(counts).map(([name, value]) => ({ name, value })) };
+    });
+  }, [filtered]);
+
+  const sourceDistribution = useMemo(() => {
+    const counts = {};
+    filtered.forEach(r => { const name = SOURCES[r.source] || r.source; counts[name] = (counts[name] || 0) + 1; });
+    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+  }, [filtered]);
+
+  const PIE_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
 
   const exportCSV = () => {
     if (!filtered.length) return;
@@ -542,7 +581,6 @@ function AdminDashboard({ responses, onBack }) {
 
   const exportExcelJSON = () => {
     if (!filtered.length) return;
-    // Export as TSV that Excel can open
     const allLikertIds = LIKERT_SECTIONS.flatMap(s => s.subsections.flatMap(ss => ss.items.map(i => i.id)));
     const allLikertTexts = LIKERT_SECTIONS.flatMap(s => s.subsections.flatMap(ss => ss.items.map(i => i.text.substring(0, 40))));
     const headers = ["ID", "แหล่งที่มา", "วันเวลา", "เวลา(วินาที)",
@@ -565,7 +603,34 @@ function AdminDashboard({ responses, onBack }) {
     URL.revokeObjectURL(url);
   };
 
-  const SECTION_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981"];
+  const SECTION_COLORS = SECTION_COLORS_CONST;
+
+  const tabStyle = (isActive) => ({
+    padding: "10px 24px", borderRadius: 10, border: "none", cursor: "pointer",
+    background: isActive ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.05)",
+    color: isActive ? "#f59e0b" : "#94a3b8", fontSize: 13, fontWeight: isActive ? 700 : 400,
+    transition: "all 0.2s",
+    borderBottom: isActive ? "2px solid #f59e0b" : "2px solid transparent",
+  });
+
+  const chartCardStyle = {
+    background: "rgba(255,255,255,0.04)", borderRadius: 16,
+    border: "1px solid rgba(255,255,255,0.08)", padding: 24, marginBottom: 24,
+  };
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div style={{ background: "rgba(15,32,39,0.95)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "10px 14px", fontSize: 12 }}>
+          <p style={{ color: "#e2e8f0", margin: 0, fontWeight: 600 }}>{label}</p>
+          {payload.map((p, i) => (
+            <p key={i} style={{ color: p.color || "#f59e0b", margin: "4px 0 0" }}>{p.name}: {typeof p.value === 'number' ? p.value.toFixed(2) : p.value}</p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div style={{
@@ -574,7 +639,7 @@ function AdminDashboard({ responses, onBack }) {
       padding: "20px", fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif",
       color: "#e2e8f0",
     }}>
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
           <div>
@@ -594,6 +659,7 @@ function AdminDashboard({ responses, onBack }) {
             { label: "ตอบทั้งหมด", value: filtered.length, icon: "📝" },
             { label: "เวลาเฉลี่ย", value: filtered.length ? formatTime(Math.round(calcMean(filtered.map(r => r.timeTaken)))) : "-", icon: "⏱" },
             { label: "แหล่งที่มา", value: new Set(filtered.map(r => r.source)).size, icon: "🔗" },
+            { label: "คะแนนเฉลี่ยรวม", value: filtered.length ? calcMean(sectionAverages.map(s => s.mean)).toFixed(2) : "-", icon: "⭐" },
           ].map((card, i) => (
             <div key={i} style={{
               background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 20,
@@ -627,7 +693,7 @@ function AdminDashboard({ responses, onBack }) {
         </div>
 
         {/* Export Buttons */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 32, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
           {[
             { label: "📥 CSV", fn: exportCSV },
             { label: "📄 TXT", fn: exportTXT },
@@ -645,8 +711,119 @@ function AdminDashboard({ responses, onBack }) {
           ))}
         </div>
 
-        {/* Statistics Tables */}
-        {filtered.length > 0 && LIKERT_SECTIONS.map((sec, si) => (
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: 8, marginBottom: 32, borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: 12 }}>
+          <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}>📈 ภาพรวม</button>
+          <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}>👥 ข้อมูลผู้ตอบ</button>
+          <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}>📋 ตารางละเอียด</button>
+          <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}>🔗 ลิงก์</button>
+        </div>
+
+        {filtered.length === 0 && (
+          <div style={{ textAlign: "center", padding: 60, color: "#64748b" }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
+            <p>ยังไม่มีข้อมูลที่ส่งเข้ามา</p>
+          </div>
+        )}
+
+        {/* OVERVIEW TAB */}
+        {activeTab === "overview" && filtered.length > 0 && (
+          <>
+            {/* Section Averages Bar Chart */}
+            <div style={chartCardStyle}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 20px" }}>คะแนนเฉลี่ยรายปัจจัย</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={sectionAverages} margin={{ top: 5, right: 20, left: 0, bottom: 60 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
+                  <XAxis dataKey="name" tick={{ fill: "#94a3b8", fontSize: 11 }} angle={-25} textAnchor="end" interval={0} />
+                  <YAxis domain={[0, 5]} tick={{ fill: "#94a3b8", fontSize: 12 }} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="mean" name="ค่าเฉลี่ย" radius={[6, 6, 0, 0]}>
+                    {sectionAverages.map((entry, i) => (
+                      <Cell key={i} fill={entry.fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Radar Chart */}
+            <div style={chartCardStyle}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#3b82f6", margin: "0 0 20px" }}>เปรียบเทียบรายด้านย่อย (Radar)</h3>
+              <ResponsiveContainer width="100%" height={400}>
+                <RadarChart data={radarData}>
+                  <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                  <PolarAngleAxis dataKey="subject" tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                  <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fill: "#64748b", fontSize: 10 }} />
+                  <Radar name="ค่าเฉลี่ย" dataKey="mean" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.25} strokeWidth={2} />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Source Distribution */}
+            {sourceDistribution.length > 1 && (
+              <div style={chartCardStyle}>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#8b5cf6", margin: "0 0 20px" }}>สัดส่วนแหล่งที่มา</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie data={sourceDistribution} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+                      {sourceDistribution.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                    </Pie>
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend wrapperStyle={{ fontSize: 12, color: "#94a3b8" }} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+
+            {/* Per-section bar charts */}
+            {LIKERT_SECTIONS.map((sec, si) => {
+              const subsectionData = sec.subsections.map(sub => {
+                const vals = sub.items.flatMap(item => filtered.map(r => r.likert?.[item.id]).filter(v => v != null));
+                return { name: sub.title.replace(/^\d+\.\s*/, "").substring(0, 18), mean: parseFloat(calcMean(vals).toFixed(2)) };
+              });
+              return (
+                <div key={sec.id} style={chartCardStyle}>
+                  <h3 style={{ fontSize: 15, fontWeight: 700, color: SECTION_COLORS[si], margin: "0 0 16px" }}>{sec.title}</h3>
+                  <ResponsiveContainer width="100%" height={220}>
+                    <BarChart data={subsectionData} margin={{ top: 5, right: 20, left: 0, bottom: 40 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                      <XAxis dataKey="name" tick={{ fill: "#94a3b8", fontSize: 10 }} angle={-15} textAnchor="end" interval={0} />
+                      <YAxis domain={[0, 5]} tick={{ fill: "#94a3b8", fontSize: 11 }} />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Bar dataKey="mean" name="ค่าเฉลี่ย" fill={SECTION_COLORS[si]} radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              );
+            })}
+          </>
+        )}
+
+        {/* DEMOGRAPHICS TAB */}
+        {activeTab === "demographics" && filtered.length > 0 && (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 20 }}>
+              {personalCharts.map((chart, ci) => (
+                <div key={ci} style={chartCardStyle}>
+                  <h3 style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0", margin: "0 0 16px" }}>{chart.question}</h3>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                      <Pie data={chart.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={40}
+                        label={({ name, percent }) => percent > 0 ? `${name} ${(percent * 100).toFixed(0)}%` : ""}>
+                        {chart.data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+                      </Pie>
+                      <Tooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* DETAILS TAB - Statistics Tables */}
+        {activeTab === "details" && filtered.length > 0 && LIKERT_SECTIONS.map((sec, si) => (
           <div key={sec.id} style={{ marginBottom: 32 }}>
             <h2 style={{ fontSize: 16, fontWeight: 700, color: SECTION_COLORS[si], marginBottom: 16, borderBottom: `2px solid ${SECTION_COLORS[si]}33`, paddingBottom: 8 }}>
               {sec.title}
@@ -680,7 +857,6 @@ function AdminDashboard({ responses, onBack }) {
                             </tr>
                           );
                         })}
-                        {/* Section average */}
                         {(() => {
                           const allVals = sub.items.flatMap(item => filtered.map(r => r.likert?.[item.id]).filter(v => v != null));
                           return (
@@ -704,31 +880,26 @@ function AdminDashboard({ responses, onBack }) {
           </div>
         ))}
 
-        {filtered.length === 0 && (
-          <div style={{ textAlign: "center", padding: 60, color: "#64748b" }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
-            <p>ยังไม่มีข้อมูลที่ส่งเข้ามา</p>
+        {/* LINKS TAB */}
+        {activeTab === "links" && (
+          <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.08)" }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 16px" }}>🔗 ลิงก์แบบสอบถาม (10 แหล่ง)</h2>
+            <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 16px" }}>คัดลอกลิงก์ด้านล่างเพื่อแจกจ่ายตามแหล่งที่ต้องการ (เพิ่ม ?src=srcXX ต่อท้าย URL)</p>
+            <div style={{ display: "grid", gap: 8 }}>
+              {Object.entries(SOURCES).map(([key, name]) => (
+                <div key={key} style={{
+                  display: "flex", alignItems: "center", gap: 12,
+                  background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "10px 16px",
+                  fontSize: 13,
+                }}>
+                  <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 40 }}>{key}</span>
+                  <span style={{ color: "#e2e8f0", flex: 1 }}>{name}</span>
+                  <code style={{ color: "#94a3b8", fontSize: 11 }}>?src={key}</code>
+                </div>
+              ))}
+            </div>
           </div>
         )}
-
-        {/* Links Section */}
-        <div style={{ marginTop: 40, background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.08)" }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 16px" }}>🔗 ลิงก์แบบสอบถาม (10 แหล่ง)</h2>
-          <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 16px" }}>คัดลอกลิงก์ด้านล่างเพื่อแจกจ่ายตามแหล่งที่ต้องการ (เพิ่ม ?src=srcXX ต่อท้าย URL)</p>
-          <div style={{ display: "grid", gap: 8 }}>
-            {Object.entries(SOURCES).map(([key, name]) => (
-              <div key={key} style={{
-                display: "flex", alignItems: "center", gap: 12,
-                background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "10px 16px",
-                fontSize: 13,
-              }}>
-                <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 40 }}>{key}</span>
-                <span style={{ color: "#e2e8f0", flex: 1 }}>{name}</span>
-                <code style={{ color: "#94a3b8", fontSize: 11 }}>?src={key}</code>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
