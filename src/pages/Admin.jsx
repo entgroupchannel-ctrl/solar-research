@@ -141,45 +141,25 @@ function formatTime(seconds) {
 const SECTION_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981"];
 const PIE_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
 
-// Sampling quota data — province-level detail
-const PROVINCE_DATA = [
-  { province: "ขอนแก่น", region: "ภาคตะวันออกเฉียงเหนือ", shops: 34, target: 34, code: "kk" },
-  { province: "เลย", region: "ภาคตะวันออกเฉียงเหนือ", shops: 24, target: 24, code: "loei" },
-  { province: "ร้อยเอ็ด", region: "ภาคตะวันออกเฉียงเหนือ", shops: 19, target: 19, code: "re" },
-  { province: "ปากช่อง", region: "ภาคตะวันออกเฉียงเหนือ", shops: 15, target: 15, code: "pc" },
-  { province: "สุรินทร์", region: "ภาคตะวันออกเฉียงเหนือ", shops: 15, target: 15, code: "sr" },
-  { province: "อุบลราชธานี", region: "ภาคตะวันออกเฉียงเหนือ", shops: 12, target: 12, code: "ub" },
-  { province: "สกลนคร", region: "ภาคตะวันออกเฉียงเหนือ", shops: 8, target: 8, code: "sn" },
-  { province: "กำแพงเพชร", region: "ภาคเหนือ", shops: 24, target: 24, code: "kpp" },
-  { province: "เชียงใหม่", region: "ภาคเหนือ", shops: 21, target: 21, code: "cm" },
-  { province: "แพร่", region: "ภาคเหนือ", shops: 21, target: 21, code: "phrae" },
-  { province: "เพชรบูรณ์", region: "ภาคเหนือ", shops: 15, target: 15, code: "pb" },
-  { province: "แม่สอด", region: "ภาคเหนือ", shops: 12, target: 12, code: "ms" },
-  { province: "พิษณุโลก", region: "ภาคเหนือ", shops: 9, target: 9, code: "pl" },
-  { province: "เชียงราย", region: "ภาคเหนือ", shops: 7, target: 7, code: "cr" },
-  { province: "สุราษฎร์ธานี", region: "ภาคใต้", shops: 35, target: 35, code: "srt" },
-  { province: "ทุ่งสง", region: "ภาคใต้", shops: 18, target: 18, code: "ts" },
-  { province: "หาดใหญ่", region: "ภาคใต้", shops: 15, target: 15, code: "hy" },
-  { province: "ชุมพร", region: "ภาคใต้", shops: 3, target: 3, code: "cp" },
-  { province: "ระยอง", region: "ภาคตะวันออก", shops: 24, target: 24, code: "ry" },
-  { province: "กบินทร์บุรี", region: "ภาคตะวันออก", shops: 14, target: 14, code: "kb" },
-  { province: "สุพรรณบุรี", region: "ภาคกลาง", shops: 18, target: 18, code: "spb" },
-  { province: "ปทุมธานี", region: "ภาคกลาง", shops: 12, target: 12, code: "pt" },
-  { province: "สิงห์บุรี", region: "ภาคกลาง", shops: 8, target: 8, code: "sb" },
-  { province: "รามคำแหง", region: "กรุงเทพฯ และปริมณฑล", shops: 15, target: 15, code: "rkh" },
-  { province: "บางแค", region: "กรุงเทพฯ และปริมณฑล", shops: 15, target: 15, code: "bk" },
-  { province: "เพชรบุรี", region: "ภาคตะวันตก", shops: 27, target: 27, code: "pbi" },
+// Region-based sampling data
+const REGION_DATA = [
+  { name: "ภาคตะวันออกเฉียงเหนือ", code: "northeast", color: "#3b82f6", target: 127, shops: 127,
+    provinces: ["ขอนแก่น", "เลย", "ร้อยเอ็ด", "ปากช่อง", "สุรินทร์", "อุบลราชธานี", "สกลนคร"] },
+  { name: "ภาคเหนือ", code: "north", color: "#10b981", target: 109, shops: 109,
+    provinces: ["กำแพงเพชร", "เชียงใหม่", "แพร่", "เพชรบูรณ์", "แม่สอด", "พิษณุโลก", "เชียงราย"] },
+  { name: "ภาคใต้", code: "south", color: "#06b6d4", target: 71, shops: 71,
+    provinces: ["สุราษฎร์ธานี", "ทุ่งสง", "หาดใหญ่", "ชุมพร"] },
+  { name: "ภาคตะวันออก", code: "east", color: "#f59e0b", target: 38, shops: 38,
+    provinces: ["ระยอง", "กบินทร์บุรี", "ชลบุรี", "จันทบุรี"] },
+  { name: "ภาคกลาง", code: "central", color: "#8b5cf6", target: 38, shops: 38,
+    provinces: ["สุพรรณบุรี", "ปทุมธานี", "สิงห์บุรี", "นครปฐม", "อยุธยา"] },
+  { name: "กรุงเทพฯ และปริมณฑล", code: "bangkok", color: "#ec4899", target: 30, shops: 30,
+    provinces: ["กรุงเทพมหานคร", "นนทบุรี", "สมุทรปราการ", "ปทุมธานี"] },
+  { name: "ภาคตะวันตก", code: "west", color: "#ef4444", target: 27, shops: 27,
+    provinces: ["เพชรบุรี", "กาญจนบุรี", "ราชบุรี"] },
 ];
 
-const REGIONS = [
-  { name: "ภาคตะวันออกเฉียงเหนือ", color: "#3b82f6" },
-  { name: "ภาคเหนือ", color: "#10b981" },
-  { name: "ภาคใต้", color: "#06b6d4" },
-  { name: "ภาคตะวันออก", color: "#f59e0b" },
-  { name: "ภาคกลาง", color: "#8b5cf6" },
-  { name: "กรุงเทพฯ และปริมณฑล", color: "#ec4899" },
-  { name: "ภาคตะวันตก", color: "#ef4444" },
-];
+const REGIONS = REGION_DATA.map(r => ({ name: r.name, color: r.color }));
 
 const TOTAL_TARGET = 440;
 const TOTAL_SHOPS = 635;
@@ -312,25 +292,25 @@ const AdminPage = () => {
     setAddingSource(false);
   };
 
-  // Generate all province links at once
-  const generateAllProvinceLinks = async () => {
+  // Generate all region links at once
+  const generateAllRegionLinks = async () => {
     setGeneratingAll(true);
     const existingCodes = sources.map(s => s.code);
-    const toCreate = PROVINCE_DATA.filter(p => !existingCodes.includes(p.code));
+    const toCreate = REGION_DATA.filter(r => !existingCodes.includes(r.code));
     if (toCreate.length === 0) {
-      alert("ลิงก์ครบทุกจังหวัดแล้ว");
+      alert("ลิงก์ครบทุกภาคแล้ว");
       setGeneratingAll(false);
       return;
     }
-    const rows = toCreate.map(p => ({
-      code: p.code,
-      name: p.province,
-      region: p.region,
-      target: p.target,
+    const rows = toCreate.map(r => ({
+      code: r.code,
+      name: r.name,
+      region: r.name,
+      target: r.target,
     }));
     const { error } = await supabase.from("survey_sources").insert(rows);
     if (error) alert("เกิดข้อผิดพลาด: " + error.message);
-    else alert(`สร้างลิงก์สำเร็จ ${toCreate.length} จังหวัด`);
+    else alert(`สร้างลิงก์สำเร็จ ${toCreate.length} ภาค`);
     loadData();
     setGeneratingAll(false);
   };
@@ -834,56 +814,53 @@ OUTPUT:
               </div>
             </div>
 
-            {/* Region-level progress with province breakdown */}
-            {REGIONS.map(reg => {
-              const provinces = PROVINCE_DATA.filter(p => p.region === reg.name);
-              const regionTarget = provinces.reduce((s, p) => s + p.target, 0);
-              const regionShops = provinces.reduce((s, p) => s + p.shops, 0);
-              const regionCollected = provinces.reduce((s, p) => {
-                return s + responses.filter(r => r.source === p.code).length;
-              }, 0);
-              const regionPct = regionTarget > 0 ? Math.min((regionCollected / regionTarget) * 100, 100) : 0;
+            {/* Region-level progress */}
+            {REGION_DATA.map(reg => {
+              const regionCollected = responses.filter(r => r.source === reg.code).length;
+              const regionPct = reg.target > 0 ? Math.min((regionCollected / reg.target) * 100, 100) : 0;
+
+              // Count province distribution from personal_data.province
+              const provinceCounts = {};
+              reg.provinces.forEach(p => provinceCounts[p] = 0);
+              responses.filter(r => r.source === reg.code).forEach(r => {
+                const prov = (typeof r.personal === 'object' ? r.personal : r.personal_data)?.province;
+                if (prov && provinceCounts.hasOwnProperty(prov)) {
+                  provinceCounts[prov]++;
+                } else if (prov) {
+                  provinceCounts[prov] = (provinceCounts[prov] || 0) + 1;
+                }
+              });
 
               return (
                 <div key={reg.name} style={{ ...chartCardStyle, borderLeft: `4px solid ${reg.color}` }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                     <div>
                       <h3 style={{ fontSize: 15, fontWeight: 700, color: reg.color, margin: 0 }}>{reg.name}</h3>
-                      <span style={{ fontSize: 12, color: "#94a3b8" }}>{regionShops} ร้าน · สัดส่วน {((regionShops / TOTAL_SHOPS) * 100).toFixed(1)}%</span>
+                      <span style={{ fontSize: 12, color: "#94a3b8" }}>Code: {reg.code} · {reg.provinces.length} จังหวัด</span>
                     </div>
-                    <span style={{ fontSize: 20, fontWeight: 800, color: regionCollected >= regionTarget ? "#10b981" : reg.color }}>
-                      {regionCollected} / {regionTarget}
+                    <span style={{ fontSize: 20, fontWeight: 800, color: regionCollected >= reg.target ? "#10b981" : reg.color }}>
+                      {regionCollected} / {reg.target}
                     </span>
                   </div>
                   <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 8, height: 16, overflow: "hidden", position: "relative", marginBottom: 16 }}>
-                    <div style={{ width: `${regionPct}%`, height: "100%", borderRadius: 8, background: regionCollected >= regionTarget ? "#10b981" : reg.color, transition: "width 0.3s" }} />
+                    <div style={{ width: `${regionPct}%`, height: "100%", borderRadius: 8, background: regionCollected >= reg.target ? "#10b981" : reg.color, transition: "width 0.3s" }} />
                     <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 10, fontWeight: 700, color: "#fff" }}>{regionPct.toFixed(0)}%</span>
                   </div>
 
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 8 }}>
-                    {provinces.map(prov => {
-                      const collected = responses.filter(r => r.source === prov.code).length;
-                      const pct = prov.target > 0 ? Math.min((collected / prov.target) * 100, 100) : 0;
-                      const hasLink = sources.some(s => s.code === prov.code);
-                      return (
-                        <div key={prov.code} style={{
-                          background: "rgba(255,255,255,0.03)", borderRadius: 10, padding: "10px 14px",
-                          border: `1px solid ${collected >= prov.target ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.06)"}`,
+                  {/* Province breakdown from survey responses */}
+                  {Object.keys(provinceCounts).some(p => provinceCounts[p] > 0) && (
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 8 }}>
+                      {Object.entries(provinceCounts).map(([prov, count]) => (
+                        <div key={prov} style={{
+                          background: "rgba(255,255,255,0.03)", borderRadius: 10, padding: "8px 12px",
+                          border: "1px solid rgba(255,255,255,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center",
                         }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                            <span style={{ fontSize: 13, fontWeight: 700, color: "#e2e8f0" }}>📍 {prov.province}</span>
-                            <span style={{ fontSize: 12, fontWeight: 700, color: collected >= prov.target ? "#10b981" : "#f59e0b" }}>
-                              {collected}/{prov.target}
-                            </span>
-                          </div>
-                          <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 4, height: 6, overflow: "hidden" }}>
-                            <div style={{ width: `${pct}%`, height: "100%", borderRadius: 4, background: collected >= prov.target ? "#10b981" : reg.color }} />
-                          </div>
-                          {!hasLink && <span style={{ fontSize: 10, color: "#64748b", marginTop: 4, display: "block" }}>⚠️ ยังไม่มีลิงก์</span>}
+                          <span style={{ fontSize: 12, color: "#e2e8f0" }}>📍 {prov}</span>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: count > 0 ? "#f59e0b" : "#64748b" }}>{count}</span>
                         </div>
-                      );
-                    })}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -892,12 +869,13 @@ OUTPUT:
             <div style={chartCardStyle}>
               <h3 style={{ fontSize: 16, fontWeight: 700, color: "#e2e8f0", margin: "0 0 12px" }}>วิธีการสุ่มตัวอย่าง</h3>
               <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 20, border: "1px solid rgba(255,255,255,0.06)", lineHeight: 2, fontSize: 14, color: "#cbd5e1" }}>
-                <p style={{ margin: "0 0 8px" }}>ใช้ <strong style={{ color: "#f59e0b" }}>Proportional Stratified Sampling</strong> (การสุ่มแบบแบ่งชั้นภูมิตามสัดส่วน) โดย:</p>
+                <p style={{ margin: "0 0 8px" }}>ใช้ <strong style={{ color: "#f59e0b" }}>Proportional Quota Sampling</strong> (การสุ่มแบบโควตาตามสัดส่วน) โดย:</p>
                 <ol style={{ paddingLeft: 24, margin: 0 }}>
-                  <li>แบ่งชั้นภูมิ (strata) ตามภูมิภาค 7 ภาค, {PROVINCE_DATA.length} จังหวัด/สาขา</li>
-                  <li>คำนวณสัดส่วนจากจำนวนร้านติดตั้ง PSI ในแต่ละสาขา (ประชากร = {TOTAL_SHOPS} ร้าน)</li>
-                  <li>จัดสรรกลุ่มตัวอย่าง {TOTAL_TARGET} คน ตามสัดส่วน : n<sub>h</sub> = (N<sub>h</sub> / N) × {TOTAL_TARGET}</li>
-                  <li>แต่ละจังหวัดมี QR Code และลิงก์เฉพาะ เพื่อตรวจสอบย้อนกลับแหล่งข้อมูล</li>
+                  <li>แบ่งชั้นภูมิ (strata) ตามภูมิภาค 7 ภาค</li>
+                  <li>แต่ละภาคมี QR Code และลิงก์เฉพาะ (รวม 7 ลิงก์)</li>
+                  <li>ในแบบสอบถามจะถามจังหวัดที่ติดตั้ง โดยกรองตามภาคที่ลิงก์ระบุ</li>
+                  <li>สามารถ cross-validate ข้อมูลจังหวัดกับภาคที่ส่งลิงก์ได้</li>
+                  <li>จัดสรรกลุ่มตัวอย่าง {TOTAL_TARGET} คน ตามสัดส่วน</li>
                 </ol>
               </div>
             </div>
@@ -1056,7 +1034,7 @@ OUTPUT:
             {/* Actions bar */}
             <div style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap", alignItems: "center" }}>
               <button
-                onClick={generateAllProvinceLinks}
+                onClick={generateAllRegionLinks}
                 disabled={generatingAll}
                 style={{
                   padding: "12px 28px", borderRadius: 12, border: "none",
@@ -1064,10 +1042,10 @@ OUTPUT:
                   color: "#fff", fontSize: 15, fontWeight: 700, cursor: generatingAll ? "not-allowed" : "pointer",
                 }}
               >
-                {generatingAll ? "⏳ กำลังสร้าง..." : `🚀 สร้างลิงก์ทุกจังหวัด (${PROVINCE_DATA.length} สาขา)`}
+                {generatingAll ? "⏳ กำลังสร้าง..." : `🚀 สร้างลิงก์ทุกภาค (${REGION_DATA.length} ภาค)`}
               </button>
               <span style={{ fontSize: 13, color: "#94a3b8" }}>
-                ลิงก์ที่สร้างแล้ว: <strong style={{ color: "#f59e0b" }}>{sources.length}</strong> / {PROVINCE_DATA.length}
+                ลิงก์ที่สร้างแล้ว: <strong style={{ color: "#f59e0b" }}>{sources.length}</strong> / {REGION_DATA.length}
               </span>
             </div>
 

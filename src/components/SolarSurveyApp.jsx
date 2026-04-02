@@ -14,7 +14,18 @@ import {
 
 const SURVEY_VERSION = "1.0";
 
-// 10 unique source links
+// Region-based source mapping
+const REGION_PROVINCES = {
+  northeast: { name: "ภาคตะวันออกเฉียงเหนือ", provinces: ["ขอนแก่น", "เลย", "ร้อยเอ็ด", "ปากช่อง", "สุรินทร์", "อุบลราชธานี", "สกลนคร"] },
+  north: { name: "ภาคเหนือ", provinces: ["กำแพงเพชร", "เชียงใหม่", "แพร่", "เพชรบูรณ์", "แม่สอด", "พิษณุโลก", "เชียงราย"] },
+  south: { name: "ภาคใต้", provinces: ["สุราษฎร์ธานี", "ทุ่งสง", "หาดใหญ่", "ชุมพร"] },
+  east: { name: "ภาคตะวันออก", provinces: ["ระยอง", "กบินทร์บุรี", "ชลบุรี", "จันทบุรี"] },
+  central: { name: "ภาคกลาง", provinces: ["สุพรรณบุรี", "ปทุมธานี", "สิงห์บุรี", "นครปฐม", "อยุธยา"] },
+  bangkok: { name: "กรุงเทพฯ และปริมณฑล", provinces: ["กรุงเทพมหานคร", "นนทบุรี", "สมุทรปราการ", "ปทุมธานี"] },
+  west: { name: "ภาคตะวันตก", provinces: ["เพชรบุรี", "กาญจนบุรี", "ราชบุรี"] },
+};
+
+// 10 unique source links (legacy fallback)
 const SOURCES = {
   src01: "Facebook Ads",
   src02: "LINE OA",
@@ -1197,6 +1208,8 @@ function SpeechToTextButton({ onResult }) {
 export default function SolarSurveyApp() {
   const [page, setPage] = useState("pdpa"); // pdpa | screening | survey | thanks | admin
   const [source] = useState(getSourceFromURL);
+  // Get provinces for the current region source
+  const regionInfo = REGION_PROVINCES[source] || null;
   const [uid] = useState(generateUID);
   const [personal, setPersonal] = useState({});
   const [likert, setLikert] = useState({});
@@ -1245,8 +1258,9 @@ export default function SolarSurveyApp() {
   }, [personal, likert, suggestion, timer, page, uid]);
 
   // Count answered
-  const answeredPersonal = PERSONAL_QUESTIONS.filter(q => personal[q.id]).length;
+  const answeredPersonal = PERSONAL_QUESTIONS.filter(q => personal[q.id]).length + (regionInfo && personal.province ? 1 : 0);
   const answeredLikert = Object.keys(likert).length;
+  const totalRequired = PERSONAL_QUESTIONS.length + (regionInfo ? 1 : 0) + TOTAL_LIKERT + 1;
   const answeredTotal = answeredPersonal + answeredLikert + (suggestion.trim() ? 1 : 0);
 
   const sectionRefs = useRef({});
@@ -1306,6 +1320,10 @@ export default function SolarSurveyApp() {
   const validate = () => {
     const missing = [];
     PERSONAL_QUESTIONS.forEach(q => { if (!personal[q.id]) missing.push({ id: q.id, type: "personal", text: q.text }); });
+    // Province question (only if region link)
+    if (regionInfo && !personal.province) {
+      missing.push({ id: "province", type: "personal", text: "จังหวัดที่ติดตั้งโซลาร์รูฟท็อป" });
+    }
     LIKERT_SECTIONS.forEach(sec => {
       sec.subsections.forEach(sub => {
         sub.items.forEach(item => { if (!likert[item.id]) missing.push({ id: item.id, type: "likert", text: item.text.substring(0, 50) + "..." }); });
@@ -1393,7 +1411,7 @@ export default function SolarSurveyApp() {
     }}>
       
 
-      <ProgressBar current={answeredTotal} total={TOTAL_QUESTIONS} />
+      <ProgressBar current={answeredTotal} total={totalRequired} />
 
       {/* Timer & Source Badge */}
       <div style={{
@@ -1403,7 +1421,7 @@ export default function SolarSurveyApp() {
         fontSize: 12, borderBottom: "1px solid rgba(255,255,255,0.05)",
       }}>
         <span style={{ color: "#94a3b8" }}>
-          📍 {SOURCES[source] || "Direct"}
+          📍 {regionInfo ? regionInfo.name : (SOURCES[source] || "Direct")}
         </span>
         <span style={{ color: "#f59e0b", fontWeight: 700, fontFamily: "monospace" }}>
           ⏱ {formatTime(timer)}
@@ -1499,6 +1517,37 @@ export default function SolarSurveyApp() {
                 </div>
               </div>
             ))}
+
+            {/* Province question - filtered by region */}
+            {regionInfo && (
+              <div id="field-province" style={{ marginBottom: 24 }}>
+                <p style={{ fontSize: 14, fontWeight: 600, color: "#e2e8f0", margin: "0 0 10px" }}>
+                  จังหวัดที่ติดตั้งโซลาร์รูฟท็อป ({regionInfo.name})
+                  {!personal.province && showValidation && (
+                    <span style={{ color: "#f87171", fontSize: 12, marginLeft: 8 }}>* จำเป็น</span>
+                  )}
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {regionInfo.provinces.map(prov => (
+                    <button
+                      key={prov}
+                      onClick={() => handlePersonalChange("province", prov)}
+                      style={{
+                        padding: "10px 20px",
+                        borderRadius: 10,
+                        border: personal.province === prov ? "2px solid #f59e0b" : "2px solid rgba(255,255,255,0.1)",
+                        background: personal.province === prov ? "rgba(245,158,11,0.15)" : "rgba(255,255,255,0.03)",
+                        color: personal.province === prov ? "#f59e0b" : "#94a3b8",
+                        fontSize: 13, fontWeight: personal.province === prov ? 700 : 400,
+                        cursor: "pointer", transition: "all 0.2s",
+                      }}
+                    >
+                      {prov}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -1588,9 +1637,9 @@ export default function SolarSurveyApp() {
         {/* Submit */}
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 12 }}>
-            ตอบแล้ว {answeredTotal} / {TOTAL_QUESTIONS} ข้อ
-            {answeredTotal < TOTAL_QUESTIONS - 1 && (
-              <span style={{ color: "#f87171" }}> (เหลืออีก {TOTAL_QUESTIONS - 1 - answeredTotal} ข้อที่จำเป็น)</span>
+            ตอบแล้ว {answeredTotal} / {totalRequired} ข้อ
+            {answeredTotal < totalRequired - 1 && (
+              <span style={{ color: "#f87171" }}> (เหลืออีก {totalRequired - 1 - answeredTotal} ข้อที่จำเป็น)</span>
             )}
           </div>
           <button
