@@ -484,7 +484,7 @@ function ScreeningQuestion({ onPass, onFail }) {
   );
 }
 
-
+function ProgressBar({ current, total }) {
   const pct = Math.round((current / total) * 100);
   return (
     <div style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(15,32,39,0.95)", backdropFilter: "blur(10px)", padding: "12px 20px" }}>

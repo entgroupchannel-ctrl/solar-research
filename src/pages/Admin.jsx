@@ -254,58 +254,7 @@ const AdminPage = () => {
     URL.revokeObjectURL(url);
   };
 
-  const exportCSV = () => {
-    if (!filtered.length) return;
-    const allLikertIds = LIKERT_SECTIONS.flatMap(s => s.subsections.flatMap(ss => ss.items.map(i => i.id)));
-    const headers = ["response_id", "source", "source_name", "timestamp", "time_seconds",
-      ...PERSONAL_QUESTIONS.map(q => q.id), ...allLikertIds, "suggestion"];
-    const rows = filtered.map(r => [
-      r.id, r.source, SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
-      ...PERSONAL_QUESTIONS.map(q => r.personal?.[q.id] || ""),
-      ...allLikertIds.map(id => r.likert?.[id] || ""),
-      `"${(r.suggestion || "").replace(/"/g, '""')}"`,
-    ]);
-    const csv = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
-    downloadFile(csv, "survey_results.csv", "text/csv;charset=utf-8");
-  };
 
-  const exportTXT = () => {
-    if (!filtered.length) return;
-    let txt = "=== Solar Rooftop Survey Results ===\n";
-    txt += `Total Responses: ${filtered.length}\n`;
-    txt += `Export Date: ${new Date().toLocaleString("th-TH")}\n\n`;
-    filtered.forEach((r, i) => {
-      txt += `--- Response #${i + 1} (${r.id}) ---\n`;
-      txt += `Source: ${SOURCES[r.source] || r.source}\n`;
-      txt += `Time: ${r.timestamp}\n`;
-      txt += `Duration: ${formatTime(r.timeTaken)}\n`;
-      PERSONAL_QUESTIONS.forEach(q => { txt += `${q.text}: ${r.personal?.[q.id] || "-"}\n`; });
-      LIKERT_SECTIONS.forEach(sec => {
-        txt += `\n[${sec.title}]\n`;
-        sec.subsections.forEach(sub => {
-          sub.items.forEach(item => { txt += `  ${item.text}: ${r.likert?.[item.id] || "-"}\n`; });
-        });
-      });
-      txt += `\nข้อเสนอแนะ: ${r.suggestion || "-"}\n\n`;
-    });
-    downloadFile(txt, "survey_results.txt", "text/plain;charset=utf-8");
-  };
-
-  const exportExcelJSON = () => {
-    if (!filtered.length) return;
-    const allLikertIds = LIKERT_SECTIONS.flatMap(s => s.subsections.flatMap(ss => ss.items.map(i => i.id)));
-    const allLikertTexts = LIKERT_SECTIONS.flatMap(s => s.subsections.flatMap(ss => ss.items.map(i => i.text.substring(0, 40))));
-    const headers = ["ID", "แหล่งที่มา", "วันเวลา", "เวลา(วินาที)",
-      ...PERSONAL_QUESTIONS.map(q => q.text), ...allLikertTexts, "ข้อเสนอแนะ"];
-    const rows = filtered.map(r => [
-      r.id, SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
-      ...PERSONAL_QUESTIONS.map(q => r.personal?.[q.id] || ""),
-      ...allLikertIds.map(id => r.likert?.[id] || ""),
-      (r.suggestion || "").replace(/\t/g, " "),
-    ]);
-    const tsv = "\uFEFF" + [headers.join("\t"), ...rows.map(r => r.join("\t"))].join("\n");
-    downloadFile(tsv, "survey_results.xls", "application/vnd.ms-excel;charset=utf-8");
-  };
 
   // Source management
   const addSource = async () => {
@@ -583,7 +532,7 @@ OUTPUT:
     setTimeout(() => exportMplusInp(data), 500);
   };
 
-
+  const tabStyle = (isActive) => ({
     padding: "10px 24px", borderRadius: 10, border: "none", cursor: "pointer",
     background: isActive ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.05)",
     color: isActive ? "#f59e0b" : "#94a3b8", fontSize: 13, fontWeight: isActive ? 700 : 400,
