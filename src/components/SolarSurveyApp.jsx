@@ -344,6 +344,16 @@ function PDPAConsent({ onAccept }) {
           <p style={{ fontWeight: 600, color: "#1e293b" }}>อาจารย์ที่ปรึกษา</p>
           <p style={{ margin: "0 0 4px" }}>รศ.ดร.สุวัฒน์ ฉิมะสังคนันท์ <span style={{ fontSize: 12, color: "#64748b" }}>(อาจารย์ที่ปรึกษาหลัก)</span></p>
           <p style={{ margin: 0 }}>ผศ.ดร.พงษ์สันติ์ ตันหยง <span style={{ fontSize: 12, color: "#64748b" }}>(อาจารย์ที่ปรึกษาร่วม)</span></p>
+          <div style={{ marginTop: 16, paddingTop: 12, borderTop: "1px solid #e2e8f0" }}>
+            <a
+              href="https://doctorofbusinessadministrationprogram.blogspot.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: 13, color: "#f59e0b", textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}
+            >
+              🎓 หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี →
+            </a>
+          </div>
         </div>
         <button
           onClick={onAccept}
@@ -663,6 +673,17 @@ function ThankYou({ responseId, timeTaken }) {
             <div style={{ fontSize: 12, color: "#94a3b8" }}>เวลาที่ใช้</div>
             <div style={{ fontSize: 14, fontWeight: 700, color: "#1e293b" }}>{formatTime(timeTaken)}</div>
           </div>
+        </div>
+
+        <div style={{ marginTop: 20, textAlign: "center" }}>
+          <a
+            href="https://doctorofbusinessadministrationprogram.blogspot.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ fontSize: 13, color: "#f59e0b", textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}
+          >
+            🎓 หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี →
+          </a>
         </div>
       </div>
     </div>
