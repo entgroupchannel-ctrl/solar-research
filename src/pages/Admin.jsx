@@ -138,8 +138,8 @@ function formatTime(seconds) {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
-const SECTION_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981"];
-const PIE_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
+const SECTION_COLORS = ["#059669", "#3b82f6", "#8b5cf6", "#10b981"];
+const PIE_COLORS = ["#059669", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
 
 // Region-based sampling data
 const REGION_DATA = [
@@ -838,7 +838,7 @@ OUTPUT:
             <div style={chartCardStyle}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: "#10b981", margin: 0 }}>ความคืบหน้าการเก็บข้อมูลรวม</h3>
-                <span style={{ fontSize: 24, fontWeight: 800, color: responses.length >= TOTAL_TARGET ? "#10b981" : "#f59e0b" }}>
+                <span style={{ fontSize: 24, fontWeight: 800, color: responses.length >= TOTAL_TARGET ? "#10b981" : "#059669" }}>
                   {responses.length} / {TOTAL_TARGET}
                 </span>
               </div>
@@ -846,7 +846,7 @@ OUTPUT:
                 <div style={{
                   width: `${Math.min((responses.length / TOTAL_TARGET) * 100, 100)}%`,
                   height: "100%", borderRadius: 10,
-                  background: responses.length >= TOTAL_TARGET ? "linear-gradient(90deg, #10b981, #059669)" : "linear-gradient(90deg, #f59e0b, #f97316)",
+                  background: responses.length >= TOTAL_TARGET ? "linear-gradient(90deg, #10b981, #059669)" : "linear-gradient(90deg, #059669, #10b981)",
                   transition: "width 0.5s ease",
                 }} />
                 <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 12, fontWeight: 700, color: "#fff" }}>
@@ -897,7 +897,7 @@ OUTPUT:
                           border: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center",
                         }}>
                           <span style={{ fontSize: 12, color: "#1e293b" }}>📍 {prov}</span>
-                          <span style={{ fontSize: 12, fontWeight: 700, color: count > 0 ? "#f59e0b" : "#64748b" }}>{count}</span>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: count > 0 ? "#059669" : "#64748b" }}>{count}</span>
                         </div>
                       ))}
                     </div>
@@ -948,7 +948,7 @@ OUTPUT:
                   <PolarGrid stroke="#e2e8f0" />
                   <PolarAngleAxis dataKey="subject" tick={{ fill: "#94a3b8", fontSize: 10 }} />
                   <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fill: "#94a3b8", fontSize: 10 }} />
-                  <Radar name="ค่าเฉลี่ย" dataKey="mean" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.25} strokeWidth={2} />
+                  <Radar name="ค่าเฉลี่ย" dataKey="mean" stroke="#059669" fill="#059669" fillOpacity={0.25} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
@@ -1230,7 +1230,7 @@ OUTPUT:
                 <input type="number" value={newSourceTarget} onChange={e => setNewSourceTarget(e.target.value)} placeholder="เป้าหมาย"
                   style={{ width: 80, padding: "10px 12px", borderRadius: 10, border: "1px solid #d1d5db", background: "#f1f5f9", color: "#1e293b", fontSize: 13, outline: "none", textAlign: "center" }} />
                 <button onClick={addSource} disabled={addingSource || !newSourceName.trim()}
-                  style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: newSourceName.trim() ? "#f59e0b" : "#e2e8f0", color: newSourceName.trim() ? "#000" : "#64748b", fontSize: 13, fontWeight: 700, cursor: newSourceName.trim() ? "pointer" : "not-allowed" }}>
+                  style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: newSourceName.trim() ? "#059669" : "#e2e8f0", color: newSourceName.trim() ? "#fff" : "#64748b", fontSize: 13, fontWeight: 700, cursor: newSourceName.trim() ? "pointer" : "not-allowed" }}>
                   {addingSource ? "..." : "+ เพิ่ม"}
                 </button>
               </div>
@@ -1265,7 +1265,7 @@ OUTPUT:
                             </div>
                             <span style={{
                               background: count >= tgt && tgt > 0 ? "rgba(16,185,129,0.15)" : "rgba(245,158,11,0.15)",
-                              color: count >= tgt && tgt > 0 ? "#10b981" : "#f59e0b",
+                              color: count >= tgt && tgt > 0 ? "#10b981" : "#059669",
                               padding: "4px 12px", borderRadius: 12, fontSize: 12, fontWeight: 700,
                             }}>{count}{tgt > 0 ? ` / ${tgt}` : ""}</span>
                           </div>
