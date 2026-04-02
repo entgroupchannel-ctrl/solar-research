@@ -757,7 +757,7 @@ function ThankYou({ responseId, timeTaken }) {
           display: "flex", alignItems: "center", justifyContent: "center",
           margin: "0 auto 24px", fontSize: 40,
         }}>✓</div>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: "#1e293b", margin: "0 0 12px" }}>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: "#059669", margin: "0 0 12px" }}>
           ขอบคุณที่สละเวลาตอบแบบสอบถาม
         </h1>
         <p style={{ color: "#64748b", fontSize: 15, lineHeight: 1.7, margin: "0 0 24px" }}>
