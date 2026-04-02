@@ -520,6 +520,7 @@ function LikertRow({ item, value, onChange, index, sectionColor }) {
   return (
     <div
       ref={ref}
+      id={`field-${item.id}`}
       style={{
         padding: "16px 20px",
         background: value ? "rgba(245,158,11,0.05)" : "transparent",
