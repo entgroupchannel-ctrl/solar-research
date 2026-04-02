@@ -805,6 +805,7 @@ OUTPUT:
           <button onClick={() => setActiveTab("sampling")} style={tabStyle(activeTab === "sampling")}>🎯 เป้าหมาย</button>
           <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}>👥 ข้อมูลผู้ตอบ</button>
           <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}>📋 ตารางละเอียด</button>
+          <button onClick={() => setActiveTab("individual")} style={tabStyle(activeTab === "individual")}>📝 รายบุคคล</button>
           <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}>🔗 จัดการลิงก์</button>
         </div>
 
