@@ -476,6 +476,7 @@ const AdminPage = () => {
         {/* Tabs */}
         <div style={{ display: "flex", gap: 8, marginBottom: 32, borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: 12, flexWrap: "wrap" }}>
           <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}>📈 ภาพรวม</button>
+          <button onClick={() => setActiveTab("sampling")} style={tabStyle(activeTab === "sampling")}>🎯 เป้าหมาย</button>
           <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}>👥 ข้อมูลผู้ตอบ</button>
           <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}>📋 ตารางละเอียด</button>
           <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}>🔗 จัดการลิงก์</button>
