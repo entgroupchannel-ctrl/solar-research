@@ -219,6 +219,87 @@ function formatTime(seconds) {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
+// === Response Quality Score ===
+const ALL_LIKERT_IDS = LIKERT_SECTIONS.flatMap(sec => sec.subsections.flatMap(sub => sub.items.map(i => i.id)));
+
+function calcQualityScore(r) {
+  const likert = r.likert || r.likert_data || {};
+  const timeTaken = r.timeTaken ?? r.time_taken ?? 0;
+  const answers = ALL_LIKERT_IDS.map(id => likert[id]).filter(v => v != null);
+  const totalItems = ALL_LIKERT_IDS.length;
+  const answeredCount = answers.length;
+
+  // 1. Completeness (0-25): % of items answered
+  const completeness = (answeredCount / totalItems) * 25;
+
+  // 2. Time score (0-25): too fast = suspicious, sweet spot 3-20 min
+  let timeScore = 0;
+  if (timeTaken >= 180 && timeTaken <= 1200) timeScore = 25; // 3-20 min ideal
+  else if (timeTaken > 1200 && timeTaken <= 2400) timeScore = 20; // 20-40 min ok
+  else if (timeTaken >= 90 && timeTaken < 180) timeScore = 15; // 1.5-3 min fast
+  else if (timeTaken >= 60 && timeTaken < 90) timeScore = 8; // 1-1.5 min very fast
+  else if (timeTaken > 2400) timeScore = 12; // >40 min too slow
+  else timeScore = 3; // <1 min suspicious
+
+  // 3. Variety score (0-25): how many unique values used
+  let varietyScore = 0;
+  if (answeredCount >= 2) {
+    const uniqueVals = new Set(answers).size;
+    const maxPossible = Math.min(5, answeredCount);
+    varietyScore = (uniqueVals / maxPossible) * 25;
+  }
+
+  // 4. Straight-lining penalty (0-25): check consecutive same answers
+  let straightLineScore = 25;
+  if (answeredCount >= 5) {
+    let maxConsecutive = 1, current = 1;
+    for (let i = 1; i < answers.length; i++) {
+      if (answers[i] === answers[i - 1]) { current++; maxConsecutive = Math.max(maxConsecutive, current); }
+      else current = 1;
+    }
+    const ratio = maxConsecutive / answeredCount;
+    if (ratio >= 0.8) straightLineScore = 3;
+    else if (ratio >= 0.6) straightLineScore = 8;
+    else if (ratio >= 0.4) straightLineScore = 15;
+    else if (ratio >= 0.25) straightLineScore = 20;
+    else straightLineScore = 25;
+  }
+
+  const total = Math.round(completeness + timeScore + varietyScore + straightLineScore);
+  return {
+    total: Math.min(100, total),
+    completeness: Math.round(completeness),
+    timeScore: Math.round(timeScore),
+    varietyScore: Math.round(varietyScore),
+    straightLineScore: Math.round(straightLineScore),
+    answeredCount,
+    totalItems,
+    uniqueVals: answeredCount >= 2 ? new Set(answers).size : 0,
+    maxConsecutive: (() => {
+      if (answeredCount < 2) return 0;
+      let max = 1, cur = 1;
+      for (let i = 1; i < answers.length; i++) {
+        if (answers[i] === answers[i - 1]) { cur++; max = Math.max(max, cur); } else cur = 1;
+      }
+      return max;
+    })(),
+  };
+}
+
+function qualityColor(score) {
+  if (score >= 80) return "#059669";
+  if (score >= 60) return "#eab308";
+  if (score >= 40) return "#f97316";
+  return "#ef4444";
+}
+
+function qualityLabel(score) {
+  if (score >= 80) return "ดี";
+  if (score >= 60) return "ปานกลาง";
+  if (score >= 40) return "ต่ำ";
+  return "น่าสงสัย";
+}
+
 const SECTION_COLORS = ["#059669", "#3b82f6", "#8b5cf6", "#10b981"];
 const PIE_COLORS = ["#059669", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
 
@@ -1639,44 +1720,80 @@ OUTPUT:
                </div>
              </div>
 
-             {(() => {
-               const totalPages = Math.ceil(filtered.length / indivPageSize);
-               const paged = filtered.slice((indivPage - 1) * indivPageSize, indivPage * indivPageSize);
-               const startIdx = (indivPage - 1) * indivPageSize;
+              {/* Quality Score Summary */}
+              {(() => {
+                const allScores = filtered.map(r => calcQualityScore(r));
+                const avgScore = Math.round(allScores.reduce((s, q) => s + q.total, 0) / allScores.length);
+                const good = allScores.filter(q => q.total >= 80).length;
+                const medium = allScores.filter(q => q.total >= 60 && q.total < 80).length;
+                const low = allScores.filter(q => q.total >= 40 && q.total < 60).length;
+                const suspect = allScores.filter(q => q.total < 40).length;
+                return (
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10, marginBottom: 16 }}>
+                    {[
+                      { label: "คะแนนเฉลี่ย", value: `${avgScore}/100`, color: qualityColor(avgScore), sub: qualityLabel(avgScore) },
+                      { label: "ดี (≥80)", value: good, color: "#059669", sub: `${((good / filtered.length) * 100).toFixed(1)}%` },
+                      { label: "ปานกลาง (60-79)", value: medium, color: "#eab308", sub: `${((medium / filtered.length) * 100).toFixed(1)}%` },
+                      { label: "ต่ำ (40-59)", value: low, color: "#f97316", sub: `${((low / filtered.length) * 100).toFixed(1)}%` },
+                      { label: "น่าสงสัย (<40)", value: suspect, color: "#ef4444", sub: `${((suspect / filtered.length) * 100).toFixed(1)}%` },
+                    ].map(card => (
+                      <div key={card.label} style={{ background: `${card.color}08`, border: `1px solid ${card.color}25`, borderRadius: 10, padding: "10px 12px", textAlign: "center" }}>
+                        <div style={{ fontSize: 11, color: "#64748b", marginBottom: 4 }}>{card.label}</div>
+                        <div style={{ fontSize: 20, fontWeight: 800, color: card.color }}>{card.value}</div>
+                        <div style={{ fontSize: 11, color: card.color, fontWeight: 600 }}>{card.sub}</div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+
+              {(() => {
+                const totalPages = Math.ceil(filtered.length / indivPageSize);
+                const paged = filtered.slice((indivPage - 1) * indivPageSize, indivPage * indivPageSize);
+                const startIdx = (indivPage - 1) * indivPageSize;
                return (
                  <>
                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                     {paged.map((r, idx) => {
-                       const isExpanded = expandedResponse === r.uid;
-                       const personal = r.personal || r.personal_data || {};
-                       const likert = r.likert || r.likert_data || {};
-                       return (
-                         <div key={r.uid} style={{
-                           background: "#f8fafc", borderRadius: 12,
-                           border: isExpanded ? "1px solid #059669" : "1px solid #e2e8f0",
-                           overflow: "hidden",
-                         }}>
-                           {/* Row header - clickable */}
-                           <div
-                             onClick={() => setExpandedResponse(isExpanded ? null : r.uid)}
-                             style={{
-                               padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12,
-                               background: isExpanded ? "#f0fdf4" : "transparent",
-                             }}
-                           >
-                             <span style={{ fontSize: 13, color: "#64748b", minWidth: 30 }}>#{startIdx + idx + 1}</span>
-                             <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b", flex: 1 }}>
-                               {personal.gender || "-"} · {personal.age || "-"} · {personal.province || (SOURCES[r.source] || r.source)}
-                             </span>
-                             <span style={{ fontSize: 11, color: "#64748b" }}>{r.timestamp}</span>
-                             <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>
-                               <Clock size={11} style={{ marginRight: 2 }} /> {formatTime(r.timeTaken)}
-                             </span>
-                             {r.want_results && <span style={{ fontSize: 11, color: "#10b981" }}><Mail size={13} /></span>}
-                             <span style={{ color: "#64748b", fontSize: 16, transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</span>
-                           </div>
+                      {paged.map((r, idx) => {
+                        const isExpanded = expandedResponse === r.uid;
+                        const personal = r.personal || r.personal_data || {};
+                        const likert = r.likert || r.likert_data || {};
+                        const qs = calcQualityScore(r);
+                        return (
+                          <div key={r.uid} style={{
+                            background: "#f8fafc", borderRadius: 12,
+                            border: isExpanded ? "1px solid #059669" : "1px solid #e2e8f0",
+                            overflow: "hidden",
+                          }}>
+                            {/* Row header - clickable */}
+                            <div
+                              onClick={() => setExpandedResponse(isExpanded ? null : r.uid)}
+                              style={{
+                                padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12,
+                                background: isExpanded ? "#f0fdf4" : "transparent",
+                              }}
+                            >
+                              <span style={{ fontSize: 13, color: "#64748b", minWidth: 30 }}>#{startIdx + idx + 1}</span>
+                              <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b", flex: 1 }}>
+                                {personal.gender || "-"} · {personal.age || "-"} · {personal.province || (SOURCES[r.source] || r.source)}
+                              </span>
+                              {/* Quality Score Badge */}
+                              <span style={{
+                                fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 6,
+                                background: `${qualityColor(qs.total)}18`, color: qualityColor(qs.total),
+                                display: "flex", alignItems: "center", gap: 3,
+                              }}>
+                                <CheckCircle2 size={11} /> {qs.total}
+                              </span>
+                              <span style={{ fontSize: 11, color: "#64748b" }}>{r.timestamp}</span>
+                              <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>
+                                <Clock size={11} style={{ marginRight: 2 }} /> {formatTime(r.timeTaken)}
+                              </span>
+                              {r.want_results && <span style={{ fontSize: 11, color: "#10b981" }}><Mail size={13} /></span>}
+                              <span style={{ color: "#64748b", fontSize: 16, transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</span>
+                            </div>
 
-                           {/* Expanded detail */}
+                            {/* Expanded detail */}
                            {isExpanded && (
                              <div style={{ padding: "0 16px 16px", borderTop: "1px solid #e2e8f0" }}>
                                {/* Personal data */}
@@ -1746,12 +1863,39 @@ OUTPUT:
                                  </div>
                                )}
 
-                               {/* Meta */}
-                               <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 11, color: "#64748b" }}>
-                                 <span>UID: {r.uid}</span>
-                                 <span>Source: {r.source_code || r.source}</span>
-                                 <span>Version: {r.survey_version}</span>
-                               </div>
+                                {/* Quality Score Breakdown */}
+                                <div style={{ marginTop: 12, padding: "12px 16px", background: `${qualityColor(qs.total)}08`, borderRadius: 10, border: `1px solid ${qualityColor(qs.total)}30` }}>
+                                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                                    <CheckCircle2 size={16} color={qualityColor(qs.total)} />
+                                    <span style={{ fontSize: 14, fontWeight: 700, color: qualityColor(qs.total) }}>
+                                      Quality Score: {qs.total}/100 ({qualityLabel(qs.total)})
+                                    </span>
+                                  </div>
+                                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+                                    {[
+                                      { label: "ครบถ้วน", score: qs.completeness, max: 25, detail: `${qs.answeredCount}/${qs.totalItems} ข้อ` },
+                                      { label: "เวลา", score: qs.timeScore, max: 25, detail: formatTime(r.timeTaken) },
+                                      { label: "ความหลากหลาย", score: qs.varietyScore, max: 25, detail: `${qs.uniqueVals} ค่า` },
+                                      { label: "Straight-line", score: qs.straightLineScore, max: 25, detail: `ซ้ำสูงสุด ${qs.maxConsecutive} ข้อ` },
+                                    ].map(item => (
+                                      <div key={item.label} style={{ textAlign: "center" }}>
+                                        <div style={{ fontSize: 11, color: "#64748b", marginBottom: 4 }}>{item.label}</div>
+                                        <div style={{ height: 6, background: "#e2e8f0", borderRadius: 3, overflow: "hidden", marginBottom: 3 }}>
+                                          <div style={{ height: "100%", width: `${(item.score / item.max) * 100}%`, background: qualityColor((item.score / item.max) * 100), borderRadius: 3, transition: "width 0.3s" }} />
+                                        </div>
+                                        <div style={{ fontSize: 11, fontWeight: 600, color: "#1e293b" }}>{item.score}/{item.max}</div>
+                                        <div style={{ fontSize: 10, color: "#94a3b8" }}>{item.detail}</div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                {/* Meta */}
+                                <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 11, color: "#64748b" }}>
+                                  <span>UID: {r.uid}</span>
+                                  <span>Source: {r.source_code || r.source}</span>
+                                  <span>Version: {r.survey_version}</span>
+                                </div>
                              </div>
                            )}
                          </div>
