@@ -184,25 +184,49 @@ const AdminPage = () => {
   const [printProvince, setPrintProvince] = useState(null);
   const printRef = useRef(null);
 
-  // Load data from Supabase
+  // Admin API helper
+  const adminApi = useCallback(async (action, payload = {}) => {
+    const res = await supabase.functions.invoke("admin-api", {
+      body: { action, password: passwordInput || sessionStorage.getItem("admin_pw") || "", payload },
+    });
+    if (res.error) throw new Error(res.error.message);
+    return res.data;
+  }, [passwordInput]);
+
+  // Load data via edge function
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [respResult, srcResult] = await Promise.all([
-      supabase.from("survey_responses").select("*").order("created_at", { ascending: false }),
-      supabase.from("survey_sources").select("*").order("created_at", { ascending: true }),
-    ]);
-    if (respResult.data) {
-      setResponses(respResult.data.map(r => ({
-        id: r.uid,
-        source: r.source_code,
-        timestamp: new Date(r.created_at).toLocaleString("th-TH"),
-        timeTaken: r.time_taken,
-        personal: r.personal_data,
-        likert: r.likert_data,
-        suggestion: r.suggestion,
-      })));
+    try {
+      const pw = sessionStorage.getItem("admin_pw") || "";
+      const [respData, srcData] = await Promise.all([
+        supabase.functions.invoke("admin-api", { body: { action: "get_responses", password: pw } }),
+        supabase.functions.invoke("admin-api", { body: { action: "get_sources", password: pw } }),
+      ]);
+      if (respData.data && !respData.data.error) {
+        setResponses(respData.data.map(r => ({
+          id: r.uid,
+          source: r.source_code,
+          timestamp: new Date(r.created_at).toLocaleString("th-TH"),
+          timeTaken: r.time_taken,
+          personal: r.personal_data,
+          likert: r.likert_data,
+          suggestion: r.suggestion,
+          // Keep raw fields for export
+          personal_data: r.personal_data,
+          likert_data: r.likert_data,
+          uid: r.uid,
+          source_code: r.source_code,
+          created_at: r.created_at,
+          time_taken: r.time_taken,
+          survey_version: r.survey_version,
+          want_results: r.want_results,
+          email: r.email,
+        })));
+      }
+      if (srcData.data && !srcData.data.error) setSources(srcData.data);
+    } catch (e) {
+      console.error("Load error:", e);
     }
-    if (srcResult.data) setSources(srcResult.data);
     setLoading(false);
   }, []);
 
