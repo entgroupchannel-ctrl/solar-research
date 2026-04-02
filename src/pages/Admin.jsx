@@ -153,8 +153,13 @@ const REGION_QUOTAS = [
 const TOTAL_TARGET = 440;
 const TOTAL_SHOPS = 635;
 
+const ADMIN_PASSWORD = "4497542";
+
 const AdminPage = () => {
   const navigate = useNavigate();
+  const [authenticated, setAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [selectedSource, setSelectedSource] = useState("all");
   const [activeTab, setActiveTab] = useState("overview");
   const [responses, setResponses] = useState([]);
@@ -374,6 +379,50 @@ const AdminPage = () => {
     }
     return null;
   };
+
+  if (!authenticated) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
+        background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+        fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif",
+      }}>
+        <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 16, padding: 40, maxWidth: 380, width: "90%", textAlign: "center", border: "1px solid rgba(255,255,255,0.1)" }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>🔒</div>
+          <h2 style={{ color: "#e2e8f0", fontSize: 20, fontWeight: 700, margin: "0 0 8px" }}>Admin Access</h2>
+          <p style={{ color: "#94a3b8", fontSize: 14, margin: "0 0 24px" }}>กรุณาใส่รหัสผ่านเพื่อเข้าใช้งาน</p>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            if (passwordInput === ADMIN_PASSWORD) {
+              setAuthenticated(true);
+              setPasswordError("");
+            } else {
+              setPasswordError("รหัสผ่านไม่ถูกต้อง");
+            }
+          }}>
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={e => { setPasswordInput(e.target.value); setPasswordError(""); }}
+              placeholder="ใส่รหัสผ่าน"
+              autoFocus
+              style={{
+                width: "100%", padding: "12px 16px", borderRadius: 10, border: passwordError ? "1.5px solid #ef4444" : "1.5px solid rgba(255,255,255,0.15)",
+                background: "rgba(255,255,255,0.05)", color: "#e2e8f0", fontSize: 16, outline: "none", boxSizing: "border-box", marginBottom: 8,
+                textAlign: "center", letterSpacing: 4,
+              }}
+            />
+            {passwordError && <p style={{ color: "#ef4444", fontSize: 13, margin: "4px 0 8px" }}>{passwordError}</p>}
+            <button type="submit" style={{
+              width: "100%", padding: "12px 0", borderRadius: 10, border: "none", marginTop: 8,
+              background: "linear-gradient(135deg, #f59e0b, #f97316)", color: "#fff", fontWeight: 700, fontSize: 16, cursor: "pointer",
+            }}>
+              เข้าสู่ระบบ
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
