@@ -472,6 +472,9 @@ const AdminPage = () => {
   const MPLUS_PERSONAL_MAP = {
     gender: "GENDER", age: "AGE", education: "EDUC",
     occupation: "OCCUP", income: "INCOME", experience: "EXPER",
+    housing: "HOUSE", household: "HHSIZE", electricity_bill: "ELECB",
+    peak_usage: "PEAK", ev_car: "EVCAR", solar_size: "SOLSZ",
+    info_source: "INFOS",
   };
 
   const encodePersonal = (qId, value) => {
