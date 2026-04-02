@@ -1727,37 +1727,46 @@ OUTPUT:
                return (
                  <>
                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                     {paged.map((r, idx) => {
-                       const isExpanded = expandedResponse === r.uid;
-                       const personal = r.personal || r.personal_data || {};
-                       const likert = r.likert || r.likert_data || {};
-                       return (
-                         <div key={r.uid} style={{
-                           background: "#f8fafc", borderRadius: 12,
-                           border: isExpanded ? "1px solid #059669" : "1px solid #e2e8f0",
-                           overflow: "hidden",
-                         }}>
-                           {/* Row header - clickable */}
-                           <div
-                             onClick={() => setExpandedResponse(isExpanded ? null : r.uid)}
-                             style={{
-                               padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12,
-                               background: isExpanded ? "#f0fdf4" : "transparent",
-                             }}
-                           >
-                             <span style={{ fontSize: 13, color: "#64748b", minWidth: 30 }}>#{startIdx + idx + 1}</span>
-                             <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b", flex: 1 }}>
-                               {personal.gender || "-"} · {personal.age || "-"} · {personal.province || (SOURCES[r.source] || r.source)}
-                             </span>
-                             <span style={{ fontSize: 11, color: "#64748b" }}>{r.timestamp}</span>
-                             <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>
-                               <Clock size={11} style={{ marginRight: 2 }} /> {formatTime(r.timeTaken)}
-                             </span>
-                             {r.want_results && <span style={{ fontSize: 11, color: "#10b981" }}><Mail size={13} /></span>}
-                             <span style={{ color: "#64748b", fontSize: 16, transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</span>
-                           </div>
+                      {paged.map((r, idx) => {
+                        const isExpanded = expandedResponse === r.uid;
+                        const personal = r.personal || r.personal_data || {};
+                        const likert = r.likert || r.likert_data || {};
+                        const qs = calcQualityScore(r);
+                        return (
+                          <div key={r.uid} style={{
+                            background: "#f8fafc", borderRadius: 12,
+                            border: isExpanded ? "1px solid #059669" : "1px solid #e2e8f0",
+                            overflow: "hidden",
+                          }}>
+                            {/* Row header - clickable */}
+                            <div
+                              onClick={() => setExpandedResponse(isExpanded ? null : r.uid)}
+                              style={{
+                                padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12,
+                                background: isExpanded ? "#f0fdf4" : "transparent",
+                              }}
+                            >
+                              <span style={{ fontSize: 13, color: "#64748b", minWidth: 30 }}>#{startIdx + idx + 1}</span>
+                              <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b", flex: 1 }}>
+                                {personal.gender || "-"} · {personal.age || "-"} · {personal.province || (SOURCES[r.source] || r.source)}
+                              </span>
+                              {/* Quality Score Badge */}
+                              <span style={{
+                                fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 6,
+                                background: `${qualityColor(qs.total)}18`, color: qualityColor(qs.total),
+                                display: "flex", alignItems: "center", gap: 3,
+                              }}>
+                                <CheckCircle2 size={11} /> {qs.total}
+                              </span>
+                              <span style={{ fontSize: 11, color: "#64748b" }}>{r.timestamp}</span>
+                              <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>
+                                <Clock size={11} style={{ marginRight: 2 }} /> {formatTime(r.timeTaken)}
+                              </span>
+                              {r.want_results && <span style={{ fontSize: 11, color: "#10b981" }}><Mail size={13} /></span>}
+                              <span style={{ color: "#64748b", fontSize: 16, transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</span>
+                            </div>
 
-                           {/* Expanded detail */}
+                            {/* Expanded detail */}
                            {isExpanded && (
                              <div style={{ padding: "0 16px 16px", borderTop: "1px solid #e2e8f0" }}>
                                {/* Personal data */}
