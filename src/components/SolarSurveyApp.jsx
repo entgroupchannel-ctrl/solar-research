@@ -948,7 +948,7 @@ function AdminDashboard({ responses, onBack }) {
     const headers = ["ID", "แหล่งที่มา", "วันเวลา", "เวลา(วินาที)",
       ...PERSONAL_QUESTIONS.map(q => q.text), ...allLikertTexts, "ข้อเสนอแนะ"];
     const rows = filtered.map(r => [
-      r.id, SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
+      r.id, REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
       ...PERSONAL_QUESTIONS.map(q => r.personal?.[q.id] || ""),
       ...allLikertIds.map(id => r.likert?.[id] || ""),
       (r.suggestion || "").replace(/\t/g, " "),
