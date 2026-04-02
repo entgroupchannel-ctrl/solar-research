@@ -1319,6 +1319,10 @@ export default function SolarSurveyApp() {
   const validate = () => {
     const missing = [];
     PERSONAL_QUESTIONS.forEach(q => { if (!personal[q.id]) missing.push({ id: q.id, type: "personal", text: q.text }); });
+    // Province question (only if region link)
+    if (regionInfo && !personal.province) {
+      missing.push({ id: "province", type: "personal", text: "จังหวัดที่ติดตั้งโซลาร์รูฟท็อป" });
+    }
     LIKERT_SECTIONS.forEach(sec => {
       sec.subsections.forEach(sub => {
         sub.items.forEach(item => { if (!likert[item.id]) missing.push({ id: item.id, type: "likert", text: item.text.substring(0, 50) + "..." }); });
