@@ -884,17 +884,17 @@ OUTPUT:
 
         {/* Summary Cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 24 }}>
-          {[
-            { label: "ตอบทั้งหมด", value: filtered.length, icon: "📝" },
-            { label: "เวลาเฉลี่ย", value: filtered.length ? formatTime(Math.round(calcMean(filtered.map(r => r.timeTaken)))) : "-", icon: "⏱" },
-            { label: "แหล่งที่มา", value: new Set(filtered.map(r => r.source)).size, icon: "🔗" },
-            { label: "คะแนนเฉลี่ยรวม", value: filtered.length ? calcMean(sectionAverages.map(s => s.mean)).toFixed(2) : "-", icon: "⭐" },
-          ].map((card, i) => (
-            <div key={i} style={{
-              background: "#fff", borderRadius: 12, padding: 20,
-              border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-            }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>{card.icon}</div>
+           {[
+             { label: "ตอบทั้งหมด", value: filtered.length, icon: <FileText size={24} color="#059669" /> },
+             { label: "เวลาเฉลี่ย", value: filtered.length ? formatTime(Math.round(calcMean(filtered.map(r => r.timeTaken)))) : "-", icon: <ClipboardList size={24} color="#059669" /> },
+             { label: "แหล่งที่มา", value: new Set(filtered.map(r => r.source)).size, icon: <Link2 size={24} color="#059669" /> },
+             { label: "คะแนนเฉลี่ยรวม", value: filtered.length ? calcMean(sectionAverages.map(s => s.mean)).toFixed(2) : "-", icon: <TrendingUp size={24} color="#059669" /> },
+           ].map((card, i) => (
+             <div key={i} style={{
+               background: "#fff", borderRadius: 12, padding: 20,
+               border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+             }}>
+               <div style={{ marginBottom: 8 }}>{card.icon}</div>
               <div style={{ fontSize: 24, fontWeight: 700, color: "#059669" }}>{card.value}</div>
               <div style={{ fontSize: 12, color: "#64748b" }}>{card.label}</div>
             </div>
