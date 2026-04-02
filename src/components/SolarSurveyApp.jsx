@@ -1016,7 +1016,7 @@ function AdminDashboard({ responses, onBack }) {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#f59e0b" }}>📊 Admin Dashboard</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#f59e0b", display: "flex", alignItems: "center", gap: 8 }}><BarChart3 size={22} /> Admin Dashboard</h1>
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#94a3b8" }}>รายงานผลแบบสอบถาม</p>
           </div>
           <button onClick={onBack} style={{
