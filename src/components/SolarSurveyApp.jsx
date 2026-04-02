@@ -1022,7 +1022,9 @@ export default function SolarSurveyApp() {
     return missing;
   };
 
-  const handleSubmit = () => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
     const missing = validate();
     if (missing.length > 0) {
       setMissingFields(missing);
@@ -1030,23 +1032,31 @@ export default function SolarSurveyApp() {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    const response = {
-      id: uid,
-      source,
-      sourceName: SOURCES[source] || source,
-      timestamp: new Date().toLocaleString("th-TH"),
-      timeTaken: timer,
-      personal,
-      likert,
-      suggestion,
-      version: SURVEY_VERSION,
-    };
-    const newResponses = [...responses, response];
-    setResponses(newResponses);
-    try { sessionStorage.setItem("survey_responses", JSON.stringify(newResponses)); } catch(e) {}
-    try { sessionStorage.removeItem("survey_progress_" + uid); } catch(e) {}
-    setSubmitted(true);
-    setPage("thanks");
+    setSubmitting(true);
+    try {
+      const { error } = await supabase.from("survey_responses").insert({
+        uid,
+        source_code: source,
+        personal_data: personal,
+        likert_data: likert,
+        suggestion: suggestion || "",
+        time_taken: timer,
+        survey_version: SURVEY_VERSION,
+      });
+      if (error) {
+        console.error("Submit error:", error);
+        alert("เกิดข้อผิดพลาดในการบันทึก กรุณาลองอีกครั้ง");
+        setSubmitting(false);
+        return;
+      }
+      try { sessionStorage.removeItem("survey_progress_" + uid); } catch(e) {}
+      setSubmitted(true);
+      setPage("thanks");
+    } catch (err) {
+      console.error("Submit error:", err);
+      alert("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองอีกครั้ง");
+    }
+    setSubmitting(false);
   };
 
   // Keyboard shortcut for admin
