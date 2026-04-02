@@ -1208,6 +1208,8 @@ function SpeechToTextButton({ onResult }) {
 export default function SolarSurveyApp() {
   const [page, setPage] = useState("pdpa"); // pdpa | screening | survey | thanks | admin
   const [source] = useState(getSourceFromURL);
+  // Get provinces for the current region source
+  const regionInfo = REGION_PROVINCES[source] || null;
   const [uid] = useState(generateUID);
   const [personal, setPersonal] = useState({});
   const [likert, setLikert] = useState({});
