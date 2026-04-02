@@ -1083,7 +1083,7 @@ OUTPUT:
                 return (
                   <div key={r.uid} style={{
                     background: "#f8fafc", borderRadius: 12,
-                    border: isExpanded ? "1px solid rgba(245,158,11,0.4)" : "1px solid rgba(255,255,255,0.08)",
+                    border: isExpanded ? "1px solid #059669" : "1px solid #e2e8f0",
                     overflow: "hidden",
                   }}>
                     {/* Row header - clickable */}
@@ -1154,7 +1154,7 @@ OUTPUT:
                                             <span key={n} style={{
                                               width: 22, height: 22, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center",
                                               fontSize: 11, fontWeight: 700,
-                                              background: val === n ? SECTION_COLORS[si] : "rgba(255,255,255,0.05)",
+                                              background: val === n ? SECTION_COLORS[si] : "#f1f5f9",
                                               color: val === n ? "#fff" : "#64748b",
                                             }}>{n}</span>
                                           ))}
@@ -1230,7 +1230,7 @@ OUTPUT:
                 <input type="number" value={newSourceTarget} onChange={e => setNewSourceTarget(e.target.value)} placeholder="เป้าหมาย"
                   style={{ width: 80, padding: "10px 12px", borderRadius: 10, border: "1px solid #d1d5db", background: "#f1f5f9", color: "#1e293b", fontSize: 13, outline: "none", textAlign: "center" }} />
                 <button onClick={addSource} disabled={addingSource || !newSourceName.trim()}
-                  style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: newSourceName.trim() ? "#f59e0b" : "rgba(255,255,255,0.1)", color: newSourceName.trim() ? "#000" : "#64748b", fontSize: 13, fontWeight: 700, cursor: newSourceName.trim() ? "pointer" : "not-allowed" }}>
+                  style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: newSourceName.trim() ? "#f59e0b" : "#e2e8f0", color: newSourceName.trim() ? "#000" : "#64748b", fontSize: 13, fontWeight: 700, cursor: newSourceName.trim() ? "pointer" : "not-allowed" }}>
                   {addingSource ? "..." : "+ เพิ่ม"}
                 </button>
               </div>
@@ -1255,7 +1255,7 @@ OUTPUT:
                       return (
                         <div key={src.id} style={{
                           background: "#f8fafc", borderRadius: 14, padding: 16,
-                          border: `1px solid ${count >= tgt && tgt > 0 ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`,
+                          border: `1px solid ${count >= tgt && tgt > 0 ? "rgba(16,185,129,0.3)" : "#e2e8f0"}`,
                         }}>
                           {/* Header */}
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
