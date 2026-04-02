@@ -14,7 +14,18 @@ import {
 
 const SURVEY_VERSION = "1.0";
 
-// 10 unique source links
+// Region-based source mapping
+const REGION_PROVINCES = {
+  northeast: { name: "ภาคตะวันออกเฉียงเหนือ", provinces: ["ขอนแก่น", "เลย", "ร้อยเอ็ด", "ปากช่อง", "สุรินทร์", "อุบลราชธานี", "สกลนคร"] },
+  north: { name: "ภาคเหนือ", provinces: ["กำแพงเพชร", "เชียงใหม่", "แพร่", "เพชรบูรณ์", "แม่สอด", "พิษณุโลก", "เชียงราย"] },
+  south: { name: "ภาคใต้", provinces: ["สุราษฎร์ธานี", "ทุ่งสง", "หาดใหญ่", "ชุมพร"] },
+  east: { name: "ภาคตะวันออก", provinces: ["ระยอง", "กบินทร์บุรี", "ชลบุรี", "จันทบุรี"] },
+  central: { name: "ภาคกลาง", provinces: ["สุพรรณบุรี", "ปทุมธานี", "สิงห์บุรี", "นครปฐม", "อยุธยา"] },
+  bangkok: { name: "กรุงเทพฯ และปริมณฑล", provinces: ["กรุงเทพมหานคร", "นนทบุรี", "สมุทรปราการ", "ปทุมธานี"] },
+  west: { name: "ภาคตะวันตก", provinces: ["เพชรบุรี", "กาญจนบุรี", "ราชบุรี"] },
+};
+
+// 10 unique source links (legacy fallback)
 const SOURCES = {
   src01: "Facebook Ads",
   src02: "LINE OA",
