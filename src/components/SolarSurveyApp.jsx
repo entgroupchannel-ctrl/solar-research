@@ -910,7 +910,7 @@ function AdminDashboard({ responses, onBack }) {
     const headers = ["response_id", "source", "source_name", "timestamp", "time_seconds",
       ...PERSONAL_QUESTIONS.map(q => q.id), ...allLikertIds, "suggestion"];
     const rows = filtered.map(r => [
-      r.id, r.source, SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
+      r.id, r.source, REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source, r.timestamp, r.timeTaken,
       ...PERSONAL_QUESTIONS.map(q => r.personal?.[q.id] || ""),
       ...allLikertIds.map(id => r.likert?.[id] || ""),
       `"${(r.suggestion || "").replace(/"/g, '""')}"`,
