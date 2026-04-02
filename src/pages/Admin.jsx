@@ -449,7 +449,7 @@ const AdminPage = () => {
     if (!data.length) return alert("ไม่มีข้อมูลให้ export");
     const headers = getHeaders();
     const rows = buildRows(data);
-    let table = "<table><tr>" + headers.map(h => `<th style="background:#f59e0b;color:#fff;font-weight:bold">${h}</th>`).join("") + "</tr>";
+    let table = "<table><tr>" + headers.map(h => `<th style="background:#059669;color:#fff;font-weight:bold">${h}</th>`).join("") + "</tr>";
     rows.forEach(r => { table += "<tr>" + headers.map(h => `<td>${r[h] ?? ""}</td>`).join("") + "</tr>"; });
     table += "</table>";
     const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Survey</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>${table}</body></html>`;
