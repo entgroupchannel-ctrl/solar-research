@@ -1391,7 +1391,6 @@ OUTPUT:
         {/* INDIVIDUAL RESPONSES TAB */}
         {activeTab === "individual" && filtered.length > 0 && (
           <div>
-           <div>
              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 12 }}>
                <h2 style={{ fontSize: 18, fontWeight: 700, color: "#059669", margin: 0 }}>
                  คำตอบรายบุคคล ({filtered.length} ราย)
