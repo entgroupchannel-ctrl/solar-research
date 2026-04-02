@@ -353,6 +353,65 @@ const AdminPage = () => {
     });
   };
 
+  // --- Export helpers ---
+  const getAllLikertIds = () => {
+    const ids = [];
+    LIKERT_SECTIONS.forEach(sec => sec.subsections.forEach(sub => sub.items.forEach(item => ids.push(item.id))));
+    return ids;
+  };
+
+  const buildRows = (data) => {
+    const likertIds = getAllLikertIds();
+    return data.map(r => {
+      const personal = r.personal_data || {};
+      const likert = r.likert_data || {};
+      const row = {
+        uid: r.uid, source_code: r.source_code, created_at: r.created_at,
+        time_taken: r.time_taken, survey_version: r.survey_version,
+        want_results: r.want_results ? "ใช่" : "ไม่", email: r.email || "", suggestion: r.suggestion || "",
+      };
+      PERSONAL_QUESTIONS.forEach(q => { row[q.id] = personal[q.id] || ""; });
+      likertIds.forEach(id => { row[id] = likert[id] || ""; });
+      return row;
+    });
+  };
+
+  const getHeaders = () => {
+    const likertIds = getAllLikertIds();
+    const base = ["uid", "source_code", "created_at", "time_taken", "survey_version", "want_results", "email", "suggestion"];
+    return [...base, ...PERSONAL_QUESTIONS.map(q => q.id), ...likertIds];
+  };
+
+  const exportCSV = (data) => {
+    if (!data.length) return alert("ไม่มีข้อมูลให้ export");
+    const headers = getHeaders();
+    const rows = buildRows(data);
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(r => headers.map(h => `"${String(r[h] ?? "").replace(/"/g, '""')}"`).join(","))
+    ].join("\n");
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url;
+    a.download = `survey_export_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+  };
+
+  const exportExcel = (data) => {
+    if (!data.length) return alert("ไม่มีข้อมูลให้ export");
+    const headers = getHeaders();
+    const rows = buildRows(data);
+    let table = "<table><tr>" + headers.map(h => `<th style="background:#f59e0b;color:#fff;font-weight:bold">${h}</th>`).join("") + "</tr>";
+    rows.forEach(r => { table += "<tr>" + headers.map(h => `<td>${r[h] ?? ""}</td>`).join("") + "</tr>"; });
+    table += "</table>";
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Survey</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>${table}</body></html>`;
+    const blob = new Blob([html], { type: "application/vnd.ms-excel" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url;
+    a.download = `survey_export_${new Date().toISOString().slice(0, 10)}.xls`;
+    a.click(); URL.revokeObjectURL(url);
+  };
+
   const tabStyle = (isActive) => ({
     padding: "10px 24px", borderRadius: 10, border: "none", cursor: "pointer",
     background: isActive ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.05)",
