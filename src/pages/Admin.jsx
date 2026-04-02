@@ -11,7 +11,8 @@ import {
   Lock, LayoutDashboard, Eye, RefreshCw, TrendingUp, Target, Users,
   BarChart3, ClipboardList, FileText, Link2, PieChart as PieChartIcon,
   BarChartHorizontal, Radar as RadarIcon, Copy, Printer, Download,
-  Table2, ArrowLeft, FlaskConical,
+  Table2, ArrowLeft, FlaskConical, Rocket, Loader2, Plus, MapPin,
+  CircleCheck, CircleX, Trash2, ToggleLeft, ToggleRight,
 } from "lucide-react";
 
 const PERSONAL_QUESTIONS = [
@@ -2105,7 +2106,7 @@ OUTPUT:
                   color: "#fff", fontSize: 15, fontWeight: 700, cursor: generatingAll ? "not-allowed" : "pointer",
                 }}
               >
-                {generatingAll ? "⏳ กำลังสร้าง..." : `🚀 สร้างลิงก์ทุกภาค (${REGION_DATA.length} ภาค)`}
+                {generatingAll ? <><Loader2 size={16} style={{ marginRight: 6, animation: "spin 1s linear infinite" }} /> กำลังสร้าง...</> : <><Rocket size={16} style={{ marginRight: 6 }} /> สร้างลิงก์ทุกภาค ({REGION_DATA.length} ภาค)</>}
               </button>
               <span style={{ fontSize: 13, color: "#64748b" }}>
                 ลิงก์ที่สร้างแล้ว: <strong style={{ color: "#059669" }}>{sources.length}</strong> / {REGION_DATA.length}
@@ -2114,7 +2115,7 @@ OUTPUT:
 
             {/* Add custom source */}
             <div style={{ ...chartCardStyle, marginBottom: 24 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#64748b", margin: "0 0 12px" }}>➕ เพิ่มแหล่งที่มาเพิ่มเติม (กรณีพิเศษ)</h3>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#64748b", margin: "0 0 12px", display: "flex", alignItems: "center", gap: 6 }}><Plus size={16} /> เพิ่มแหล่งที่มาเพิ่มเติม (กรณีพิเศษ)</h3>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
                 <input
                   type="text"
@@ -2161,7 +2162,7 @@ OUTPUT:
                           {/* Header */}
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                             <div>
-                              <span style={{ fontSize: 15, fontWeight: 700, color: "#1e293b" }}>📍 {src.name}</span>
+                              <span style={{ fontSize: 15, fontWeight: 700, color: "#1e293b", display: "flex", alignItems: "center", gap: 4 }}><MapPin size={14} color={reg.color} /> {src.name}</span>
                               <span style={{ fontSize: 11, color: "#64748b", marginLeft: 8, background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>{src.code}</span>
                             </div>
                             <span style={{
@@ -2201,12 +2202,14 @@ OUTPUT:
                                   background: src.is_active ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)",
                                   color: src.is_active ? "#10b981" : "#ef4444",
                                   cursor: "pointer", fontSize: 11, fontWeight: 600,
-                                }}>{src.is_active ? "✅" : "❌"}</button>
+                                  display: "flex", alignItems: "center", gap: 3,
+                                }}>{src.is_active ? <><ToggleRight size={13} /> เปิด</> : <><ToggleLeft size={13} /> ปิด</>}</button>
                                 <button onClick={() => deleteSource(src.id, src.code)} style={{
                                   padding: "6px 14px", borderRadius: 8, border: "none",
                                   background: "rgba(239,68,68,0.1)", color: "#ef4444",
                                   cursor: "pointer", fontSize: 11, fontWeight: 600,
-                                }}>🗑</button>
+                                  display: "flex", alignItems: "center", gap: 3,
+                                }}><Trash2 size={11} /> ลบ</button>
                               </div>
                             </div>
                           </div>
