@@ -63,6 +63,8 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          region: string | null
+          target: number
         }
         Insert: {
           code: string
@@ -70,6 +72,8 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          region?: string | null
+          target?: number
         }
         Update: {
           code?: string
@@ -77,6 +81,8 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          region?: string | null
+          target?: number
         }
         Relationships: []
       }
