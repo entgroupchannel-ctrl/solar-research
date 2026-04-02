@@ -633,15 +633,16 @@ OUTPUT:
 
   const tabStyle = (isActive) => ({
     padding: "10px 24px", borderRadius: 10, border: "none", cursor: "pointer",
-    background: isActive ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.05)",
-    color: isActive ? "#f59e0b" : "#94a3b8", fontSize: 13, fontWeight: isActive ? 700 : 400,
+    background: isActive ? "#ecfdf5" : "#f8fafc",
+    color: isActive ? "#059669" : "#64748b", fontSize: 13, fontWeight: isActive ? 700 : 500,
     transition: "all 0.2s",
-    borderBottom: isActive ? "2px solid #f59e0b" : "2px solid transparent",
+    borderBottom: isActive ? "2px solid #059669" : "2px solid transparent",
   });
 
   const chartCardStyle = {
-    background: "rgba(255,255,255,0.04)", borderRadius: 16,
-    border: "1px solid rgba(255,255,255,0.08)", padding: 24, marginBottom: 24,
+    background: "#ffffff", borderRadius: 16,
+    border: "1px solid #e2e8f0", padding: 24, marginBottom: 24,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
   };
 
   const CustomTooltip = ({ active, payload, label }) => {
