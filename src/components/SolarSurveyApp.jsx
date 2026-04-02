@@ -418,7 +418,7 @@ function PDPAConsent({ onAccept }) {
               color: "#059669", fontSize: 14, fontWeight: 600, textDecoration: "none",
             }}
           >
-            📱 ดู QR Code แยกตามภาค (7 ภาค)
+            <QrCode size={16} /> ดู QR Code แยกตามภาค (7 ภาค)
           </a>
         </div>
       </div>
