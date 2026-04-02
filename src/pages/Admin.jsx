@@ -648,10 +648,10 @@ OUTPUT:
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div style={{ background: "rgba(15,32,39,0.95)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "10px 14px", fontSize: 12 }}>
-          <p style={{ color: "#e2e8f0", margin: 0, fontWeight: 600 }}>{label}</p>
+        <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, padding: "10px 14px", fontSize: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}>
+          <p style={{ color: "#1e293b", margin: 0, fontWeight: 600 }}>{label}</p>
           {payload.map((p, i) => (
-            <p key={i} style={{ color: p.color || "#f59e0b", margin: "4px 0 0" }}>{p.name}: {typeof p.value === 'number' ? p.value.toFixed(2) : p.value}</p>
+            <p key={i} style={{ color: p.color || "#059669", margin: "4px 0 0" }}>{p.name}: {typeof p.value === 'number' ? p.value.toFixed(2) : p.value}</p>
           ))}
         </div>
       );
