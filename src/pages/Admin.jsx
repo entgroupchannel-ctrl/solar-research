@@ -182,6 +182,7 @@ const AdminPage = () => {
   const [addingSource, setAddingSource] = useState(false);
   const [generatingAll, setGeneratingAll] = useState(false);
   const [printProvince, setPrintProvince] = useState(null);
+  const [expandedResponse, setExpandedResponse] = useState(null);
   const printRef = useRef(null);
 
   // Admin API helper
