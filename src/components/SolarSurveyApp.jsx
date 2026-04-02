@@ -1602,7 +1602,7 @@ export default function SolarSurveyApp() {
       }}>
         <span style={{ color: "#94a3b8", display: "flex", alignItems: "center", gap: 6 }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(16,185,129,0.2)" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3" fill="none"/></svg>
-          {regionInfo ? regionInfo.name : (REGION_PROVINCES[source]?.name || SOURCES[source] || "Direct")}
+          {regionInfo ? regionInfo.name : (REGION_PROVINCES[source]?.name || "Direct")}
         </span>
         <span style={{ color: "#f59e0b", fontWeight: 700, fontFamily: "monospace" }}>
           ⏱ {formatTime(timer)}
