@@ -1957,7 +1957,7 @@ export default function SolarSurveyApp() {
     </div>
 
     {showExitDialog && (
-      <div style={{
+    <div style={{
         position: "fixed", inset: 0, zIndex: 9999,
         background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
         display: "flex", alignItems: "center", justifyContent: "center",
@@ -2001,6 +2001,7 @@ export default function SolarSurveyApp() {
         </div>
       </div>
     )}
+    </>
 
   );
 }
