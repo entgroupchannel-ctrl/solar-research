@@ -340,6 +340,8 @@ const AdminPage = () => {
   const [crossRowVar, setCrossRowVar] = useState("housing");
   const [crossColVar, setCrossColVar] = useState("electricity_bill");
   const [demoChartType, setDemoChartType] = useState("pie");
+  const [demoViewMode, setDemoViewMode] = useState("grid"); // "grid" or "single"
+  const [selectedDemoIdx, setSelectedDemoIdx] = useState(0);
   const [loading, setLoading] = useState(true);
   const [newSourceName, setNewSourceName] = useState("");
   const [newSourceRegion, setNewSourceRegion] = useState("");
