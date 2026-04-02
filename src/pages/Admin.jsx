@@ -1034,7 +1034,7 @@ OUTPUT:
             {/* Actions bar */}
             <div style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap", alignItems: "center" }}>
               <button
-                onClick={generateAllProvinceLinks}
+                onClick={generateAllRegionLinks}
                 disabled={generatingAll}
                 style={{
                   padding: "12px 28px", borderRadius: 12, border: "none",
@@ -1042,10 +1042,10 @@ OUTPUT:
                   color: "#fff", fontSize: 15, fontWeight: 700, cursor: generatingAll ? "not-allowed" : "pointer",
                 }}
               >
-                {generatingAll ? "⏳ กำลังสร้าง..." : `🚀 สร้างลิงก์ทุกจังหวัด (${PROVINCE_DATA.length} สาขา)`}
+                {generatingAll ? "⏳ กำลังสร้าง..." : `🚀 สร้างลิงก์ทุกภาค (${REGION_DATA.length} ภาค)`}
               </button>
               <span style={{ fontSize: 13, color: "#94a3b8" }}>
-                ลิงก์ที่สร้างแล้ว: <strong style={{ color: "#f59e0b" }}>{sources.length}</strong> / {PROVINCE_DATA.length}
+                ลิงก์ที่สร้างแล้ว: <strong style={{ color: "#f59e0b" }}>{sources.length}</strong> / {REGION_DATA.length}
               </span>
             </div>
 
