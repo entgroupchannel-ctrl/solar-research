@@ -1598,7 +1598,7 @@ export default function SolarSurveyApp() {
       title: sec.title.replace("ปัจจัยด้าน", "").substring(0, 20),
       answered: sec.subsections.reduce((s, sub) => s + sub.items.filter(item => likert[item.id] != null).length, 0),
       total: sectionItems[si],
-      color: SECTION_COLORS[si], icon: si === 0 ? "⚡" : si === 1 ? "📦" : si === 2 ? "🏷" : "📋",
+      color: SECTION_COLORS[si], icon: si === 0 ? <Zap size={14} /> : si === 1 ? <Package size={14} /> : si === 2 ? <Tag size={14} /> : <ClipboardList size={14} />,
     })),
     {
       id: "suggestion", label: "ส่วนที่ 4", title: "ข้อเสนอแนะ",
