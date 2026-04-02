@@ -41,11 +41,11 @@ const SOURCES = {
 
 // Likert scale
 const LIKERT = [
-  { value: 5, label: "มากที่สุด", short: "5" },
-  { value: 4, label: "มาก", short: "4" },
-  { value: 3, label: "ปานกลาง", short: "3" },
-  { value: 2, label: "น้อย", short: "2" },
   { value: 1, label: "น้อยที่สุด", short: "1" },
+  { value: 2, label: "น้อย", short: "2" },
+  { value: 3, label: "ปานกลาง", short: "3" },
+  { value: 4, label: "มาก", short: "4" },
+  { value: 5, label: "มากที่สุด", short: "5" },
 ];
 
 // Survey structure
