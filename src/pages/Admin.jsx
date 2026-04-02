@@ -200,6 +200,9 @@ const AdminPage = () => {
   const [newSourceRegion, setNewSourceRegion] = useState("");
   const [newSourceTarget, setNewSourceTarget] = useState("");
   const [addingSource, setAddingSource] = useState(false);
+  const [generatingAll, setGeneratingAll] = useState(false);
+  const [printProvince, setPrintProvince] = useState(null);
+  const printRef = useRef(null);
 
   // Load data from Supabase
   const loadData = useCallback(async () => {
