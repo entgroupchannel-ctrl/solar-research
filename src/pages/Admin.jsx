@@ -1720,7 +1720,33 @@ OUTPUT:
                </div>
              </div>
 
-             {(() => {
+              {/* Quality Score Summary */}
+              {(() => {
+                const allScores = filtered.map(r => calcQualityScore(r));
+                const avgScore = Math.round(allScores.reduce((s, q) => s + q.total, 0) / allScores.length);
+                const good = allScores.filter(q => q.total >= 80).length;
+                const medium = allScores.filter(q => q.total >= 60 && q.total < 80).length;
+                const low = allScores.filter(q => q.total >= 40 && q.total < 60).length;
+                const suspect = allScores.filter(q => q.total < 40).length;
+                return (
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10, marginBottom: 16 }}>
+                    {[
+                      { label: "คะแนนเฉลี่ย", value: `${avgScore}/100`, color: qualityColor(avgScore), sub: qualityLabel(avgScore) },
+                      { label: "ดี (≥80)", value: good, color: "#059669", sub: `${((good / filtered.length) * 100).toFixed(1)}%` },
+                      { label: "ปานกลาง (60-79)", value: medium, color: "#eab308", sub: `${((medium / filtered.length) * 100).toFixed(1)}%` },
+                      { label: "ต่ำ (40-59)", value: low, color: "#f97316", sub: `${((low / filtered.length) * 100).toFixed(1)}%` },
+                      { label: "น่าสงสัย (<40)", value: suspect, color: "#ef4444", sub: `${((suspect / filtered.length) * 100).toFixed(1)}%` },
+                    ].map(card => (
+                      <div key={card.label} style={{ background: `${card.color}08`, border: `1px solid ${card.color}25`, borderRadius: 10, padding: "10px 12px", textAlign: "center" }}>
+                        <div style={{ fontSize: 11, color: "#64748b", marginBottom: 4 }}>{card.label}</div>
+                        <div style={{ fontSize: 20, fontWeight: 800, color: card.color }}>{card.value}</div>
+                        <div style={{ fontSize: 11, color: card.color, fontWeight: 600 }}>{card.sub}</div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+
                const totalPages = Math.ceil(filtered.length / indivPageSize);
                const paged = filtered.slice((indivPage - 1) * indivPageSize, indivPage * indivPageSize);
                const startIdx = (indivPage - 1) * indivPageSize;
