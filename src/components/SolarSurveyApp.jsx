@@ -760,7 +760,7 @@ function ThankYou({ responseId, timeTaken }) {
         <h1 style={{ fontSize: 24, fontWeight: 700, color: "#059669", margin: "0 0 12px" }}>
           ขอบคุณที่สละเวลาตอบแบบสอบถาม
         </h1>
-        <p style={{ color: "#64748b", fontSize: 15, lineHeight: 1.7, margin: "0 0 24px" }}>
+        <p style={{ color: "#334155", fontSize: 15, lineHeight: 1.7, margin: "0 0 24px" }}>
           คำตอบของท่านได้รับการบันทึกเรียบร้อยแล้ว<br />
           ข้อมูลจะถูกเก็บรักษาเป็นความลับตามนโยบาย PDPA
         </p>
