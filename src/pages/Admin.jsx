@@ -583,7 +583,7 @@ OUTPUT:
     setTimeout(() => exportMplusInp(data), 500);
   };
 
-
+  const tabStyle = (isActive) => ({
     padding: "10px 24px", borderRadius: 10, border: "none", cursor: "pointer",
     background: isActive ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.05)",
     color: isActive ? "#f59e0b" : "#94a3b8", fontSize: 13, fontWeight: isActive ? 700 : 400,
