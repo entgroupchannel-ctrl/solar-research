@@ -652,20 +652,19 @@ function LikertRow({ item, value, onChange, index, sectionColor }) {
 
   const handleSelect = (v) => {
     onChange(item.id, v);
-    // Auto scroll to next question (gentle)
+    // Auto scroll: เลื่อนข้อถัดไปมากลางจอเสมอ เพื่อให้กดง่าย
     setTimeout(() => {
       const next = ref.current?.nextElementSibling;
       if (next) {
         const rect = next.getBoundingClientRect();
         const viewportH = window.innerHeight;
-        // Only scroll if the next item's top is below 70% of viewport
-        if (rect.top > viewportH * 0.7) {
-          window.scrollBy({ top: rect.top - viewportH * 0.35, behavior: "smooth" });
-        } else if (rect.top < 0) {
-          next.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        const targetY = viewportH * 0.3; // วางข้อถัดไปที่ 30% จากด้านบน
+        const scrollAmount = rect.top - targetY;
+        if (Math.abs(scrollAmount) > 30) {
+          window.scrollBy({ top: scrollAmount, behavior: "smooth" });
         }
       }
-    }, 200);
+    }, 150);
   };
 
   return (
