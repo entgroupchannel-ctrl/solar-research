@@ -450,7 +450,7 @@ function ScreeningQuestion({ onPass, onFail }) {
       }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <img src={logoTRU} alt="มหาวิทยาลัยธนบุรี" style={{ height: 56, marginBottom: 12, objectFit: "contain" }} />
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1e293b", margin: "0 0 8px" }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1e293b", margin: "0 0 8px", background: "linear-gradient(135deg, #0f2027, #2c5364)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             คำถามคัดกรอง
           </h2>
           <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
