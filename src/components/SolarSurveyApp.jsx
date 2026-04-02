@@ -1282,9 +1282,11 @@ export default function SolarSurveyApp() {
             แบบสอบถามวิจัย
           </h1>
           <p style={{ fontSize: 11, color: "#64748b", margin: "0 0 8px" }}>หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี</p>
-          <p style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.7, margin: 0, maxWidth: 500, marginLeft: "auto", marginRight: "auto" }}>
-            อิทธิพลของความไว้วางใจต่อตราสินค้าในฐานะตัวแปรคั่นกลาง
-            ที่ส่งผลต่อการตัดสินใจติดตั้งโซลาร์รูฟท็อปในบ้านของผู้บริโภคในประเทศไทย
+          <p style={{ fontSize: 14, color: "#e2e8f0", lineHeight: 1.7, margin: "0 0 6px", maxWidth: 540, marginLeft: "auto", marginRight: "auto", fontWeight: 700 }}>
+            อิทธิพลของความไว้วางใจต่อตราสินค้าในฐานะตัวแปรคั่นกลางที่ส่งผลต่อการตัดสินใจติดตั้งโซลาร์รูฟท็อปในบ้านของผู้บริโภคในประเทศไทย
+          </p>
+          <p style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.7, margin: 0, maxWidth: 540, marginLeft: "auto", marginRight: "auto", fontWeight: 400, fontStyle: "italic" }}>
+            The Influence of Brand Trust as a Mediating Variable on the Decision to Install Solar Rooftop Systems in Homes of Consumers in Thailand
           </p>
         </div>
 
