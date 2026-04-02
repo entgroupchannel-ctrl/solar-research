@@ -1472,7 +1472,7 @@ OUTPUT:
               </div>
 
               {crossRowVar === crossColVar ? (
-                <p style={{ color: "#ef4444", fontSize: 13, textAlign: "center", padding: 24 }}>⚠️ กรุณาเลือกตัวแปรที่แตกต่างกัน</p>
+                <p style={{ color: "#ef4444", fontSize: 13, textAlign: "center", padding: 24, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}><AlertTriangle size={16} /> กรุณาเลือกตัวแปรที่แตกต่างกัน</p>
               ) : (
                 <div style={{ overflowX: "auto" }}>
                   <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
