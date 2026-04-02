@@ -25,19 +25,8 @@ const REGION_PROVINCES = {
   west: { name: "ภาคตะวันตก", provinces: ["เพชรบุรี", "กาญจนบุรี", "ราชบุรี"] },
 };
 
-// 10 unique source links (legacy fallback)
-const SOURCES = {
-  src01: "Facebook Ads",
-  src02: "LINE OA",
-  src03: "Email Campaign",
-  src04: "Website Banner",
-  src05: "QR Code (Event)",
-  src06: "QR Code (Print)",
-  src07: "Sales Team",
-  src08: "Partner Referral",
-  src09: "Google Ads",
-  src10: "Direct Link",
-};
+
+
 
 // Likert scale
 const LIKERT = [
