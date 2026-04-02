@@ -1747,9 +1747,10 @@ OUTPUT:
                 );
               })()}
 
-               const totalPages = Math.ceil(filtered.length / indivPageSize);
-               const paged = filtered.slice((indivPage - 1) * indivPageSize, indivPage * indivPageSize);
-               const startIdx = (indivPage - 1) * indivPageSize;
+              {(() => {
+                const totalPages = Math.ceil(filtered.length / indivPageSize);
+                const paged = filtered.slice((indivPage - 1) * indivPageSize, indivPage * indivPageSize);
+                const startIdx = (indivPage - 1) * indivPageSize;
                return (
                  <>
                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
