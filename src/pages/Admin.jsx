@@ -698,23 +698,6 @@ OUTPUT:
           })}
         </div>
 
-        {/* Export Buttons */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
-          {[
-            { label: "📥 CSV", fn: exportCSV },
-            { label: "📄 TXT", fn: exportTXT },
-            { label: "📊 Excel", fn: exportExcelJSON },
-          ].map((btn, i) => (
-            <button key={i} onClick={btn.fn} style={{
-              padding: "10px 24px", border: "1px solid rgba(255,255,255,0.2)",
-              borderRadius: 10, background: "rgba(255,255,255,0.05)",
-              color: "#e2e8f0", cursor: "pointer", fontSize: 13, fontWeight: 600,
-            }}
-              onMouseOver={e => e.target.style.background = "rgba(245,158,11,0.2)"}
-              onMouseOut={e => e.target.style.background = "rgba(255,255,255,0.05)"}
-            >{btn.label}</button>
-          ))}
-        </div>
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: 8, marginBottom: 32, borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: 12, flexWrap: "wrap" }}>
