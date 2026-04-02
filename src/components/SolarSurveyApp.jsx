@@ -1078,7 +1078,7 @@ export default function SolarSurveyApp() {
       <div style={{ maxWidth: 700, margin: "0 auto", padding: "20px 16px 100px" }}>
         {/* Title */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <img src={logoTRU} alt="มหาวิทยาลัยธนบุรี" style={{ height: 56, marginBottom: 12, objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.9 }} />
+          <img src={logoUThon} alt="มหาวิทยาลัยธนบุรี" style={{ height: 72, marginBottom: 12, objectFit: "contain" }} />
           <h1 style={{ fontSize: 20, fontWeight: 700, color: "#f59e0b", margin: "0 0 4px", lineHeight: 1.5 }}>
             แบบสอบถามวิจัย
           </h1>
