@@ -2106,7 +2106,7 @@ OUTPUT:
                   color: "#fff", fontSize: 15, fontWeight: 700, cursor: generatingAll ? "not-allowed" : "pointer",
                 }}
               >
-                {generatingAll ? "⏳ กำลังสร้าง..." : `🚀 สร้างลิงก์ทุกภาค (${REGION_DATA.length} ภาค)`}
+                {generatingAll ? <><Loader2 size={16} style={{ marginRight: 6, animation: "spin 1s linear infinite" }} /> กำลังสร้าง...</> : <><Rocket size={16} style={{ marginRight: 6 }} /> สร้างลิงก์ทุกภาค ({REGION_DATA.length} ภาค)</>}
               </button>
               <span style={{ fontSize: 13, color: "#64748b" }}>
                 ลิงก์ที่สร้างแล้ว: <strong style={{ color: "#059669" }}>{sources.length}</strong> / {REGION_DATA.length}
