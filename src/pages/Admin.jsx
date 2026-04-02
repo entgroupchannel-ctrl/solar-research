@@ -1019,7 +1019,7 @@ OUTPUT:
 
         {filtered.length === 0 && activeTab !== "links" && activeTab !== "sampling" && (
           <div style={{ textAlign: "center", padding: 60, color: "#64748b" }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
+            <div style={{ fontSize: 48, marginBottom: 16 }}><Inbox size={48} color="#94a3b8" /></div>
             <p>ยังไม่มีข้อมูลที่ส่งเข้ามา</p>
           </div>
         )}
