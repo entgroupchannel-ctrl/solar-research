@@ -145,6 +145,71 @@ function calcSD(arr) {
   return Math.sqrt(variance);
 }
 
+function calcSkewness(arr) {
+  const n = arr.length;
+  if (n < 3) return 0;
+  const mean = calcMean(arr);
+  const sd = calcSD(arr);
+  if (sd === 0) return 0;
+  const m3 = arr.reduce((sum, v) => sum + Math.pow((v - mean) / sd, 3), 0) / n;
+  return (n / ((n - 1) * (n - 2))) * n * m3;
+}
+
+function calcKurtosis(arr) {
+  const n = arr.length;
+  if (n < 4) return 0;
+  const mean = calcMean(arr);
+  const sd = calcSD(arr);
+  if (sd === 0) return 0;
+  const m4 = arr.reduce((sum, v) => sum + Math.pow((v - mean) / sd, 4), 0) / n;
+  const excess = ((n * (n + 1)) / ((n - 1) * (n - 2) * (n - 3))) * n * m4
+    - (3 * (n - 1) * (n - 1)) / ((n - 2) * (n - 3));
+  return excess;
+}
+
+function calcCronbachAlpha(itemArrays) {
+  // itemArrays: array of arrays, each inner array is scores for one item across respondents
+  const k = itemArrays.length;
+  if (k < 2) return 0;
+  const n = itemArrays[0].length;
+  if (n < 2) return 0;
+  
+  // Variance of each item
+  const itemVariances = itemArrays.map(arr => {
+    const m = calcMean(arr);
+    return arr.reduce((s, v) => s + Math.pow(v - m, 2), 0) / (n - 1);
+  });
+  const sumItemVar = itemVariances.reduce((a, b) => a + b, 0);
+  
+  // Total score variance
+  const totals = [];
+  for (let i = 0; i < n; i++) {
+    totals.push(itemArrays.reduce((sum, arr) => sum + arr[i], 0));
+  }
+  const totalMean = calcMean(totals);
+  const totalVar = totals.reduce((s, v) => s + Math.pow(v - totalMean, 2), 0) / (n - 1);
+  
+  if (totalVar === 0) return 0;
+  return (k / (k - 1)) * (1 - sumItemVar / totalVar);
+}
+
+function calcPearsonCorr(arrX, arrY) {
+  const n = arrX.length;
+  if (n < 3) return 0;
+  const meanX = calcMean(arrX);
+  const meanY = calcMean(arrY);
+  let num = 0, denX = 0, denY = 0;
+  for (let i = 0; i < n; i++) {
+    const dx = arrX[i] - meanX;
+    const dy = arrY[i] - meanY;
+    num += dx * dy;
+    denX += dx * dx;
+    denY += dy * dy;
+  }
+  const den = Math.sqrt(denX * denY);
+  return den === 0 ? 0 : num / den;
+}
+
 function formatTime(seconds) {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
