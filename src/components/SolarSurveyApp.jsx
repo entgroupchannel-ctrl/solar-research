@@ -1256,7 +1256,7 @@ function AdminDashboard({ responses, onBack }) {
         {/* LINKS TAB */}
         {activeTab === "links" && (
           <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.08)" }}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 16px" }}>🔗 ลิงก์แบบสอบถามตามภาค (7 ภาค)</h2>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 16px", display: "flex", alignItems: "center", gap: 8 }}><Link2 size={18} /> ลิงก์แบบสอบถามตามภาค (7 ภาค)</h2>
             <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 16px" }}>คัดลอกลิงก์ด้านล่างเพื่อแจกจ่ายตามภาค (เพิ่ม ?src=region ต่อท้าย URL)</p>
             <div style={{ display: "grid", gap: 8 }}>
               {Object.entries(REGION_PROVINCES).map(([key, region]) => (
