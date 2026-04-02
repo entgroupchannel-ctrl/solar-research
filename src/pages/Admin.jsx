@@ -1091,7 +1091,7 @@ OUTPUT:
                       onClick={() => setExpandedResponse(isExpanded ? null : r.uid)}
                       style={{
                         padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12,
-                        background: isExpanded ? "rgba(245,158,11,0.08)" : "transparent",
+                        background: isExpanded ? "#f0fdf4" : "transparent",
                       }}
                     >
                       <span style={{ fontSize: 13, color: "#64748b", minWidth: 30 }}>#{idx + 1}</span>
@@ -1264,7 +1264,7 @@ OUTPUT:
                               <span style={{ fontSize: 11, color: "#64748b", marginLeft: 8, background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>{src.code}</span>
                             </div>
                             <span style={{
-                              background: count >= tgt && tgt > 0 ? "rgba(16,185,129,0.15)" : "rgba(245,158,11,0.15)",
+                              background: count >= tgt && tgt > 0 ? "#ecfdf5" : "#f0fdf4",
                               color: count >= tgt && tgt > 0 ? "#10b981" : "#059669",
                               padding: "4px 12px", borderRadius: 12, fontSize: 12, fontWeight: 700,
                             }}>{count}{tgt > 0 ? ` / ${tgt}` : ""}</span>
