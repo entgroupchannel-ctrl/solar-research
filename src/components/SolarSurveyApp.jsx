@@ -387,7 +387,7 @@ function PDPAConsent({ onAccept }) {
               rel="noopener noreferrer"
               style={{ fontSize: 13, color: "#f59e0b", textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}
             >
-              🎓 หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี →
+              <GraduationCap size={15} /> หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี →
             </a>
           </div>
         </div>
