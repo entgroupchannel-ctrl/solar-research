@@ -1340,7 +1340,8 @@ export default function SolarSurveyApp() {
 
   const SECTION_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981"];
 
-  if (page === "pdpa") return <PDPAConsent onAccept={() => setPage("survey")} />;
+  if (page === "pdpa") return <PDPAConsent onAccept={() => setPage("screening")} />;
+  if (page === "screening") return <ScreeningQuestion onPass={() => setPage("survey")} onFail={() => setPage("pdpa")} />;
   if (page === "thanks") return <ThankYou responseId={uid} timeTaken={timer} />;
   if (page === "admin") return <AdminDashboard responses={responses} onBack={() => setPage("survey")} />;
 
