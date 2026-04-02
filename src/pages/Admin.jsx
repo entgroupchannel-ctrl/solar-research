@@ -785,18 +785,42 @@ const AdminPage = () => {
             </p>
 
             {/* Add new source */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: 8, marginBottom: 24, alignItems: "center" }}>
               <input
                 type="text"
                 value={newSourceName}
                 onChange={e => setNewSourceName(e.target.value)}
-                placeholder="ชื่อแหล่งที่มา เช่น กลุ่มไลน์ พี่เกียรติ"
-                onKeyDown={e => e.key === "Enter" && addSource()}
+                placeholder="ชื่อแหล่งที่มา เช่น สาขาขอนแก่น"
                 style={{
-                  flex: 1, padding: "10px 16px", borderRadius: 10,
+                  padding: "10px 16px", borderRadius: 10,
                   border: "1px solid rgba(255,255,255,0.15)",
                   background: "rgba(255,255,255,0.05)", color: "#e2e8f0",
                   fontSize: 14, outline: "none",
+                }}
+              />
+              <select
+                value={newSourceRegion}
+                onChange={e => setNewSourceRegion(e.target.value)}
+                style={{
+                  padding: "10px 12px", borderRadius: 10,
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  background: "rgba(255,255,255,0.05)", color: "#e2e8f0",
+                  fontSize: 13, outline: "none",
+                }}
+              >
+                <option value="">-- ภาค --</option>
+                {REGION_QUOTAS.map(rq => <option key={rq.region} value={rq.region}>{rq.region}</option>)}
+              </select>
+              <input
+                type="number"
+                value={newSourceTarget}
+                onChange={e => setNewSourceTarget(e.target.value)}
+                placeholder="เป้าหมาย"
+                style={{
+                  width: 90, padding: "10px 12px", borderRadius: 10,
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  background: "rgba(255,255,255,0.05)", color: "#e2e8f0",
+                  fontSize: 13, outline: "none", textAlign: "center",
                 }}
               />
               <button
@@ -817,35 +841,48 @@ const AdminPage = () => {
             <div style={{ display: "grid", gap: 8 }}>
               {sources.map(src => {
                 const count = responses.filter(r => r.source === src.code).length;
+                const tgt = src.target || 0;
+                const pct = tgt > 0 ? Math.min((count / tgt) * 100, 100) : 0;
                 return (
                   <div key={src.id} style={{
-                    display: "flex", alignItems: "center", gap: 12,
                     background: src.is_active ? "rgba(255,255,255,0.03)" : "rgba(255,0,0,0.05)",
                     borderRadius: 10, padding: "12px 16px", fontSize: 13,
                     border: `1px solid ${src.is_active ? "rgba(255,255,255,0.06)" : "rgba(255,0,0,0.15)"}`,
                   }}>
-                    <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 45 }}>{src.code}</span>
-                    <span style={{ color: "#e2e8f0", flex: 1, fontWeight: 600 }}>{src.name}</span>
-                    <span style={{
-                      background: "rgba(245,158,11,0.15)", color: "#f59e0b",
-                      padding: "2px 10px", borderRadius: 12, fontSize: 11, fontWeight: 700,
-                    }}>{count} คำตอบ</span>
-                    <button onClick={() => copyLink(src.code)} style={{
-                      padding: "6px 12px", borderRadius: 8, border: "none",
-                      background: "rgba(59,130,246,0.15)", color: "#3b82f6",
-                      cursor: "pointer", fontSize: 11, fontWeight: 600,
-                    }}>📋 คัดลอกลิงก์</button>
-                    <button onClick={() => toggleSource(src.id, src.is_active)} style={{
-                      padding: "6px 12px", borderRadius: 8, border: "none",
-                      background: src.is_active ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)",
-                      color: src.is_active ? "#10b981" : "#ef4444",
-                      cursor: "pointer", fontSize: 11, fontWeight: 600,
-                    }}>{src.is_active ? "✅ เปิด" : "❌ ปิด"}</button>
-                    <button onClick={() => deleteSource(src.id, src.code)} style={{
-                      padding: "6px 12px", borderRadius: 8, border: "none",
-                      background: "rgba(239,68,68,0.1)", color: "#ef4444",
-                      cursor: "pointer", fontSize: 11, fontWeight: 600,
-                    }}>🗑</button>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: tgt > 0 ? 8 : 0 }}>
+                      <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 45 }}>{src.code}</span>
+                      <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{src.name}</span>
+                      {src.region && <span style={{ fontSize: 11, color: "#64748b", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: 6 }}>{src.region}</span>}
+                      <span style={{ flex: 1 }} />
+                      <span style={{
+                        background: "rgba(245,158,11,0.15)", color: "#f59e0b",
+                        padding: "2px 10px", borderRadius: 12, fontSize: 11, fontWeight: 700,
+                      }}>{count}{tgt > 0 ? ` / ${tgt}` : ""} คำตอบ</span>
+                      <button onClick={() => copyLink(src.code)} style={{
+                        padding: "6px 12px", borderRadius: 8, border: "none",
+                        background: "rgba(59,130,246,0.15)", color: "#3b82f6",
+                        cursor: "pointer", fontSize: 11, fontWeight: 600,
+                      }}>📋 คัดลอกลิงก์</button>
+                      <button onClick={() => toggleSource(src.id, src.is_active)} style={{
+                        padding: "6px 12px", borderRadius: 8, border: "none",
+                        background: src.is_active ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)",
+                        color: src.is_active ? "#10b981" : "#ef4444",
+                        cursor: "pointer", fontSize: 11, fontWeight: 600,
+                      }}>{src.is_active ? "✅ เปิด" : "❌ ปิด"}</button>
+                      <button onClick={() => deleteSource(src.id, src.code)} style={{
+                        padding: "6px 12px", borderRadius: 8, border: "none",
+                        background: "rgba(239,68,68,0.1)", color: "#ef4444",
+                        cursor: "pointer", fontSize: 11, fontWeight: 600,
+                      }}>🗑</button>
+                    </div>
+                    {tgt > 0 && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 57 }}>
+                        <div style={{ flex: 1, background: "rgba(255,255,255,0.1)", borderRadius: 6, height: 10, overflow: "hidden", position: "relative" }}>
+                          <div style={{ width: `${pct}%`, height: "100%", borderRadius: 6, background: count >= tgt ? "#10b981" : "#f59e0b", transition: "width 0.3s" }} />
+                        </div>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: count >= tgt ? "#10b981" : "#94a3b8" }}>{pct.toFixed(0)}%</span>
+                      </div>
+                    )}
                   </div>
                 );
               })}
