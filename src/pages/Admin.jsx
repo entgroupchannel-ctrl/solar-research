@@ -2202,12 +2202,14 @@ OUTPUT:
                                   background: src.is_active ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)",
                                   color: src.is_active ? "#10b981" : "#ef4444",
                                   cursor: "pointer", fontSize: 11, fontWeight: 600,
-                                }}>{src.is_active ? "✅" : "❌"}</button>
+                                  display: "flex", alignItems: "center", gap: 3,
+                                }}>{src.is_active ? <><ToggleRight size={13} /> เปิด</> : <><ToggleLeft size={13} /> ปิด</>}</button>
                                 <button onClick={() => deleteSource(src.id, src.code)} style={{
                                   padding: "6px 14px", borderRadius: 8, border: "none",
                                   background: "rgba(239,68,68,0.1)", color: "#ef4444",
                                   cursor: "pointer", fontSize: 11, fontWeight: 600,
-                                }}>🗑</button>
+                                  display: "flex", alignItems: "center", gap: 3,
+                                }}><Trash2 size={11} /> ลบ</button>
                               </div>
                             </div>
                           </div>
