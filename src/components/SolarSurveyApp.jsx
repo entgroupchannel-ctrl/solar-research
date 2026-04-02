@@ -1522,8 +1522,9 @@ export default function SolarSurveyApp() {
         padding: "8px 20px", background: "rgba(15,32,39,0.8)", backdropFilter: "blur(10px)",
         fontSize: 12, borderBottom: "1px solid rgba(255,255,255,0.05)",
       }}>
-        <span style={{ color: "#94a3b8" }}>
-          📍 {regionInfo ? regionInfo.name : (SOURCES[source] || "Direct")}
+        <span style={{ color: "#94a3b8", display: "flex", alignItems: "center", gap: 6 }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          {regionInfo ? regionInfo.name : (SOURCES[source] || "Direct")}
         </span>
         <span style={{ color: "#f59e0b", fontWeight: 700, fontFamily: "monospace" }}>
           ⏱ {formatTime(timer)}
