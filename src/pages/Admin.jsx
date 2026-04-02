@@ -140,6 +140,19 @@ function formatTime(seconds) {
 const SECTION_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981"];
 const PIE_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
 
+// Sampling quota data (from research methodology)
+const REGION_QUOTAS = [
+  { region: "ภาคตะวันออกเฉียงเหนือ", shops: 183, ratio: "28.8%", target: 127, branches: "ขอนแก่น 34 · เลย 24 · ร้อยเอ็ด 19 · ปากช่อง 15 · สุรินทร์ 15 · อุบลราชธานี 12 · สกลนคร 8", color: "#3b82f6" },
+  { region: "ภาคเหนือ", shops: 158, ratio: "24.9%", target: 109, branches: "กำแพงเพชร 24 · เชียงใหม่ 21 · แพร่ 21 · เพชรบูรณ์ 15 · แม่สอด 12 · พิษณุโลก 9 · เชียงราย 7", color: "#10b981" },
+  { region: "ภาคใต้", shops: 102, ratio: "16.1%", target: 71, branches: "สุราษฎร์ธานี 35 · ทุ่งสง 18 · หาดใหญ่ 15 · ชุมพร 3", color: "#3b82f6" },
+  { region: "ภาคตะวันออก", shops: 55, ratio: "8.7%", target: 38, branches: "ระยอง 24 · กบินทร์บุรี 14", color: "#f59e0b" },
+  { region: "ภาคกลาง", shops: 55, ratio: "8.7%", target: 38, branches: "สุพรรณบุรี 18 · ปทุมธานี 12 · สิงห์บุรี 8", color: "#10b981" },
+  { region: "กรุงเทพฯ และปริมณฑล", shops: 43, ratio: "6.8%", target: 30, branches: "รามคำแหง 15 · บางแค 15", color: "#f59e0b" },
+  { region: "ภาคตะวันตก", shops: 38, ratio: "6.0%", target: 27, branches: "เพชรบุรี 27", color: "#ec4899" },
+];
+const TOTAL_TARGET = 440;
+const TOTAL_SHOPS = 635;
+
 const AdminPage = () => {
   const navigate = useNavigate();
   const [selectedSource, setSelectedSource] = useState("all");
@@ -148,6 +161,8 @@ const AdminPage = () => {
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newSourceName, setNewSourceName] = useState("");
+  const [newSourceRegion, setNewSourceRegion] = useState("");
+  const [newSourceTarget, setNewSourceTarget] = useState("");
   const [addingSource, setAddingSource] = useState(false);
 
   // Load data from Supabase
@@ -295,9 +310,13 @@ const AdminPage = () => {
     const { error } = await supabase.from("survey_sources").insert({
       code: nextCode,
       name: newSourceName.trim(),
+      region: newSourceRegion.trim() || null,
+      target: parseInt(newSourceTarget) || 0,
     });
     if (!error) {
       setNewSourceName("");
+      setNewSourceRegion("");
+      setNewSourceTarget("");
       loadData();
     } else {
       alert("เกิดข้อผิดพลาด: " + error.message);
@@ -457,16 +476,158 @@ const AdminPage = () => {
         {/* Tabs */}
         <div style={{ display: "flex", gap: 8, marginBottom: 32, borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: 12, flexWrap: "wrap" }}>
           <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}>📈 ภาพรวม</button>
+          <button onClick={() => setActiveTab("sampling")} style={tabStyle(activeTab === "sampling")}>🎯 เป้าหมาย</button>
           <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}>👥 ข้อมูลผู้ตอบ</button>
           <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}>📋 ตารางละเอียด</button>
           <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}>🔗 จัดการลิงก์</button>
         </div>
 
-        {filtered.length === 0 && activeTab !== "links" && (
+        {filtered.length === 0 && activeTab !== "links" && activeTab !== "sampling" && (
           <div style={{ textAlign: "center", padding: 60, color: "#64748b" }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
             <p>ยังไม่มีข้อมูลที่ส่งเข้ามา</p>
           </div>
+        )}
+
+        {/* SAMPLING / TARGET TAB */}
+        {activeTab === "sampling" && (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 24 }}>
+              {[
+                { label: "กลุ่มตัวอย่างทั้งหมด", value: TOTAL_TARGET, sub: "Quota Target" },
+                { label: "ร้าน PSI ทั้งหมด", value: TOTAL_SHOPS, sub: "Population" },
+                { label: "อัตราสุ่มตัวอย่าง", value: ((TOTAL_TARGET / TOTAL_SHOPS) * 100).toFixed(1) + "%", sub: "Sampling Rate" },
+              ].map((c, i) => (
+                <div key={i} style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 20, textAlign: "center", border: "1px solid rgba(255,255,255,0.08)" }}>
+                  <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 4 }}>{c.label}</div>
+                  <div style={{ fontSize: 32, fontWeight: 800, color: "#e2e8f0" }}>{c.value}</div>
+                  <div style={{ fontSize: 11, color: "#64748b" }}>{c.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={chartCardStyle}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#10b981", margin: 0 }}>ความคืบหน้าการเก็บข้อมูลรวม</h3>
+                <span style={{ fontSize: 24, fontWeight: 800, color: responses.length >= TOTAL_TARGET ? "#10b981" : "#f59e0b" }}>
+                  {responses.length} / {TOTAL_TARGET}
+                </span>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 10, height: 24, overflow: "hidden", position: "relative" }}>
+                <div style={{
+                  width: `${Math.min((responses.length / TOTAL_TARGET) * 100, 100)}%`,
+                  height: "100%", borderRadius: 10,
+                  background: responses.length >= TOTAL_TARGET ? "linear-gradient(90deg, #10b981, #059669)" : "linear-gradient(90deg, #f59e0b, #f97316)",
+                  transition: "width 0.5s ease",
+                }} />
+                <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 12, fontWeight: 700, color: "#fff" }}>
+                  {((responses.length / TOTAL_TARGET) * 100).toFixed(1)}%
+                </span>
+              </div>
+            </div>
+
+            <div style={chartCardStyle}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#3b82f6", margin: "0 0 8px" }}>การจัดสรรกลุ่มตัวอย่าง — Proportional Quota Sampling</h3>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ background: "rgba(255,255,255,0.05)" }}>
+                      <th style={{ textAlign: "left", padding: "10px 12px", color: "#94a3b8", fontWeight: 600 }}>ภาค / สาขา</th>
+                      <th style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8", fontWeight: 600, width: 60 }}>ร้าน</th>
+                      <th style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8", fontWeight: 600, width: 70 }}>สัดส่วน</th>
+                      <th style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8", fontWeight: 600, width: 70 }}>เป้าหมาย</th>
+                      <th style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8", fontWeight: 600, width: 70 }}>เก็บได้</th>
+                      <th style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8", fontWeight: 600, width: 100 }}>ความคืบหน้า</th>
+                      <th style={{ textAlign: "left", padding: "10px 12px", color: "#94a3b8", fontWeight: 600 }}>สาขาหลัก (จำนวน)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {REGION_QUOTAS.map((rq, i) => {
+                      const regionSources = sources.filter(s => s.region === rq.region).map(s => s.code);
+                      const collected = responses.filter(r => regionSources.includes(r.source)).length;
+                      const pct = rq.target > 0 ? Math.min((collected / rq.target) * 100, 100) : 0;
+                      return (
+                        <tr key={i} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                          <td style={{ padding: "10px 12px", color: "#e2e8f0", fontWeight: 600 }}>
+                            <span style={{ display: "inline-block", width: 10, height: 10, borderRadius: 3, background: rq.color, marginRight: 8, verticalAlign: "middle" }} />
+                            {rq.region}
+                          </td>
+                          <td style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8" }}>{rq.shops}</td>
+                          <td style={{ textAlign: "center", padding: "10px 12px", color: "#94a3b8" }}>{rq.ratio}</td>
+                          <td style={{ textAlign: "center", padding: "10px 12px", color: "#e2e8f0", fontWeight: 700 }}>{rq.target}</td>
+                          <td style={{ textAlign: "center", padding: "10px 12px", color: collected >= rq.target ? "#10b981" : "#f59e0b", fontWeight: 700, fontSize: 16 }}>{collected}</td>
+                          <td style={{ padding: "10px 12px" }}>
+                            <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 6, height: 14, overflow: "hidden", position: "relative" }}>
+                              <div style={{ width: `${pct}%`, height: "100%", borderRadius: 6, background: collected >= rq.target ? "#10b981" : rq.color, transition: "width 0.3s" }} />
+                              <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 9, fontWeight: 700, color: "#fff" }}>{pct.toFixed(0)}%</span>
+                            </div>
+                          </td>
+                          <td style={{ padding: "10px 12px", color: "#94a3b8", fontSize: 12, lineHeight: 1.6 }}>{rq.branches}</td>
+                        </tr>
+                      );
+                    })}
+                    <tr style={{ background: "rgba(255,255,255,0.05)", fontWeight: 700 }}>
+                      <td style={{ padding: "10px 12px", color: "#e2e8f0" }}>รวมทั้งหมด</td>
+                      <td style={{ textAlign: "center", padding: "10px 12px", color: "#e2e8f0" }}>{TOTAL_SHOPS}</td>
+                      <td style={{ textAlign: "center", padding: "10px 12px", color: "#e2e8f0" }}>100%</td>
+                      <td style={{ textAlign: "center", padding: "10px 12px", color: "#f59e0b" }}>{TOTAL_TARGET}</td>
+                      <td style={{ textAlign: "center", padding: "10px 12px", color: responses.length >= TOTAL_TARGET ? "#10b981" : "#f59e0b", fontSize: 16 }}>{responses.length}</td>
+                      <td style={{ padding: "10px 12px" }}>
+                        <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 6, height: 14, overflow: "hidden", position: "relative" }}>
+                          <div style={{ width: `${Math.min((responses.length / TOTAL_TARGET) * 100, 100)}%`, height: "100%", borderRadius: 6, background: responses.length >= TOTAL_TARGET ? "#10b981" : "#f59e0b" }} />
+                          <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 9, fontWeight: 700, color: "#fff" }}>{((responses.length / TOTAL_TARGET) * 100).toFixed(1)}%</span>
+                        </div>
+                      </td>
+                      <td style={{ padding: "10px 12px", color: "#94a3b8", fontSize: 12 }}>22 สาขาทั่วประเทศ</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div style={chartCardStyle}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#e2e8f0", margin: "0 0 12px" }}>วิธีการสุ่มตัวอย่าง</h3>
+              <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 20, border: "1px solid rgba(255,255,255,0.06)", lineHeight: 2, fontSize: 14, color: "#cbd5e1" }}>
+                <p style={{ margin: "0 0 8px" }}>ใช้ <strong style={{ color: "#f59e0b" }}>Proportional Stratified Sampling</strong> (การสุ่มแบบแบ่งชั้นภูมิตามสัดส่วน) โดย:</p>
+                <ol style={{ paddingLeft: 24, margin: 0 }}>
+                  <li>แบ่งชั้นภูมิ (strata) ตามภูมิภาค 7 ภาค</li>
+                  <li>คำนวณสัดส่วนจากจำนวนร้านติดตั้ง PSI ในแต่ละภาค (ประชากร = {TOTAL_SHOPS} ร้าน)</li>
+                  <li>จัดสรรกลุ่มตัวอย่าง {TOTAL_TARGET} คน ตามสัดส่วน : n<sub>h</sub> = (N<sub>h</sub> / N) × {TOTAL_TARGET}</li>
+                  <li>ภายในแต่ละภาค กระจายตามสาขาย่อยตามสัดส่วนอีกชั้นหนึ่ง</li>
+                  <li>ปัดเศษด้วย largest remainder method เพื่อให้รวมครบ {TOTAL_TARGET} พอดี</li>
+                </ol>
+              </div>
+              <p style={{ fontSize: 12, color: "#64748b", margin: "12px 0 0", lineHeight: 1.7 }}>
+                * ข้อมูลประชากรอ้างอิงจาก armservice.psisat.com (ร้านตัวแทนติดตั้ง PSI ทั่วประเทศ {TOTAL_SHOPS} ร้าน)<br />
+                ** จำนวนกลุ่มตัวอย่างในแต่ละสาขาปัดเศษเพื่อให้รวม {TOTAL_TARGET} พอดี
+              </p>
+            </div>
+
+            <div style={chartCardStyle}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#8b5cf6", margin: "0 0 16px" }}>ความคืบหน้าแยกตามลิงก์แหล่งที่มา</h3>
+              <div style={{ display: "grid", gap: 8 }}>
+                {sources.filter(s => s.is_active).map(src => {
+                  const count = responses.filter(r => r.source === src.code).length;
+                  const tgt = src.target || 0;
+                  const pct = tgt > 0 ? Math.min((count / tgt) * 100, 100) : 0;
+                  return (
+                    <div key={src.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 0" }}>
+                      <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 45, fontSize: 12 }}>{src.code}</span>
+                      <span style={{ color: "#e2e8f0", minWidth: 140, fontSize: 13, fontWeight: 600 }}>{src.name}</span>
+                      {src.region && <span style={{ fontSize: 11, color: "#64748b", minWidth: 100 }}>{src.region}</span>}
+                      <div style={{ flex: 1, background: "rgba(255,255,255,0.1)", borderRadius: 6, height: 16, overflow: "hidden", position: "relative" }}>
+                        <div style={{ width: tgt > 0 ? `${pct}%` : "0%", height: "100%", borderRadius: 6, background: count >= tgt && tgt > 0 ? "#10b981" : "#8b5cf6", transition: "width 0.3s" }} />
+                        {tgt > 0 && <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 10, fontWeight: 700, color: "#fff" }}>{pct.toFixed(0)}%</span>}
+                      </div>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: count >= tgt && tgt > 0 ? "#10b981" : "#e2e8f0", minWidth: 60, textAlign: "right" }}>
+                        {count}{tgt > 0 ? ` / ${tgt}` : ""}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </>
         )}
 
         {/* OVERVIEW TAB */}
@@ -624,18 +785,42 @@ const AdminPage = () => {
             </p>
 
             {/* Add new source */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: 8, marginBottom: 24, alignItems: "center" }}>
               <input
                 type="text"
                 value={newSourceName}
                 onChange={e => setNewSourceName(e.target.value)}
-                placeholder="ชื่อแหล่งที่มา เช่น กลุ่มไลน์ พี่เกียรติ"
-                onKeyDown={e => e.key === "Enter" && addSource()}
+                placeholder="ชื่อแหล่งที่มา เช่น สาขาขอนแก่น"
                 style={{
-                  flex: 1, padding: "10px 16px", borderRadius: 10,
+                  padding: "10px 16px", borderRadius: 10,
                   border: "1px solid rgba(255,255,255,0.15)",
                   background: "rgba(255,255,255,0.05)", color: "#e2e8f0",
                   fontSize: 14, outline: "none",
+                }}
+              />
+              <select
+                value={newSourceRegion}
+                onChange={e => setNewSourceRegion(e.target.value)}
+                style={{
+                  padding: "10px 12px", borderRadius: 10,
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  background: "rgba(255,255,255,0.05)", color: "#e2e8f0",
+                  fontSize: 13, outline: "none",
+                }}
+              >
+                <option value="">-- ภาค --</option>
+                {REGION_QUOTAS.map(rq => <option key={rq.region} value={rq.region}>{rq.region}</option>)}
+              </select>
+              <input
+                type="number"
+                value={newSourceTarget}
+                onChange={e => setNewSourceTarget(e.target.value)}
+                placeholder="เป้าหมาย"
+                style={{
+                  width: 90, padding: "10px 12px", borderRadius: 10,
+                  border: "1px solid rgba(255,255,255,0.15)",
+                  background: "rgba(255,255,255,0.05)", color: "#e2e8f0",
+                  fontSize: 13, outline: "none", textAlign: "center",
                 }}
               />
               <button
@@ -656,35 +841,48 @@ const AdminPage = () => {
             <div style={{ display: "grid", gap: 8 }}>
               {sources.map(src => {
                 const count = responses.filter(r => r.source === src.code).length;
+                const tgt = src.target || 0;
+                const pct = tgt > 0 ? Math.min((count / tgt) * 100, 100) : 0;
                 return (
                   <div key={src.id} style={{
-                    display: "flex", alignItems: "center", gap: 12,
                     background: src.is_active ? "rgba(255,255,255,0.03)" : "rgba(255,0,0,0.05)",
                     borderRadius: 10, padding: "12px 16px", fontSize: 13,
                     border: `1px solid ${src.is_active ? "rgba(255,255,255,0.06)" : "rgba(255,0,0,0.15)"}`,
                   }}>
-                    <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 45 }}>{src.code}</span>
-                    <span style={{ color: "#e2e8f0", flex: 1, fontWeight: 600 }}>{src.name}</span>
-                    <span style={{
-                      background: "rgba(245,158,11,0.15)", color: "#f59e0b",
-                      padding: "2px 10px", borderRadius: 12, fontSize: 11, fontWeight: 700,
-                    }}>{count} คำตอบ</span>
-                    <button onClick={() => copyLink(src.code)} style={{
-                      padding: "6px 12px", borderRadius: 8, border: "none",
-                      background: "rgba(59,130,246,0.15)", color: "#3b82f6",
-                      cursor: "pointer", fontSize: 11, fontWeight: 600,
-                    }}>📋 คัดลอกลิงก์</button>
-                    <button onClick={() => toggleSource(src.id, src.is_active)} style={{
-                      padding: "6px 12px", borderRadius: 8, border: "none",
-                      background: src.is_active ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)",
-                      color: src.is_active ? "#10b981" : "#ef4444",
-                      cursor: "pointer", fontSize: 11, fontWeight: 600,
-                    }}>{src.is_active ? "✅ เปิด" : "❌ ปิด"}</button>
-                    <button onClick={() => deleteSource(src.id, src.code)} style={{
-                      padding: "6px 12px", borderRadius: 8, border: "none",
-                      background: "rgba(239,68,68,0.1)", color: "#ef4444",
-                      cursor: "pointer", fontSize: 11, fontWeight: 600,
-                    }}>🗑</button>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: tgt > 0 ? 8 : 0 }}>
+                      <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 45 }}>{src.code}</span>
+                      <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{src.name}</span>
+                      {src.region && <span style={{ fontSize: 11, color: "#64748b", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: 6 }}>{src.region}</span>}
+                      <span style={{ flex: 1 }} />
+                      <span style={{
+                        background: "rgba(245,158,11,0.15)", color: "#f59e0b",
+                        padding: "2px 10px", borderRadius: 12, fontSize: 11, fontWeight: 700,
+                      }}>{count}{tgt > 0 ? ` / ${tgt}` : ""} คำตอบ</span>
+                      <button onClick={() => copyLink(src.code)} style={{
+                        padding: "6px 12px", borderRadius: 8, border: "none",
+                        background: "rgba(59,130,246,0.15)", color: "#3b82f6",
+                        cursor: "pointer", fontSize: 11, fontWeight: 600,
+                      }}>📋 คัดลอกลิงก์</button>
+                      <button onClick={() => toggleSource(src.id, src.is_active)} style={{
+                        padding: "6px 12px", borderRadius: 8, border: "none",
+                        background: src.is_active ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)",
+                        color: src.is_active ? "#10b981" : "#ef4444",
+                        cursor: "pointer", fontSize: 11, fontWeight: 600,
+                      }}>{src.is_active ? "✅ เปิด" : "❌ ปิด"}</button>
+                      <button onClick={() => deleteSource(src.id, src.code)} style={{
+                        padding: "6px 12px", borderRadius: 8, border: "none",
+                        background: "rgba(239,68,68,0.1)", color: "#ef4444",
+                        cursor: "pointer", fontSize: 11, fontWeight: 600,
+                      }}>🗑</button>
+                    </div>
+                    {tgt > 0 && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 57 }}>
+                        <div style={{ flex: 1, background: "rgba(255,255,255,0.1)", borderRadius: 6, height: 10, overflow: "hidden", position: "relative" }}>
+                          <div style={{ width: `${pct}%`, height: "100%", borderRadius: 6, background: count >= tgt ? "#10b981" : "#f59e0b", transition: "width 0.3s" }} />
+                        </div>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: count >= tgt ? "#10b981" : "#94a3b8" }}>{pct.toFixed(0)}%</span>
+                      </div>
+                    )}
                   </div>
                 );
               })}
