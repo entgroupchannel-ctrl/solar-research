@@ -784,16 +784,16 @@ OUTPUT:
         <div style={{ marginBottom: 24, display: "flex", flexWrap: "wrap", gap: 8 }}>
           <button onClick={() => setSelectedSource("all")} style={{
             padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer",
-            background: selectedSource === "all" ? "#f59e0b" : "rgba(255,255,255,0.1)",
-            color: selectedSource === "all" ? "#000" : "#94a3b8", fontSize: 12, fontWeight: 600,
+            background: selectedSource === "all" ? "#059669" : "#f1f5f9",
+            color: selectedSource === "all" ? "#fff" : "#64748b", fontSize: 12, fontWeight: 600,
           }}>ทั้งหมด ({responses.length})</button>
           {sources.map(src => {
             const count = responses.filter(r => r.source === src.code).length;
             return (
               <button key={src.code} onClick={() => setSelectedSource(src.code)} style={{
                 padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer",
-                background: selectedSource === src.code ? "#f59e0b" : "rgba(255,255,255,0.1)",
-                color: selectedSource === src.code ? "#000" : "#94a3b8", fontSize: 12, fontWeight: 600,
+                background: selectedSource === src.code ? "#059669" : "#f1f5f9",
+                color: selectedSource === src.code ? "#fff" : "#64748b", fontSize: 12, fontWeight: 600,
               }}>{src.name} ({count})</button>
             );
           })}
