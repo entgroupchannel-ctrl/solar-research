@@ -1255,15 +1255,61 @@ function SpeechToTextButton({ onResult }) {
 
 // ============================================================
 export default function SolarSurveyApp() {
-  const [page, setPage] = useState("pdpa"); // pdpa | screening | survey | thanks | admin
+  // Restore saved progress from localStorage for resume capability
   const [source] = useState(getSourceFromURL);
-  // Get provinces for the current region source
   const regionInfo = REGION_PROVINCES[source] || null;
-  const [uid] = useState(generateUID);
-  const [personal, setPersonal] = useState({});
-  const [likert, setLikert] = useState({});
-  const [suggestion, setSuggestion] = useState("");
-  const [timer, setTimer] = useState(0);
+
+  const [uid] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.uid && !data.submitted) return data.uid;
+      }
+    } catch(e) {}
+    return generateUID();
+  });
+
+  const [page, setPage] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.uid && !data.submitted && data.page === "survey") return "survey";
+      }
+    } catch(e) {}
+    return "pdpa";
+  });
+
+  const [personal, setPersonal] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) { const d = JSON.parse(saved); if (!d.submitted && d.personal) return d.personal; }
+    } catch(e) {}
+    return {};
+  });
+  const [likert, setLikert] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) { const d = JSON.parse(saved); if (!d.submitted && d.likert) return d.likert; }
+    } catch(e) {}
+    return {};
+  });
+  const [suggestion, setSuggestion] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) { const d = JSON.parse(saved); if (!d.submitted && d.suggestion) return d.suggestion; }
+    } catch(e) {}
+    return "";
+  });
+  const [timer, setTimer] = useState(() => {
+    try {
+      const saved = localStorage.getItem("survey_draft");
+      if (saved) { const d = JSON.parse(saved); if (!d.submitted && d.timer) return d.timer; }
+    } catch(e) {}
+    return 0;
+  });
+
   const [showValidation, setShowValidation] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
   const [responses, setResponses] = useState([]);
@@ -1276,35 +1322,26 @@ export default function SolarSurveyApp() {
     return () => clearInterval(interval);
   }, [page]);
 
-  // Load saved progress
+  // Load responses for admin
   useEffect(() => {
-    try {
-      const saved = sessionStorage.getItem("survey_progress_" + uid);
-      if (saved) {
-        const data = JSON.parse(saved);
-        if (data.personal) setPersonal(data.personal);
-        if (data.likert) setLikert(data.likert);
-        if (data.suggestion) setSuggestion(data.suggestion);
-        if (data.timer) setTimer(data.timer);
-      }
-    } catch(e) {}
-    // Load responses for admin
     try {
       const saved = sessionStorage.getItem("survey_responses");
       if (saved) setResponses(JSON.parse(saved));
     } catch(e) {}
   }, []);
 
-  // Auto-save progress
+  // Auto-save progress to localStorage (persists across browser sessions)
   useEffect(() => {
     if (page !== "survey") return;
     const timeout = setTimeout(() => {
       try {
-        sessionStorage.setItem("survey_progress_" + uid, JSON.stringify({ personal, likert, suggestion, timer }));
+        localStorage.setItem("survey_draft", JSON.stringify({
+          uid, source, personal, likert, suggestion, timer, page, submitted: false
+        }));
       } catch(e) {}
-    }, 1000);
+    }, 500);
     return () => clearTimeout(timeout);
-  }, [personal, likert, suggestion, timer, page, uid]);
+  }, [personal, likert, suggestion, timer, page, uid, source]);
 
   // Count answered
   const answeredPersonal = PERSONAL_QUESTIONS.filter(q => personal[q.id]).length + (regionInfo && personal.province ? 1 : 0);
@@ -1407,7 +1444,7 @@ export default function SolarSurveyApp() {
         setSubmitting(false);
         return;
       }
-      try { sessionStorage.removeItem("survey_progress_" + uid); } catch(e) {}
+      try { localStorage.removeItem("survey_draft"); } catch(e) {}
       setSubmitted(true);
       setPage("thanks");
     } catch (err) {
