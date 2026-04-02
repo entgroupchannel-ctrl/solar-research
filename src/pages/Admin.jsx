@@ -912,6 +912,7 @@ OUTPUT:
           }}>ทั้งหมด ({responses.length})</button>
           {sources.map(src => {
             const count = responses.filter(r => r.source === src.code).length;
+            if (count === 0) return null;
             return (
               <button key={src.code} onClick={() => setSelectedSource(src.code)} style={{
                 padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer",
