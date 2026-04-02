@@ -626,9 +626,112 @@ OUTPUT:
     a.click(); URL.revokeObjectURL(url);
   };
 
+  const exportMplusCFA = (data) => {
+    const { personalVars, likertVars } = getMplusVarNames();
+    const n = data.length;
+
+    const cfa = `TITLE: Solar Rooftop CFA - Measurement Model
+  Confirmatory Factor Analysis (CFA)
+  Test measurement model before running full SEM
+  N = ${n};
+
+DATA: FILE IS solar_survey.dat;
+
+VARIABLE:
+  NAMES ARE
+    ${personalVars.join(" ")}
+    ${likertVars.join("\n    ")};
+  USEVARIABLES ARE
+    ${likertVars.join("\n    ")};
+  MISSING ARE ALL (-999);
+
+ANALYSIS:
+  TYPE = GENERAL;
+  ESTIMATOR = MLR;
+  ! Use WLSMV if treating as ordinal:
+  ! ESTIMATOR = WLSMV;
+
+MODEL:
+  ! ============================================
+  ! CFA: Measurement Model Only (No Structural)
+  ! ============================================
+
+  ! ===== Service Quality (SQ) - First Order =====
+  TANG BY SQ1_1 SQ1_2 SQ1_3;
+  RELI BY SQ2_1 SQ2_2 SQ2_3;
+  RESP BY SQ3_1 SQ3_2 SQ3_3;
+  ASSU BY SQ4_1 SQ4_2 SQ4_3;
+  EMPA BY SQ5_1 SQ5_2 SQ5_3;
+
+  ! ===== Service Quality (SQ) - Second Order =====
+  SQ BY TANG RELI RESP ASSU EMPA;
+
+  ! ===== Product Quality (PQ) - First Order =====
+  SREL BY PQ1_1 PQ1_2 PQ1_3;
+  WARR BY PQ2_1 PQ2_2 PQ2_3;
+  STAN BY PQ3_1 PQ3_2 PQ3_3;
+  VALU BY PQ4_1 PQ4_2 PQ4_3;
+
+  ! ===== Product Quality (PQ) - Second Order =====
+  PQ BY SREL WARR STAN VALU;
+
+  ! ===== Brand Trust (BT) - First Order =====
+  BCRE BY BT1_1 BT1_2 BT1_3;
+  BBEN BY BT2_1 BT2_2 BT2_3;
+
+  ! ===== Brand Trust (BT) - Second Order =====
+  BT BY BCRE BBEN;
+
+  ! ===== Decision (DC) - First Order =====
+  PREC BY DC1_1 DC1_2 DC1_3;
+  INFO BY DC2_1 DC2_2 DC2_3;
+  EVAL BY DC3_1 DC3_2 DC3_3;
+  PURC BY DC4_1 DC4_2 DC4_3;
+  POST BY DC5_1 DC5_2 DC5_3;
+
+  ! ===== Decision (DC) - Second Order =====
+  DC BY PREC INFO EVAL PURC POST;
+
+  ! ===== Latent Factor Correlations (freely estimated) =====
+  SQ WITH PQ BT DC;
+  PQ WITH BT DC;
+  BT WITH DC;
+
+OUTPUT:
+  SAMPSTAT STANDARDIZED MODINDICES(3.84)
+  CINTERVAL RESIDUAL TECH1 TECH4;
+
+! ============================================
+! Model Fit Criteria:
+! Chi-square/df < 3.0 (acceptable), < 2.0 (good)
+! CFI >= 0.90 (acceptable), >= 0.95 (good)
+! TLI >= 0.90 (acceptable), >= 0.95 (good)
+! RMSEA <= 0.08 (acceptable), <= 0.05 (good)
+! SRMR <= 0.08 (acceptable), <= 0.05 (good)
+! ============================================
+! Convergent Validity:
+! Factor loadings >= 0.50 (ideally >= 0.70)
+! AVE >= 0.50
+! CR >= 0.70
+! ============================================
+! Discriminant Validity:
+! Square root of AVE > inter-factor correlations
+! HTMT < 0.85 (strict) or < 0.90 (lenient)
+! ============================================
+! After CFA passes, run the full SEM (.inp)
+! ============================================
+`;
+    const blob = new Blob([cfa], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url;
+    a.download = `solar_survey_cfa.inp`;
+    a.click(); URL.revokeObjectURL(url);
+  };
+
   const exportMplusBoth = (data) => {
     exportMplusDat(data);
-    setTimeout(() => exportMplusInp(data), 500);
+    setTimeout(() => exportMplusCFA(data), 300);
+    setTimeout(() => exportMplusInp(data), 600);
   };
 
   const tabStyle = (isActive) => ({
@@ -747,7 +850,7 @@ OUTPUT:
               padding: "8px 20px", border: "1px solid rgba(168,85,247,0.4)",
               borderRadius: 8, background: "rgba(168,85,247,0.1)", color: "#a855f7",
               cursor: "pointer", fontSize: 13, fontWeight: 600,
-            }}>📥 Mplus (.dat + .inp)</button>
+            }}>📥 Mplus (.dat + CFA + SEM)</button>
             <button onClick={loadData} style={{
               padding: "8px 20px", border: "1px solid #d1d5db",
               borderRadius: 8, background: "transparent", color: "#1e293b",
