@@ -1637,9 +1637,9 @@ export default function SolarSurveyApp() {
         {/* Submit */}
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 12 }}>
-            ตอบแล้ว {answeredTotal} / {TOTAL_QUESTIONS} ข้อ
-            {answeredTotal < TOTAL_QUESTIONS - 1 && (
-              <span style={{ color: "#f87171" }}> (เหลืออีก {TOTAL_QUESTIONS - 1 - answeredTotal} ข้อที่จำเป็น)</span>
+            ตอบแล้ว {answeredTotal} / {totalRequired} ข้อ
+            {answeredTotal < totalRequired - 1 && (
+              <span style={{ color: "#f87171" }}> (เหลืออีก {totalRequired - 1 - answeredTotal} ข้อที่จำเป็น)</span>
             )}
           </div>
           <button
