@@ -1022,17 +1022,65 @@ OUTPUT:
         )}
 
         {/* SAMPLING / TARGET TAB */}
-        {activeTab === "sampling" && (
+        {activeTab === "sampling" && (() => {
+          // Compute collection rate per region using created_at timestamps
+          const now = new Date();
+          const computeProjection = (collected, target, timestamps) => {
+            if (collected >= target) return { status: "done", projectedDate: null, daysLeft: 0, dailyRate: 0 };
+            if (timestamps.length < 2) return { status: "insufficient", projectedDate: null, daysLeft: null, dailyRate: 0 };
+            
+            const sorted = timestamps.map(t => new Date(t)).sort((a, b) => a - b);
+            const firstDate = sorted[0];
+            const daysSinceStart = Math.max((now - firstDate) / (1000 * 60 * 60 * 24), 1);
+            const dailyRate = collected / daysSinceStart;
+            
+            if (dailyRate <= 0) return { status: "stalled", projectedDate: null, daysLeft: null, dailyRate: 0 };
+            
+            const remaining = target - collected;
+            const daysLeft = Math.ceil(remaining / dailyRate);
+            const projectedDate = new Date(now.getTime() + daysLeft * 24 * 60 * 60 * 1000);
+            
+            return { status: "active", projectedDate, daysLeft, dailyRate };
+          };
+
+          // Last 7 days trend
+          const last7 = responses.filter(r => {
+            const d = new Date(r.created_at);
+            return (now - d) / (1000 * 60 * 60 * 24) <= 7;
+          }).length;
+          const last30 = responses.filter(r => {
+            const d = new Date(r.created_at);
+            return (now - d) / (1000 * 60 * 60 * 24) <= 30;
+          }).length;
+
+          // Overall projection
+          const allTimestamps = responses.map(r => r.created_at);
+          const overallProj = computeProjection(responses.length, TOTAL_TARGET, allTimestamps);
+
+          // Region projections
+          const regionProjections = REGION_DATA.map(reg => {
+            const regionResponses = responses.filter(r => r.source === reg.code);
+            const timestamps = regionResponses.map(r => r.created_at);
+            const proj = computeProjection(regionResponses.length, reg.target, timestamps);
+            return { ...reg, collected: regionResponses.length, ...proj };
+          });
+
+          const formatDate = (d) => d ? d.toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "2-digit" }) : "-";
+
+          return (
           <>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 24 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 12, marginBottom: 24 }}>
               {[
                 { label: "กลุ่มตัวอย่างทั้งหมด", value: TOTAL_TARGET, sub: "Quota Target" },
+                { label: "เก็บได้แล้ว", value: responses.length, sub: `${((responses.length / TOTAL_TARGET) * 100).toFixed(1)}%` },
                 { label: "ร้าน PSI ทั้งหมด", value: TOTAL_SHOPS, sub: "Population" },
-                { label: "อัตราสุ่มตัวอย่าง", value: ((TOTAL_TARGET / TOTAL_SHOPS) * 100).toFixed(1) + "%", sub: "Sampling Rate" },
+                { label: "7 วันล่าสุด", value: last7, sub: `≈ ${(last7 / 7).toFixed(1)}/วัน` },
+                { label: "30 วันล่าสุด", value: last30, sub: `≈ ${(last30 / 30).toFixed(1)}/วัน` },
+                { label: "คาดว่าครบ", value: overallProj.status === "done" ? "✅ ครบแล้ว" : overallProj.projectedDate ? formatDate(overallProj.projectedDate) : "—", sub: overallProj.daysLeft != null ? `อีก ${overallProj.daysLeft} วัน` : overallProj.status === "done" ? "เสร็จสิ้น" : "ข้อมูลไม่เพียงพอ" },
               ].map((c, i) => (
-                <div key={i} style={{ background: "#f1f5f9", borderRadius: 12, padding: 20, textAlign: "center", border: "1px solid #e2e8f0" }}>
-                  <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>{c.label}</div>
-                  <div style={{ fontSize: 32, fontWeight: 800, color: "#1e293b" }}>{c.value}</div>
+                <div key={i} style={{ background: "#f1f5f9", borderRadius: 12, padding: 16, textAlign: "center", border: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: 11, color: "#64748b", marginBottom: 4 }}>{c.label}</div>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: "#1e293b" }}>{c.value}</div>
                   <div style={{ fontSize: 11, color: "#64748b" }}>{c.sub}</div>
                 </div>
               ))}
@@ -1059,12 +1107,110 @@ OUTPUT:
               </div>
             </div>
 
-            {/* Region-level progress */}
+            {/* Target Tracking Dashboard */}
+            <div style={chartCardStyle}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#3b82f6", margin: "0 0 16px", display: "flex", alignItems: "center", gap: 8 }}>
+                <Target size={18} /> Target Tracking Dashboard
+              </h3>
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ background: "#f0fdf4" }}>
+                      <th style={{ textAlign: "left", padding: "10px 12px", color: "#059669", fontWeight: 700, borderBottom: "2px solid #059669" }}>ภูมิภาค</th>
+                      <th style={{ textAlign: "center", padding: "10px 8px", color: "#059669", fontWeight: 600, borderBottom: "2px solid #059669", width: 70 }}>เป้าหมาย</th>
+                      <th style={{ textAlign: "center", padding: "10px 8px", color: "#059669", fontWeight: 600, borderBottom: "2px solid #059669", width: 70 }}>ได้แล้ว</th>
+                      <th style={{ textAlign: "center", padding: "10px 8px", color: "#059669", fontWeight: 600, borderBottom: "2px solid #059669", width: 80 }}>ความคืบหน้า</th>
+                      <th style={{ textAlign: "center", padding: "10px 8px", color: "#059669", fontWeight: 600, borderBottom: "2px solid #059669", width: 70 }}>อัตรา/วัน</th>
+                      <th style={{ textAlign: "center", padding: "10px 8px", color: "#059669", fontWeight: 600, borderBottom: "2px solid #059669", width: 80 }}>เหลืออีก</th>
+                      <th style={{ textAlign: "center", padding: "10px 8px", color: "#059669", fontWeight: 600, borderBottom: "2px solid #059669", width: 110 }}>คาดว่าครบ</th>
+                      <th style={{ textAlign: "center", padding: "10px 8px", color: "#059669", fontWeight: 600, borderBottom: "2px solid #059669", width: 80 }}>สถานะ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {regionProjections.sort((a, b) => (b.collected / b.target) - (a.collected / a.target)).map((reg, i) => {
+                      const pct = reg.target > 0 ? (reg.collected / reg.target) * 100 : 0;
+                      const statusLabel = reg.status === "done" ? "✅ ครบแล้ว"
+                        : reg.status === "stalled" ? "⏸ หยุดชะงัก"
+                        : reg.status === "insufficient" ? "📊 รอข้อมูล"
+                        : pct >= 75 ? "🔥 ใกล้ครบ" : pct >= 50 ? "🚀 กำลังดี" : pct >= 25 ? "📈 เริ่มต้น" : "⏳ เริ่มต้น";
+                      const statusColor = reg.status === "done" ? "#10b981"
+                        : reg.status === "stalled" ? "#ef4444"
+                        : pct >= 75 ? "#f59e0b" : pct >= 50 ? "#3b82f6" : "#64748b";
+
+                      return (
+                        <tr key={reg.code} style={{ borderBottom: "1px solid #f1f5f9", background: i % 2 === 0 ? "#fff" : "#fafffe" }}>
+                          <td style={{ padding: "10px 12px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                              <span style={{ width: 10, height: 10, borderRadius: 3, background: reg.color, flexShrink: 0 }} />
+                              <span style={{ fontWeight: 600, color: "#1e293b" }}>{reg.name}</span>
+                            </div>
+                          </td>
+                          <td style={{ textAlign: "center", padding: "10px 8px", color: "#64748b" }}>{reg.target}</td>
+                          <td style={{ textAlign: "center", padding: "10px 8px", fontWeight: 700, color: reg.collected >= reg.target ? "#10b981" : "#1e293b" }}>{reg.collected}</td>
+                          <td style={{ padding: "10px 8px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                              <div style={{ flex: 1, background: "#e2e8f0", borderRadius: 6, height: 10, overflow: "hidden" }}>
+                                <div style={{ width: `${Math.min(pct, 100)}%`, height: "100%", borderRadius: 6, background: reg.collected >= reg.target ? "#10b981" : reg.color, transition: "width 0.3s" }} />
+                              </div>
+                              <span style={{ fontSize: 11, fontWeight: 700, color: reg.collected >= reg.target ? "#10b981" : "#64748b", minWidth: 36 }}>{pct.toFixed(0)}%</span>
+                            </div>
+                          </td>
+                          <td style={{ textAlign: "center", padding: "10px 8px", color: "#64748b", fontSize: 12 }}>{reg.dailyRate > 0 ? reg.dailyRate.toFixed(1) : "—"}</td>
+                          <td style={{ textAlign: "center", padding: "10px 8px", color: reg.status === "done" ? "#10b981" : "#1e293b", fontWeight: 600 }}>
+                            {reg.status === "done" ? "0" : reg.target - reg.collected}
+                          </td>
+                          <td style={{ textAlign: "center", padding: "10px 8px", fontSize: 12 }}>
+                            {reg.status === "done" ? (
+                              <span style={{ color: "#10b981", fontWeight: 600 }}>เสร็จแล้ว</span>
+                            ) : reg.projectedDate ? (
+                              <div>
+                                <span style={{ color: "#1e293b", fontWeight: 600 }}>{formatDate(reg.projectedDate)}</span>
+                                <span style={{ display: "block", fontSize: 10, color: "#64748b" }}>อีก {reg.daysLeft} วัน</span>
+                              </div>
+                            ) : <span style={{ color: "#94a3b8" }}>—</span>}
+                          </td>
+                          <td style={{ textAlign: "center", padding: "10px 8px" }}>
+                            <span style={{ padding: "3px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, background: statusColor + "18", color: statusColor }}>
+                              {statusLabel}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    {/* Total row */}
+                    <tr style={{ background: "#f0fdf4", borderTop: "2px solid #059669" }}>
+                      <td style={{ padding: "10px 12px", fontWeight: 700, color: "#059669" }}>รวมทั้งหมด</td>
+                      <td style={{ textAlign: "center", padding: "10px 8px", fontWeight: 700, color: "#059669" }}>{TOTAL_TARGET}</td>
+                      <td style={{ textAlign: "center", padding: "10px 8px", fontWeight: 800, color: responses.length >= TOTAL_TARGET ? "#10b981" : "#059669" }}>{responses.length}</td>
+                      <td style={{ padding: "10px 8px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <div style={{ flex: 1, background: "#e2e8f0", borderRadius: 6, height: 10, overflow: "hidden" }}>
+                            <div style={{ width: `${Math.min((responses.length / TOTAL_TARGET) * 100, 100)}%`, height: "100%", borderRadius: 6, background: "#059669" }} />
+                          </div>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: "#059669", minWidth: 36 }}>{((responses.length / TOTAL_TARGET) * 100).toFixed(0)}%</span>
+                        </div>
+                      </td>
+                      <td style={{ textAlign: "center", padding: "10px 8px", fontWeight: 600, color: "#059669", fontSize: 12 }}>{overallProj.dailyRate > 0 ? overallProj.dailyRate.toFixed(1) : "—"}</td>
+                      <td style={{ textAlign: "center", padding: "10px 8px", fontWeight: 700, color: "#059669" }}>{Math.max(TOTAL_TARGET - responses.length, 0)}</td>
+                      <td style={{ textAlign: "center", padding: "10px 8px", fontSize: 12, fontWeight: 600, color: "#059669" }}>
+                        {overallProj.status === "done" ? "เสร็จแล้ว" : overallProj.projectedDate ? formatDate(overallProj.projectedDate) : "—"}
+                      </td>
+                      <td style={{ textAlign: "center", padding: "10px 8px" }}>
+                        <span style={{ padding: "3px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, background: responses.length >= TOTAL_TARGET ? "#10b98118" : "#05966918", color: responses.length >= TOTAL_TARGET ? "#10b981" : "#059669" }}>
+                          {responses.length >= TOTAL_TARGET ? "✅ ครบแล้ว" : `⏳ ${((responses.length / TOTAL_TARGET) * 100).toFixed(0)}%`}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Region-level progress with province breakdown */}
             {REGION_DATA.map(reg => {
               const regionCollected = responses.filter(r => r.source === reg.code).length;
               const regionPct = reg.target > 0 ? Math.min((regionCollected / reg.target) * 100, 100) : 0;
 
-              // Count province distribution from personal_data.province
               const provinceCounts = {};
               reg.provinces.forEach(p => provinceCounts[p] = 0);
               responses.filter(r => r.source === reg.code).forEach(r => {
@@ -1092,7 +1238,6 @@ OUTPUT:
                     <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 10, fontWeight: 700, color: "#fff" }}>{regionPct.toFixed(0)}%</span>
                   </div>
 
-                  {/* Province breakdown from survey responses */}
                   {Object.keys(provinceCounts).some(p => provinceCounts[p] > 0) && (
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 8 }}>
                       {Object.entries(provinceCounts).map(([prov, count]) => (
@@ -1125,7 +1270,8 @@ OUTPUT:
               </div>
             </div>
           </>
-        )}
+          );
+        })()}
 
         {/* OVERVIEW TAB */}
         {activeTab === "overview" && filtered.length > 0 && (
