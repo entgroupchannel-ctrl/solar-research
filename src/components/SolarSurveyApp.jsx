@@ -341,6 +341,9 @@ function PDPAConsent({ onAccept }) {
           </ul>
           <p style={{ fontWeight: 600, color: "#1e293b" }}>ผู้วิจัย</p>
           <p>สิทธิ์ทัศน์ ศรีอุดมชัย<br />นักศึกษาหลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี</p>
+          <p style={{ fontWeight: 600, color: "#1e293b" }}>อาจารย์ที่ปรึกษา</p>
+          <p style={{ margin: "0 0 4px" }}>รศ.ดร.สุวัฒน์ ฉิมะสังคนันท์ <span style={{ fontSize: 12, color: "#64748b" }}>(อาจารย์ที่ปรึกษาหลัก)</span></p>
+          <p style={{ margin: 0 }}>ผศ.ดร.พงษ์สันติ์ ตันหยง <span style={{ fontSize: 12, color: "#64748b" }}>(อาจารย์ที่ปรึกษาร่วม)</span></p>
         </div>
         <button
           onClick={onAccept}
