@@ -1175,7 +1175,7 @@ export default function SolarSurveyApp() {
 
         {/* Part 2 & 3: Likert Sections */}
         {LIKERT_SECTIONS.map((sec, si) => (
-          <div key={sec.id} style={{
+          <div key={sec.id} ref={el => sectionRefs.current["likert_" + si] = el} style={{
             background: "rgba(255,255,255,0.04)", borderRadius: 16,
             border: "1px solid rgba(255,255,255,0.08)", marginBottom: 24, overflow: "hidden",
           }}>
