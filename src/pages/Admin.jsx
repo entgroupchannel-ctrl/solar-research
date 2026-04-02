@@ -947,7 +947,7 @@ OUTPUT:
                 <RadarChart data={radarData}>
                   <PolarGrid stroke="#e2e8f0" />
                   <PolarAngleAxis dataKey="subject" tick={{ fill: "#94a3b8", fontSize: 10 }} />
-                  <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fill: "#64748b", fontSize: 10 }} />
+                  <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fill: "#94a3b8", fontSize: 10 }} />
                   <Radar name="ค่าเฉลี่ย" dataKey="mean" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.25} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
@@ -1170,7 +1170,7 @@ OUTPUT:
 
                         {/* Suggestion */}
                         {r.suggestion && (
-                          <div style={{ marginTop: 8, padding: "8px 12px", background: "rgba(245,158,11,0.08)", borderRadius: 8, fontSize: 12, color: "#059669", lineHeight: 1.6 }}>
+                          <div style={{ marginTop: 8, padding: "8px 12px", background: "#f0fdf4", borderRadius: 8, fontSize: 12, color: "#059669", lineHeight: 1.6 }}>
                             💬 {r.suggestion}
                           </div>
                         )}
@@ -1200,7 +1200,7 @@ OUTPUT:
                 disabled={generatingAll}
                 style={{
                   padding: "12px 28px", borderRadius: 12, border: "none",
-                  background: "linear-gradient(135deg, #f59e0b, #f97316)",
+                  background: "linear-gradient(135deg, #059669, #10b981)",
                   color: "#fff", fontSize: 15, fontWeight: 700, cursor: generatingAll ? "not-allowed" : "pointer",
                 }}
               >
