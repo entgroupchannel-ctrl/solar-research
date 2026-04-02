@@ -1657,7 +1657,7 @@ export default function SolarSurveyApp() {
           borderRadius: 12, border: "1px solid rgba(239,68,68,0.3)",
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <span style={{ color: "#f87171", fontWeight: 700, fontSize: 14 }}>⚠️ กรุณาตอบคำถามให้ครบ</span>
+            <span style={{ color: "#f87171", fontWeight: 700, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}><AlertTriangle size={16} /> กรุณาตอบคำถามให้ครบ</span>
             <button onClick={() => setShowValidation(false)} style={{
               background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18
             }}>×</button>
