@@ -219,6 +219,87 @@ function formatTime(seconds) {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
+// === Response Quality Score ===
+const ALL_LIKERT_IDS = LIKERT_SECTIONS.flatMap(sec => sec.subsections.flatMap(sub => sub.items.map(i => i.id)));
+
+function calcQualityScore(r) {
+  const likert = r.likert || r.likert_data || {};
+  const timeTaken = r.timeTaken ?? r.time_taken ?? 0;
+  const answers = ALL_LIKERT_IDS.map(id => likert[id]).filter(v => v != null);
+  const totalItems = ALL_LIKERT_IDS.length;
+  const answeredCount = answers.length;
+
+  // 1. Completeness (0-25): % of items answered
+  const completeness = (answeredCount / totalItems) * 25;
+
+  // 2. Time score (0-25): too fast = suspicious, sweet spot 3-20 min
+  let timeScore = 0;
+  if (timeTaken >= 180 && timeTaken <= 1200) timeScore = 25; // 3-20 min ideal
+  else if (timeTaken > 1200 && timeTaken <= 2400) timeScore = 20; // 20-40 min ok
+  else if (timeTaken >= 90 && timeTaken < 180) timeScore = 15; // 1.5-3 min fast
+  else if (timeTaken >= 60 && timeTaken < 90) timeScore = 8; // 1-1.5 min very fast
+  else if (timeTaken > 2400) timeScore = 12; // >40 min too slow
+  else timeScore = 3; // <1 min suspicious
+
+  // 3. Variety score (0-25): how many unique values used
+  let varietyScore = 0;
+  if (answeredCount >= 2) {
+    const uniqueVals = new Set(answers).size;
+    const maxPossible = Math.min(5, answeredCount);
+    varietyScore = (uniqueVals / maxPossible) * 25;
+  }
+
+  // 4. Straight-lining penalty (0-25): check consecutive same answers
+  let straightLineScore = 25;
+  if (answeredCount >= 5) {
+    let maxConsecutive = 1, current = 1;
+    for (let i = 1; i < answers.length; i++) {
+      if (answers[i] === answers[i - 1]) { current++; maxConsecutive = Math.max(maxConsecutive, current); }
+      else current = 1;
+    }
+    const ratio = maxConsecutive / answeredCount;
+    if (ratio >= 0.8) straightLineScore = 3;
+    else if (ratio >= 0.6) straightLineScore = 8;
+    else if (ratio >= 0.4) straightLineScore = 15;
+    else if (ratio >= 0.25) straightLineScore = 20;
+    else straightLineScore = 25;
+  }
+
+  const total = Math.round(completeness + timeScore + varietyScore + straightLineScore);
+  return {
+    total: Math.min(100, total),
+    completeness: Math.round(completeness),
+    timeScore: Math.round(timeScore),
+    varietyScore: Math.round(varietyScore),
+    straightLineScore: Math.round(straightLineScore),
+    answeredCount,
+    totalItems,
+    uniqueVals: answeredCount >= 2 ? new Set(answers).size : 0,
+    maxConsecutive: (() => {
+      if (answeredCount < 2) return 0;
+      let max = 1, cur = 1;
+      for (let i = 1; i < answers.length; i++) {
+        if (answers[i] === answers[i - 1]) { cur++; max = Math.max(max, cur); } else cur = 1;
+      }
+      return max;
+    })(),
+  };
+}
+
+function qualityColor(score) {
+  if (score >= 80) return "#059669";
+  if (score >= 60) return "#eab308";
+  if (score >= 40) return "#f97316";
+  return "#ef4444";
+}
+
+function qualityLabel(score) {
+  if (score >= 80) return "ดี";
+  if (score >= 60) return "ปานกลาง";
+  if (score >= 40) return "ต่ำ";
+  return "น่าสงสัย";
+}
+
 const SECTION_COLORS = ["#059669", "#3b82f6", "#8b5cf6", "#10b981"];
 const PIE_COLORS = ["#059669", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
 
