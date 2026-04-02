@@ -519,13 +519,16 @@ function LikertRow({ item, value, onChange, index, sectionColor }) {
 
   const handleSelect = (v) => {
     onChange(item.id, v);
-    // Auto scroll to next question
+    // Auto scroll to next question (gentle)
     setTimeout(() => {
       const next = ref.current?.nextElementSibling;
       if (next) {
         const rect = next.getBoundingClientRect();
-        const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
-        if (!isVisible) {
+        const viewportH = window.innerHeight;
+        // Only scroll if the next item's top is below 70% of viewport
+        if (rect.top > viewportH * 0.7) {
+          window.scrollBy({ top: rect.top - viewportH * 0.35, behavior: "smooth" });
+        } else if (rect.top < 0) {
           next.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
       }
