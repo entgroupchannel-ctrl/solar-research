@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import logoTRU from "@/assets/logo-tru.png";
+import logoUThon from "@/assets/logo-u-thon.png";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
@@ -453,7 +454,7 @@ function ThankYou({ responseId, timeTaken }) {
         borderRadius: 20, padding: "48px 32px", textAlign: "center",
         boxShadow: "0 25px 80px rgba(0,0,0,0.3)",
       }}>
-        <img src={logoTRU} alt="มหาวิทยาลัยธนบุรี" style={{ height: 64, marginBottom: 16, objectFit: "contain" }} />
+        <img src={logoUThon} alt="มหาวิทยาลัยธนบุรี" style={{ height: 80, marginBottom: 16, objectFit: "contain" }} />
         <div style={{
           width: 80, height: 80, borderRadius: "50%",
           background: "linear-gradient(135deg, #10b981, #059669)",
@@ -1077,7 +1078,7 @@ export default function SolarSurveyApp() {
       <div style={{ maxWidth: 700, margin: "0 auto", padding: "20px 16px 100px" }}>
         {/* Title */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
-          <img src={logoTRU} alt="มหาวิทยาลัยธนบุรี" style={{ height: 56, marginBottom: 12, objectFit: "contain", filter: "brightness(0) invert(1)", opacity: 0.9 }} />
+          <img src={logoUThon} alt="มหาวิทยาลัยธนบุรี" style={{ height: 72, marginBottom: 12, objectFit: "contain" }} />
           <h1 style={{ fontSize: 20, fontWeight: 700, color: "#f59e0b", margin: "0 0 4px", lineHeight: 1.5 }}>
             แบบสอบถามวิจัย
           </h1>
