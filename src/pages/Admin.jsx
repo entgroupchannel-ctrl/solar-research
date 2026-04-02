@@ -2038,8 +2038,8 @@ OUTPUT:
                   สหสัมพันธ์ระหว่างตัวแปรรายด้านย่อย (ค่าเฉลี่ยรวมของแต่ละด้าน) · N = {validIndices.length}
                 </p>
                 <div style={{ display: "flex", gap: 12, marginBottom: 16, fontSize: 11, color: "#64748b" }}>
-                  <span>🟢 r ≥ 0.6 สูง</span>
-                  <span>🔵 r 0.4-0.6 ปานกลาง</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: "50%", background: "#059669", display: "inline-block" }} /> r ≥ 0.6 สูง</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: "50%", background: "#3b82f6", display: "inline-block" }} /> r 0.4-0.6 ปานกลาง</span>
                   <span style={{ color: "#94a3b8" }}>○ r &lt; 0.4 ต่ำ</span>
                 </div>
 

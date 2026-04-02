@@ -1990,7 +1990,7 @@ export default function SolarSurveyApp() {
             width: 56, height: 56, borderRadius: "50%",
             background: "#fef3c7", display: "flex", alignItems: "center", justifyContent: "center",
             margin: "0 auto 16px", fontSize: 28,
-          }}>⚠️</div>
+          }}><AlertTriangle size={28} color="#f59e0b" /></div>
           <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1e293b", margin: "0 0 8px" }}>
             ต้องการกลับหน้าแรก?
           </h3>
