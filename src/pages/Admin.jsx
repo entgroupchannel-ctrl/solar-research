@@ -1248,7 +1248,7 @@ OUTPUT:
                           background: "#f8fafc", borderRadius: 10, padding: "8px 12px",
                           border: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center",
                         }}>
-                          <span style={{ fontSize: 12, color: "#1e293b" }}>📍 {prov}</span>
+                          <span style={{ fontSize: 12, color: "#1e293b", display: "flex", alignItems: "center", gap: 4 }}><MapPin size={12} color="#059669" /> {prov}</span>
                           <span style={{ fontSize: 12, fontWeight: 700, color: count > 0 ? "#059669" : "#64748b" }}>{count}</span>
                         </div>
                       ))}
