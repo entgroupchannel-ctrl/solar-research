@@ -1304,13 +1304,24 @@ export default function SolarSurveyApp() {
 
   const validate = () => {
     const missing = [];
-    PERSONAL_QUESTIONS.forEach(q => { if (!personal[q.id]) missing.push(q.text); });
+    PERSONAL_QUESTIONS.forEach(q => { if (!personal[q.id]) missing.push({ id: q.id, type: "personal", text: q.text }); });
     LIKERT_SECTIONS.forEach(sec => {
       sec.subsections.forEach(sub => {
-        sub.items.forEach(item => { if (!likert[item.id]) missing.push(item.text.substring(0, 50) + "..."); });
+        sub.items.forEach(item => { if (!likert[item.id]) missing.push({ id: item.id, type: "likert", text: item.text.substring(0, 50) + "..." }); });
       });
     });
     return missing;
+  };
+
+  const scrollToMissing = (field) => {
+    const el = document.getElementById(`field-${field.id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.style.transition = "box-shadow 0.3s, outline 0.3s";
+      el.style.outline = "2px solid #f87171";
+      el.style.boxShadow = "0 0 16px rgba(248,113,113,0.4)";
+      setTimeout(() => { el.style.outline = "none"; el.style.boxShadow = "none"; }, 2500);
+    }
   };
 
   const [submitting, setSubmitting] = useState(false);
