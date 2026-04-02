@@ -862,7 +862,7 @@ export default function SolarSurveyApp() {
       fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif",
       color: "#e2e8f0",
     }}>
-      <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet" />
+      
 
       <ProgressBar current={answeredTotal} total={TOTAL_QUESTIONS} />
 
