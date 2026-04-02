@@ -422,6 +422,14 @@ function PDPAConsent({ onAccept }) {
           </a>
         </div>
       </div>
+      <div style={{ textAlign: "center", marginTop: 24, padding: "16px 0" }}>
+        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", margin: 0 }}>
+          © 2025 งานวิจัย Solar Rooftop · มหาวิทยาลัยธนบุรี
+        </p>
+        <p style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", margin: "4px 0 0" }}>
+          พัฒนาระบบโดย therdpume@hotmail.com
+        </p>
+      </div>
     </div>
   );
 }
