@@ -868,7 +868,7 @@ OUTPUT:
               padding: "8px 20px", border: "1px solid rgba(16,185,129,0.4)",
               borderRadius: 8, background: "linear-gradient(135deg, #059669, #10b981)", color: "#fff",
               cursor: "pointer", fontSize: 13, fontWeight: 700,
-            }}>👁 Preview & Export ({responses.length} รายการ)</button>
+            }}><Eye size={14} style={{ marginRight: 4 }} /> Preview & Export ({responses.length} รายการ)</button>
             <button onClick={loadData} style={{
               padding: "8px 20px", border: "1px solid #d1d5db",
               borderRadius: 8, background: "#fff", color: "#1e293b",
