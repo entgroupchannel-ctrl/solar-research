@@ -1684,9 +1684,8 @@ OUTPUT:
 
           </div>
         )}
-      </div>
 
-      {/* Preview & Export Modal */}
+        {/* Preview & Export Modal */}
       {showPreview && (() => {
         const previewData = responses;
         const headers = getHeaders();
