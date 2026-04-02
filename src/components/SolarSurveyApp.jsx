@@ -594,7 +594,7 @@ function ProgressBar({ current, total }) {
 
           {/* Font size label */}
           <span style={{
-            fontSize: 10, color: "#64748b", fontWeight: 600, minWidth: 28, textAlign: "center",
+            fontSize: 10, color: theme === "white" ? "#64748b" : "#64748b", fontWeight: 600, minWidth: 28, textAlign: "center",
           }}>{FONT_SIZES[fontIdx]}px</span>
 
           {/* Font increase */}
