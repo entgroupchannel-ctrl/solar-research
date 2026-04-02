@@ -344,10 +344,10 @@ function PDPAConsent({ onAccept }) {
       }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <img src={logoTRU} alt="มหาวิทยาลัยธนบุรี" style={{ height: 64, marginBottom: 16, objectFit: "contain" }} />
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#1e293b", margin: 0 }}>
+          <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, background: "linear-gradient(135deg, #0f2027, #2c5364)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             นโยบายความเป็นส่วนตัว (PDPA)
           </h1>
-          <p style={{ fontSize: 12, color: "#94a3b8", margin: "6px 0 0" }}>มหาวิทยาลัยธนบุรี | Thonburi University</p>
+          <p style={{ fontSize: 12, color: "#475569", margin: "6px 0 0" }}>มหาวิทยาลัยธนบุรี | Thonburi University</p>
         </div>
         <div style={{
           background: "#f8fafc", borderRadius: 12, padding: "20px 24px",
