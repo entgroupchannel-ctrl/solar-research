@@ -1412,6 +1412,7 @@ export default function SolarSurveyApp() {
   });
 
   const [showValidation, setShowValidation] = useState(false);
+  const [showExitDialog, setShowExitDialog] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
   const [responses, setResponses] = useState([]);
   const [submitted, setSubmitted] = useState(false);
@@ -1615,7 +1616,7 @@ export default function SolarSurveyApp() {
         fontSize: 12, borderBottom: "1px solid rgba(255,255,255,0.05)",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <button onClick={() => { if (confirm("ต้องการกลับหน้าแรกหรือไม่? ข้อมูลที่กรอกจะหายไป")) setPage("pdpa"); }} style={{
+          <button onClick={() => setShowExitDialog(true)} style={{
             background: "rgba(255,255,255,0.08)", border: "none", borderRadius: 6,
             color: "#94a3b8", cursor: "pointer", padding: "4px 8px", fontSize: 12, fontWeight: 600,
             display: "flex", alignItems: "center", gap: 4,
@@ -1954,5 +1955,52 @@ export default function SolarSurveyApp() {
         </div>
       </div>
     </div>
+
+    {showExitDialog && (
+      <div style={{
+        position: "fixed", inset: 0, zIndex: 9999,
+        background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: 20,
+      }}>
+        <div style={{
+          background: "#fff", borderRadius: 20, padding: "32px 28px",
+          maxWidth: 400, width: "100%", textAlign: "center",
+          boxShadow: "0 25px 60px rgba(0,0,0,0.3)",
+        }}>
+          <div style={{
+            width: 56, height: 56, borderRadius: "50%",
+            background: "#fef3c7", display: "flex", alignItems: "center", justifyContent: "center",
+            margin: "0 auto 16px", fontSize: 28,
+          }}>⚠️</div>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1e293b", margin: "0 0 8px" }}>
+            ต้องการกลับหน้าแรก?
+          </h3>
+          <p style={{ fontSize: 14, color: "#64748b", margin: "0 0 24px", lineHeight: 1.6 }}>
+            ข้อมูลที่กรอกไว้จะถูกบันทึกไว้<br />สามารถกลับมาทำต่อได้
+          </p>
+          <div style={{ display: "flex", gap: 12 }}>
+            <button
+              onClick={() => setShowExitDialog(false)}
+              style={{
+                flex: 1, padding: "12px 0", borderRadius: 12,
+                border: "1.5px solid #e2e8f0", background: "#fff",
+                color: "#64748b", fontSize: 15, fontWeight: 600, cursor: "pointer",
+              }}
+            >ทำต่อ</button>
+            <button
+              onClick={() => { setShowExitDialog(false); setPage("pdpa"); }}
+              style={{
+                flex: 1, padding: "12px 0", borderRadius: 12,
+                border: "none", background: "linear-gradient(135deg, #f59e0b, #f97316)",
+                color: "#fff", fontSize: 15, fontWeight: 600, cursor: "pointer",
+                boxShadow: "0 4px 12px rgba(249,115,22,0.3)",
+              }}
+            >กลับหน้าแรก</button>
+          </div>
+        </div>
+      </div>
+    )}
+
   );
 }
