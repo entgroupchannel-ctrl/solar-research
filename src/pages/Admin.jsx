@@ -312,6 +312,29 @@ const AdminPage = () => {
     setAddingSource(false);
   };
 
+  // Generate all province links at once
+  const generateAllProvinceLinks = async () => {
+    setGeneratingAll(true);
+    const existingCodes = sources.map(s => s.code);
+    const toCreate = PROVINCE_DATA.filter(p => !existingCodes.includes(p.code));
+    if (toCreate.length === 0) {
+      alert("ลิงก์ครบทุกจังหวัดแล้ว");
+      setGeneratingAll(false);
+      return;
+    }
+    const rows = toCreate.map(p => ({
+      code: p.code,
+      name: p.province,
+      region: p.region,
+      target: p.target,
+    }));
+    const { error } = await supabase.from("survey_sources").insert(rows);
+    if (error) alert("เกิดข้อผิดพลาด: " + error.message);
+    else alert(`สร้างลิงก์สำเร็จ ${toCreate.length} จังหวัด`);
+    loadData();
+    setGeneratingAll(false);
+  };
+
   const toggleSource = async (id, currentActive) => {
     await supabase.from("survey_sources").update({ is_active: !currentActive }).eq("id", id);
     loadData();
