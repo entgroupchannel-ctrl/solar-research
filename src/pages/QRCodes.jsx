@@ -92,8 +92,8 @@ const QRCodesPage = () => {
                 borderTop: `4px solid ${region.color}`,
               }}>
                 {/* Region Name */}
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: region.color, margin: "0 0 4px", textAlign: "center" }}>
-                  📍 {region.name}
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: region.color, margin: "0 0 4px", textAlign: "center", display: "flex", alignItems: "center", gap: 6 }}>
+                  <MapPin size={18} /> {region.name}
                 </h3>
                 <p style={{ fontSize: 11, color: "#94a3b8", margin: "0 0 16px", textAlign: "center" }}>
                   {region.provinces.join(" · ")}
