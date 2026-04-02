@@ -141,16 +141,46 @@ function formatTime(seconds) {
 const SECTION_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981"];
 const PIE_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
 
-// Sampling quota data (from research methodology)
-const REGION_QUOTAS = [
-  { region: "ภาคตะวันออกเฉียงเหนือ", shops: 183, ratio: "28.8%", target: 127, branches: "ขอนแก่น 34 · เลย 24 · ร้อยเอ็ด 19 · ปากช่อง 15 · สุรินทร์ 15 · อุบลราชธานี 12 · สกลนคร 8", color: "#3b82f6" },
-  { region: "ภาคเหนือ", shops: 158, ratio: "24.9%", target: 109, branches: "กำแพงเพชร 24 · เชียงใหม่ 21 · แพร่ 21 · เพชรบูรณ์ 15 · แม่สอด 12 · พิษณุโลก 9 · เชียงราย 7", color: "#10b981" },
-  { region: "ภาคใต้", shops: 102, ratio: "16.1%", target: 71, branches: "สุราษฎร์ธานี 35 · ทุ่งสง 18 · หาดใหญ่ 15 · ชุมพร 3", color: "#3b82f6" },
-  { region: "ภาคตะวันออก", shops: 55, ratio: "8.7%", target: 38, branches: "ระยอง 24 · กบินทร์บุรี 14", color: "#f59e0b" },
-  { region: "ภาคกลาง", shops: 55, ratio: "8.7%", target: 38, branches: "สุพรรณบุรี 18 · ปทุมธานี 12 · สิงห์บุรี 8", color: "#10b981" },
-  { region: "กรุงเทพฯ และปริมณฑล", shops: 43, ratio: "6.8%", target: 30, branches: "รามคำแหง 15 · บางแค 15", color: "#f59e0b" },
-  { region: "ภาคตะวันตก", shops: 38, ratio: "6.0%", target: 27, branches: "เพชรบุรี 27", color: "#ec4899" },
+// Sampling quota data — province-level detail
+const PROVINCE_DATA = [
+  { province: "ขอนแก่น", region: "ภาคตะวันออกเฉียงเหนือ", shops: 34, target: 34, code: "kk" },
+  { province: "เลย", region: "ภาคตะวันออกเฉียงเหนือ", shops: 24, target: 24, code: "loei" },
+  { province: "ร้อยเอ็ด", region: "ภาคตะวันออกเฉียงเหนือ", shops: 19, target: 19, code: "re" },
+  { province: "ปากช่อง", region: "ภาคตะวันออกเฉียงเหนือ", shops: 15, target: 15, code: "pc" },
+  { province: "สุรินทร์", region: "ภาคตะวันออกเฉียงเหนือ", shops: 15, target: 15, code: "sr" },
+  { province: "อุบลราชธานี", region: "ภาคตะวันออกเฉียงเหนือ", shops: 12, target: 12, code: "ub" },
+  { province: "สกลนคร", region: "ภาคตะวันออกเฉียงเหนือ", shops: 8, target: 8, code: "sn" },
+  { province: "กำแพงเพชร", region: "ภาคเหนือ", shops: 24, target: 24, code: "kpp" },
+  { province: "เชียงใหม่", region: "ภาคเหนือ", shops: 21, target: 21, code: "cm" },
+  { province: "แพร่", region: "ภาคเหนือ", shops: 21, target: 21, code: "phrae" },
+  { province: "เพชรบูรณ์", region: "ภาคเหนือ", shops: 15, target: 15, code: "pb" },
+  { province: "แม่สอด", region: "ภาคเหนือ", shops: 12, target: 12, code: "ms" },
+  { province: "พิษณุโลก", region: "ภาคเหนือ", shops: 9, target: 9, code: "pl" },
+  { province: "เชียงราย", region: "ภาคเหนือ", shops: 7, target: 7, code: "cr" },
+  { province: "สุราษฎร์ธานี", region: "ภาคใต้", shops: 35, target: 35, code: "srt" },
+  { province: "ทุ่งสง", region: "ภาคใต้", shops: 18, target: 18, code: "ts" },
+  { province: "หาดใหญ่", region: "ภาคใต้", shops: 15, target: 15, code: "hy" },
+  { province: "ชุมพร", region: "ภาคใต้", shops: 3, target: 3, code: "cp" },
+  { province: "ระยอง", region: "ภาคตะวันออก", shops: 24, target: 24, code: "ry" },
+  { province: "กบินทร์บุรี", region: "ภาคตะวันออก", shops: 14, target: 14, code: "kb" },
+  { province: "สุพรรณบุรี", region: "ภาคกลาง", shops: 18, target: 18, code: "spb" },
+  { province: "ปทุมธานี", region: "ภาคกลาง", shops: 12, target: 12, code: "pt" },
+  { province: "สิงห์บุรี", region: "ภาคกลาง", shops: 8, target: 8, code: "sb" },
+  { province: "รามคำแหง", region: "กรุงเทพฯ และปริมณฑล", shops: 15, target: 15, code: "rkh" },
+  { province: "บางแค", region: "กรุงเทพฯ และปริมณฑล", shops: 15, target: 15, code: "bk" },
+  { province: "เพชรบุรี", region: "ภาคตะวันตก", shops: 27, target: 27, code: "pbi" },
 ];
+
+const REGIONS = [
+  { name: "ภาคตะวันออกเฉียงเหนือ", color: "#3b82f6" },
+  { name: "ภาคเหนือ", color: "#10b981" },
+  { name: "ภาคใต้", color: "#06b6d4" },
+  { name: "ภาคตะวันออก", color: "#f59e0b" },
+  { name: "ภาคกลาง", color: "#8b5cf6" },
+  { name: "กรุงเทพฯ และปริมณฑล", color: "#ec4899" },
+  { name: "ภาคตะวันตก", color: "#ef4444" },
+];
+
 const TOTAL_TARGET = 440;
 const TOTAL_SHOPS = 635;
 
