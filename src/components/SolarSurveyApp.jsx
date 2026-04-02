@@ -1837,6 +1837,7 @@ export default function SolarSurveyApp() {
             กด Ctrl+Shift+A เพื่อเข้าหน้า Admin Dashboard
           </p>
         </div>
+        </div>
       </div>
     </div>
   );

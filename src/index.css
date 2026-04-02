@@ -94,6 +94,13 @@ All colors MUST be HSL.
   }
 }
 
+/* Milestone sidebar - show on desktop */
+@media (min-width: 768px) {
+  .milestone-sidebar {
+    display: block !important;
+  }
+}
+
 /* ===== Dark Mode for inline-styled components ===== */
 [data-theme="dark"] body {
   background: #0f172a !important;
