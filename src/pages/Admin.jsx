@@ -1670,7 +1670,7 @@ OUTPUT:
                              </span>
                              <span style={{ fontSize: 11, color: "#64748b" }}>{r.timestamp}</span>
                              <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>
-                               ⏱ {formatTime(r.timeTaken)}
+                               <Clock size={11} style={{ marginRight: 2 }} /> {formatTime(r.timeTaken)}
                              </span>
                              {r.want_results && <span style={{ fontSize: 11, color: "#10b981" }}>📧</span>}
                              <span style={{ color: "#64748b", fontSize: 16, transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</span>
