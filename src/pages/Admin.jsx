@@ -141,45 +141,25 @@ function formatTime(seconds) {
 const SECTION_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981"];
 const PIE_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
 
-// Sampling quota data — province-level detail
-const PROVINCE_DATA = [
-  { province: "ขอนแก่น", region: "ภาคตะวันออกเฉียงเหนือ", shops: 34, target: 34, code: "kk" },
-  { province: "เลย", region: "ภาคตะวันออกเฉียงเหนือ", shops: 24, target: 24, code: "loei" },
-  { province: "ร้อยเอ็ด", region: "ภาคตะวันออกเฉียงเหนือ", shops: 19, target: 19, code: "re" },
-  { province: "ปากช่อง", region: "ภาคตะวันออกเฉียงเหนือ", shops: 15, target: 15, code: "pc" },
-  { province: "สุรินทร์", region: "ภาคตะวันออกเฉียงเหนือ", shops: 15, target: 15, code: "sr" },
-  { province: "อุบลราชธานี", region: "ภาคตะวันออกเฉียงเหนือ", shops: 12, target: 12, code: "ub" },
-  { province: "สกลนคร", region: "ภาคตะวันออกเฉียงเหนือ", shops: 8, target: 8, code: "sn" },
-  { province: "กำแพงเพชร", region: "ภาคเหนือ", shops: 24, target: 24, code: "kpp" },
-  { province: "เชียงใหม่", region: "ภาคเหนือ", shops: 21, target: 21, code: "cm" },
-  { province: "แพร่", region: "ภาคเหนือ", shops: 21, target: 21, code: "phrae" },
-  { province: "เพชรบูรณ์", region: "ภาคเหนือ", shops: 15, target: 15, code: "pb" },
-  { province: "แม่สอด", region: "ภาคเหนือ", shops: 12, target: 12, code: "ms" },
-  { province: "พิษณุโลก", region: "ภาคเหนือ", shops: 9, target: 9, code: "pl" },
-  { province: "เชียงราย", region: "ภาคเหนือ", shops: 7, target: 7, code: "cr" },
-  { province: "สุราษฎร์ธานี", region: "ภาคใต้", shops: 35, target: 35, code: "srt" },
-  { province: "ทุ่งสง", region: "ภาคใต้", shops: 18, target: 18, code: "ts" },
-  { province: "หาดใหญ่", region: "ภาคใต้", shops: 15, target: 15, code: "hy" },
-  { province: "ชุมพร", region: "ภาคใต้", shops: 3, target: 3, code: "cp" },
-  { province: "ระยอง", region: "ภาคตะวันออก", shops: 24, target: 24, code: "ry" },
-  { province: "กบินทร์บุรี", region: "ภาคตะวันออก", shops: 14, target: 14, code: "kb" },
-  { province: "สุพรรณบุรี", region: "ภาคกลาง", shops: 18, target: 18, code: "spb" },
-  { province: "ปทุมธานี", region: "ภาคกลาง", shops: 12, target: 12, code: "pt" },
-  { province: "สิงห์บุรี", region: "ภาคกลาง", shops: 8, target: 8, code: "sb" },
-  { province: "รามคำแหง", region: "กรุงเทพฯ และปริมณฑล", shops: 15, target: 15, code: "rkh" },
-  { province: "บางแค", region: "กรุงเทพฯ และปริมณฑล", shops: 15, target: 15, code: "bk" },
-  { province: "เพชรบุรี", region: "ภาคตะวันตก", shops: 27, target: 27, code: "pbi" },
+// Region-based sampling data
+const REGION_DATA = [
+  { name: "ภาคตะวันออกเฉียงเหนือ", code: "northeast", color: "#3b82f6", target: 127, shops: 127,
+    provinces: ["ขอนแก่น", "เลย", "ร้อยเอ็ด", "ปากช่อง", "สุรินทร์", "อุบลราชธานี", "สกลนคร"] },
+  { name: "ภาคเหนือ", code: "north", color: "#10b981", target: 109, shops: 109,
+    provinces: ["กำแพงเพชร", "เชียงใหม่", "แพร่", "เพชรบูรณ์", "แม่สอด", "พิษณุโลก", "เชียงราย"] },
+  { name: "ภาคใต้", code: "south", color: "#06b6d4", target: 71, shops: 71,
+    provinces: ["สุราษฎร์ธานี", "ทุ่งสง", "หาดใหญ่", "ชุมพร"] },
+  { name: "ภาคตะวันออก", code: "east", color: "#f59e0b", target: 38, shops: 38,
+    provinces: ["ระยอง", "กบินทร์บุรี", "ชลบุรี", "จันทบุรี"] },
+  { name: "ภาคกลาง", code: "central", color: "#8b5cf6", target: 38, shops: 38,
+    provinces: ["สุพรรณบุรี", "ปทุมธานี", "สิงห์บุรี", "นครปฐม", "อยุธยา"] },
+  { name: "กรุงเทพฯ และปริมณฑล", code: "bangkok", color: "#ec4899", target: 30, shops: 30,
+    provinces: ["กรุงเทพมหานคร", "นนทบุรี", "สมุทรปราการ", "ปทุมธานี"] },
+  { name: "ภาคตะวันตก", code: "west", color: "#ef4444", target: 27, shops: 27,
+    provinces: ["เพชรบุรี", "กาญจนบุรี", "ราชบุรี"] },
 ];
 
-const REGIONS = [
-  { name: "ภาคตะวันออกเฉียงเหนือ", color: "#3b82f6" },
-  { name: "ภาคเหนือ", color: "#10b981" },
-  { name: "ภาคใต้", color: "#06b6d4" },
-  { name: "ภาคตะวันออก", color: "#f59e0b" },
-  { name: "ภาคกลาง", color: "#8b5cf6" },
-  { name: "กรุงเทพฯ และปริมณฑล", color: "#ec4899" },
-  { name: "ภาคตะวันตก", color: "#ef4444" },
-];
+const REGIONS = REGION_DATA.map(r => ({ name: r.name, color: r.color }));
 
 const TOTAL_TARGET = 440;
 const TOTAL_SHOPS = 635;
