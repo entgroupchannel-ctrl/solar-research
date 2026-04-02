@@ -1540,17 +1540,8 @@ export default function SolarSurveyApp() {
     setSubmitting(false);
   };
 
-  // Keyboard shortcut for admin
-  useEffect(() => {
-    const handleKey = (e) => {
-      if (e.ctrlKey && e.shiftKey && e.key === "A") {
-        e.preventDefault();
-        setPage("admin");
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, []);
+
+
 
   const SECTION_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981"];
 
