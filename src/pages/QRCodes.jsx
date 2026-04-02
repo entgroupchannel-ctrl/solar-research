@@ -66,7 +66,7 @@ const QRCodesPage = () => {
               transition: "all 0.2s",
             }}
           >
-            ← กลับหน้าแบบสอบถาม
+            <ArrowLeft size={16} /> กลับหน้าแบบสอบถาม
           </a>
         </div>
 
