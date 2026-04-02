@@ -1616,12 +1616,15 @@ export default function SolarSurveyApp() {
 
   let globalIndex = 0;
 
+  const currentTheme = document.documentElement.getAttribute("data-theme") || "default";
+  const isWhite = currentTheme === "white";
+
   return (
-    <div style={{
+    <div className="survey-root" style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+      background: isWhite ? "linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f8fafc 100%)" : "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
       fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif",
-      color: "#e2e8f0",
+      color: isWhite ? "#1e293b" : "#e2e8f0",
     }}>
       
 
