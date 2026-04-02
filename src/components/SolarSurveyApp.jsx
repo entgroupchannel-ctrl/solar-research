@@ -1131,9 +1131,18 @@ export default function SolarSurveyApp() {
   const handlePersonalChange = (id, value) => {
     setPersonal(prev => {
       const next = { ...prev, [id]: value };
+      const currentIdx = PERSONAL_QUESTIONS.findIndex(q => q.id === id);
       const allAnswered = PERSONAL_QUESTIONS.every(q => next[q.id]);
       if (allAnswered) {
         scrollToSection("likert_0");
+      } else if (currentIdx < PERSONAL_QUESTIONS.length - 1) {
+        // Scroll to next unanswered personal question
+        for (let i = currentIdx + 1; i < PERSONAL_QUESTIONS.length; i++) {
+          if (!next[PERSONAL_QUESTIONS[i].id]) {
+            scrollToSection("personal_" + i);
+            break;
+          }
+        }
       }
       return next;
     });
@@ -1305,8 +1314,8 @@ export default function SolarSurveyApp() {
             </h2>
           </div>
           <div style={{ padding: "20px" }}>
-            {PERSONAL_QUESTIONS.map((q) => (
-              <div key={q.id} style={{ marginBottom: 24 }}>
+            {PERSONAL_QUESTIONS.map((q, qi) => (
+              <div key={q.id} ref={el => sectionRefs.current["personal_" + qi] = el} style={{ marginBottom: 24 }}>
                 <p style={{ fontSize: 14, fontWeight: 600, color: "#e2e8f0", margin: "0 0 10px" }}>
                   {q.text}
                   {!personal[q.id] && showValidation && (
