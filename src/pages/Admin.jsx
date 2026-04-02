@@ -1155,44 +1155,6 @@ OUTPUT:
               );
             })}
 
-            {/* Other sources not matching any region */}
-            {(() => {
-              const regionNames = REGIONS.map(r => r.name);
-              const otherSources = sources.filter(s => !regionNames.includes(s.region));
-              if (otherSources.length === 0) return null;
-              return (
-                <div style={{ marginBottom: 24 }}>
-                  <h3 style={{ fontSize: 16, fontWeight: 700, color: "#94a3b8", margin: "0 0 12px" }}>📎 แหล่งอื่น ๆ</h3>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 12 }}>
-                    {otherSources.map(src => {
-                      const count = responses.filter(r => r.source === src.code).length;
-                      const link = getSurveyLink(src.code);
-                      return (
-                        <div key={src.id} style={{ background: "rgba(255,255,255,0.03)", borderRadius: 14, padding: 16, border: "1px solid rgba(255,255,255,0.08)" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-                            <span style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0" }}>{src.name}</span>
-                            <span style={{ fontSize: 12, color: "#f59e0b", fontWeight: 700 }}>{count} คำตอบ</span>
-                          </div>
-                          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-                            <div style={{ background: "#fff", borderRadius: 10, padding: 8 }}>
-                              <QRCodeSVG value={link} size={80} level="M" />
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontSize: 11, color: "#64748b", marginBottom: 8, wordBreak: "break-all" }}>{link}</div>
-                              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                                <button onClick={() => copyLink(src.code)} style={{ padding: "6px 14px", borderRadius: 8, border: "none", background: "rgba(59,130,246,0.15)", color: "#3b82f6", cursor: "pointer", fontSize: 11, fontWeight: 600 }}>📋 คัดลอก</button>
-                                <button onClick={() => printQR(src.name, src.code)} style={{ padding: "6px 14px", borderRadius: 8, border: "none", background: "rgba(168,85,247,0.15)", color: "#a855f7", cursor: "pointer", fontSize: 11, fontWeight: 600 }}>🖨️ พิมพ์ QR</button>
-                                <button onClick={() => deleteSource(src.id, src.code)} style={{ padding: "6px 14px", borderRadius: 8, border: "none", background: "rgba(239,68,68,0.1)", color: "#ef4444", cursor: "pointer", fontSize: 11, fontWeight: 600 }}>🗑</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })()}
           </div>
         )}
       </div>
