@@ -138,8 +138,8 @@ function formatTime(seconds) {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
-const SECTION_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981"];
-const PIE_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
+const SECTION_COLORS = ["#059669", "#3b82f6", "#8b5cf6", "#10b981"];
+const PIE_COLORS = ["#059669", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
 
 // Region-based sampling data
 const REGION_DATA = [
@@ -149,7 +149,7 @@ const REGION_DATA = [
     provinces: ["กำแพงเพชร", "เชียงใหม่", "แพร่", "เพชรบูรณ์", "แม่สอด", "พิษณุโลก", "เชียงราย"] },
   { name: "ภาคใต้", code: "south", color: "#06b6d4", target: 71, shops: 71,
     provinces: ["สุราษฎร์ธานี", "ทุ่งสง", "หาดใหญ่", "ชุมพร"] },
-  { name: "ภาคตะวันออก", code: "east", color: "#f59e0b", target: 38, shops: 38,
+  { name: "ภาคตะวันออก", code: "east", color: "#059669", target: 38, shops: 38,
     provinces: ["ระยอง", "กบินทร์บุรี", "ชลบุรี", "จันทบุรี"] },
   { name: "ภาคกลาง", code: "central", color: "#8b5cf6", target: 38, shops: 38,
     provinces: ["สุพรรณบุรี", "ปทุมธานี", "สิงห์บุรี", "นครปฐม", "อยุธยา"] },
@@ -449,7 +449,7 @@ const AdminPage = () => {
     if (!data.length) return alert("ไม่มีข้อมูลให้ export");
     const headers = getHeaders();
     const rows = buildRows(data);
-    let table = "<table><tr>" + headers.map(h => `<th style="background:#f59e0b;color:#fff;font-weight:bold">${h}</th>`).join("") + "</tr>";
+    let table = "<table><tr>" + headers.map(h => `<th style="background:#059669;color:#fff;font-weight:bold">${h}</th>`).join("") + "</tr>";
     rows.forEach(r => { table += "<tr>" + headers.map(h => `<td>${r[h] ?? ""}</td>`).join("") + "</tr>"; });
     table += "</table>";
     const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Survey</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body>${table}</body></html>`;
@@ -633,24 +633,25 @@ OUTPUT:
 
   const tabStyle = (isActive) => ({
     padding: "10px 24px", borderRadius: 10, border: "none", cursor: "pointer",
-    background: isActive ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.05)",
-    color: isActive ? "#f59e0b" : "#94a3b8", fontSize: 13, fontWeight: isActive ? 700 : 400,
+    background: isActive ? "#ecfdf5" : "#f8fafc",
+    color: isActive ? "#059669" : "#64748b", fontSize: 13, fontWeight: isActive ? 700 : 500,
     transition: "all 0.2s",
-    borderBottom: isActive ? "2px solid #f59e0b" : "2px solid transparent",
+    borderBottom: isActive ? "2px solid #059669" : "2px solid transparent",
   });
 
   const chartCardStyle = {
-    background: "rgba(255,255,255,0.04)", borderRadius: 16,
-    border: "1px solid rgba(255,255,255,0.08)", padding: 24, marginBottom: 24,
+    background: "#ffffff", borderRadius: 16,
+    border: "1px solid #e2e8f0", padding: 24, marginBottom: 24,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
   };
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div style={{ background: "rgba(15,32,39,0.95)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, padding: "10px 14px", fontSize: 12 }}>
-          <p style={{ color: "#e2e8f0", margin: 0, fontWeight: 600 }}>{label}</p>
+        <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8, padding: "10px 14px", fontSize: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}>
+          <p style={{ color: "#1e293b", margin: 0, fontWeight: 600 }}>{label}</p>
           {payload.map((p, i) => (
-            <p key={i} style={{ color: p.color || "#f59e0b", margin: "4px 0 0" }}>{p.name}: {typeof p.value === 'number' ? p.value.toFixed(2) : p.value}</p>
+            <p key={i} style={{ color: p.color || "#059669", margin: "4px 0 0" }}>{p.name}: {typeof p.value === 'number' ? p.value.toFixed(2) : p.value}</p>
           ))}
         </div>
       );
@@ -661,13 +662,13 @@ OUTPUT:
   if (!authenticated) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-        background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+        background: "linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f8fafc 100%)",
         fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif",
       }}>
-        <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 16, padding: 40, maxWidth: 380, width: "90%", textAlign: "center", border: "1px solid rgba(255,255,255,0.1)" }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>🔒</div>
-          <h2 style={{ color: "#e2e8f0", fontSize: 20, fontWeight: 700, margin: "0 0 8px" }}>Admin Access</h2>
-          <p style={{ color: "#94a3b8", fontSize: 14, margin: "0 0 24px" }}>กรุณาใส่รหัสผ่านเพื่อเข้าใช้งาน</p>
+        <div style={{ background: "#fff", borderRadius: 20, padding: 40, maxWidth: 380, width: "90%", textAlign: "center", border: "1px solid #e2e8f0", boxShadow: "0 8px 30px rgba(0,0,0,0.06)" }}>
+          <div style={{ width: 64, height: 64, borderRadius: 16, background: "#ecfdf5", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 28 }}>🔒</div>
+          <h2 style={{ color: "#1e293b", fontSize: 20, fontWeight: 700, margin: "0 0 8px" }}>Admin Access</h2>
+          <p style={{ color: "#64748b", fontSize: 14, margin: "0 0 24px" }}>กรุณาใส่รหัสผ่านเพื่อเข้าใช้งาน</p>
           <form onSubmit={(e) => {
             e.preventDefault();
             if (passwordInput === ADMIN_PASSWORD) {
@@ -685,15 +686,15 @@ OUTPUT:
               placeholder="ใส่รหัสผ่าน"
               autoFocus
               style={{
-                width: "100%", padding: "12px 16px", borderRadius: 10, border: passwordError ? "1.5px solid #ef4444" : "1.5px solid rgba(255,255,255,0.15)",
-                background: "rgba(255,255,255,0.05)", color: "#e2e8f0", fontSize: 16, outline: "none", boxSizing: "border-box", marginBottom: 8,
+                width: "100%", padding: "12px 16px", borderRadius: 10, border: passwordError ? "1.5px solid #ef4444" : "1.5px solid #d1d5db",
+                background: "#f8fafc", color: "#1e293b", fontSize: 16, outline: "none", boxSizing: "border-box", marginBottom: 8,
                 textAlign: "center", letterSpacing: 4,
               }}
             />
             {passwordError && <p style={{ color: "#ef4444", fontSize: 13, margin: "4px 0 8px" }}>{passwordError}</p>}
             <button type="submit" style={{
               width: "100%", padding: "12px 0", borderRadius: 10, border: "none", marginTop: 8,
-              background: "linear-gradient(135deg, #f59e0b, #f97316)", color: "#fff", fontWeight: 700, fontSize: 16, cursor: "pointer",
+              background: "linear-gradient(135deg, #059669, #10b981)", color: "#fff", fontWeight: 700, fontSize: 16, cursor: "pointer",
             }}>
               เข้าสู่ระบบ
             </button>
@@ -706,12 +707,12 @@ OUTPUT:
   if (loading) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-        background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
-        fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif", color: "#e2e8f0",
+        background: "linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f8fafc 100%)",
+        fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif", color: "#1e293b",
       }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
-          <p>กำลังโหลดข้อมูล...</p>
+          <p style={{ color: "#64748b" }}>กำลังโหลดข้อมูล...</p>
         </div>
       </div>
     );
@@ -720,16 +721,16 @@ OUTPUT:
   return (
     <div style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+      background: "#f8fafc",
       padding: "20px", fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif",
-      color: "#e2e8f0",
+      color: "#1e293b",
     }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#f59e0b" }}>📊 Admin Dashboard</h1>
-            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#94a3b8" }}>รายงานผลแบบสอบถาม (Supabase)</p>
+            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#059669" }}>📊 Admin Dashboard</h1>
+            <p style={{ margin: "4px 0 0", fontSize: 13, color: "#64748b" }}>รายงานผลแบบสอบถาม</p>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             <button onClick={() => exportCSV(responses)} style={{
@@ -748,13 +749,13 @@ OUTPUT:
               cursor: "pointer", fontSize: 13, fontWeight: 600,
             }}>📥 Mplus (.dat + .inp)</button>
             <button onClick={loadData} style={{
-              padding: "8px 20px", border: "1px solid rgba(255,255,255,0.2)",
-              borderRadius: 8, background: "transparent", color: "#e2e8f0",
+              padding: "8px 20px", border: "1px solid #d1d5db",
+              borderRadius: 8, background: "transparent", color: "#1e293b",
               cursor: "pointer", fontSize: 13,
             }}>🔄 รีเฟรช</button>
             <button onClick={() => navigate("/")} style={{
-              padding: "8px 20px", border: "1px solid rgba(255,255,255,0.2)",
-              borderRadius: 8, background: "transparent", color: "#e2e8f0",
+              padding: "8px 20px", border: "1px solid #d1d5db",
+              borderRadius: 8, background: "transparent", color: "#1e293b",
               cursor: "pointer", fontSize: 13,
             }}>← กลับ</button>
           </div>
@@ -769,12 +770,12 @@ OUTPUT:
             { label: "คะแนนเฉลี่ยรวม", value: filtered.length ? calcMean(sectionAverages.map(s => s.mean)).toFixed(2) : "-", icon: "⭐" },
           ].map((card, i) => (
             <div key={i} style={{
-              background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 20,
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: "#fff", borderRadius: 12, padding: 20,
+              border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
             }}>
               <div style={{ fontSize: 28, marginBottom: 8 }}>{card.icon}</div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: "#f59e0b" }}>{card.value}</div>
-              <div style={{ fontSize: 12, color: "#94a3b8" }}>{card.label}</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: "#059669" }}>{card.value}</div>
+              <div style={{ fontSize: 12, color: "#64748b" }}>{card.label}</div>
             </div>
           ))}
         </div>
@@ -783,16 +784,16 @@ OUTPUT:
         <div style={{ marginBottom: 24, display: "flex", flexWrap: "wrap", gap: 8 }}>
           <button onClick={() => setSelectedSource("all")} style={{
             padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer",
-            background: selectedSource === "all" ? "#f59e0b" : "rgba(255,255,255,0.1)",
-            color: selectedSource === "all" ? "#000" : "#94a3b8", fontSize: 12, fontWeight: 600,
+            background: selectedSource === "all" ? "#059669" : "#f1f5f9",
+            color: selectedSource === "all" ? "#fff" : "#64748b", fontSize: 12, fontWeight: 600,
           }}>ทั้งหมด ({responses.length})</button>
           {sources.map(src => {
             const count = responses.filter(r => r.source === src.code).length;
             return (
               <button key={src.code} onClick={() => setSelectedSource(src.code)} style={{
                 padding: "6px 16px", borderRadius: 20, border: "none", cursor: "pointer",
-                background: selectedSource === src.code ? "#f59e0b" : "rgba(255,255,255,0.1)",
-                color: selectedSource === src.code ? "#000" : "#94a3b8", fontSize: 12, fontWeight: 600,
+                background: selectedSource === src.code ? "#059669" : "#f1f5f9",
+                color: selectedSource === src.code ? "#fff" : "#64748b", fontSize: 12, fontWeight: 600,
               }}>{src.name} ({count})</button>
             );
           })}
@@ -800,7 +801,7 @@ OUTPUT:
 
 
         {/* Tabs */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 32, borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: 12, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 8, marginBottom: 32, borderBottom: "1px solid #e2e8f0", paddingBottom: 12, flexWrap: "wrap" }}>
           <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}>📈 ภาพรวม</button>
           <button onClick={() => setActiveTab("sampling")} style={tabStyle(activeTab === "sampling")}>🎯 เป้าหมาย</button>
           <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}>👥 ข้อมูลผู้ตอบ</button>
@@ -825,9 +826,9 @@ OUTPUT:
                 { label: "ร้าน PSI ทั้งหมด", value: TOTAL_SHOPS, sub: "Population" },
                 { label: "อัตราสุ่มตัวอย่าง", value: ((TOTAL_TARGET / TOTAL_SHOPS) * 100).toFixed(1) + "%", sub: "Sampling Rate" },
               ].map((c, i) => (
-                <div key={i} style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 20, textAlign: "center", border: "1px solid rgba(255,255,255,0.08)" }}>
-                  <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 4 }}>{c.label}</div>
-                  <div style={{ fontSize: 32, fontWeight: 800, color: "#e2e8f0" }}>{c.value}</div>
+                <div key={i} style={{ background: "#f1f5f9", borderRadius: 12, padding: 20, textAlign: "center", border: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>{c.label}</div>
+                  <div style={{ fontSize: 32, fontWeight: 800, color: "#1e293b" }}>{c.value}</div>
                   <div style={{ fontSize: 11, color: "#64748b" }}>{c.sub}</div>
                 </div>
               ))}
@@ -837,15 +838,15 @@ OUTPUT:
             <div style={chartCardStyle}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: "#10b981", margin: 0 }}>ความคืบหน้าการเก็บข้อมูลรวม</h3>
-                <span style={{ fontSize: 24, fontWeight: 800, color: responses.length >= TOTAL_TARGET ? "#10b981" : "#f59e0b" }}>
+                <span style={{ fontSize: 24, fontWeight: 800, color: responses.length >= TOTAL_TARGET ? "#10b981" : "#059669" }}>
                   {responses.length} / {TOTAL_TARGET}
                 </span>
               </div>
-              <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 10, height: 24, overflow: "hidden", position: "relative" }}>
+              <div style={{ background: "#e2e8f0", borderRadius: 10, height: 24, overflow: "hidden", position: "relative" }}>
                 <div style={{
                   width: `${Math.min((responses.length / TOTAL_TARGET) * 100, 100)}%`,
                   height: "100%", borderRadius: 10,
-                  background: responses.length >= TOTAL_TARGET ? "linear-gradient(90deg, #10b981, #059669)" : "linear-gradient(90deg, #f59e0b, #f97316)",
+                  background: responses.length >= TOTAL_TARGET ? "linear-gradient(90deg, #10b981, #059669)" : "linear-gradient(90deg, #059669, #10b981)",
                   transition: "width 0.5s ease",
                 }} />
                 <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 12, fontWeight: 700, color: "#fff" }}>
@@ -876,13 +877,13 @@ OUTPUT:
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                     <div>
                       <h3 style={{ fontSize: 15, fontWeight: 700, color: reg.color, margin: 0 }}>{reg.name}</h3>
-                      <span style={{ fontSize: 12, color: "#94a3b8" }}>Code: {reg.code} · {reg.provinces.length} จังหวัด</span>
+                      <span style={{ fontSize: 12, color: "#64748b" }}>Code: {reg.code} · {reg.provinces.length} จังหวัด</span>
                     </div>
                     <span style={{ fontSize: 20, fontWeight: 800, color: regionCollected >= reg.target ? "#10b981" : reg.color }}>
                       {regionCollected} / {reg.target}
                     </span>
                   </div>
-                  <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 8, height: 16, overflow: "hidden", position: "relative", marginBottom: 16 }}>
+                  <div style={{ background: "#e2e8f0", borderRadius: 8, height: 16, overflow: "hidden", position: "relative", marginBottom: 16 }}>
                     <div style={{ width: `${regionPct}%`, height: "100%", borderRadius: 8, background: regionCollected >= reg.target ? "#10b981" : reg.color, transition: "width 0.3s" }} />
                     <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", fontSize: 10, fontWeight: 700, color: "#fff" }}>{regionPct.toFixed(0)}%</span>
                   </div>
@@ -892,11 +893,11 @@ OUTPUT:
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 8 }}>
                       {Object.entries(provinceCounts).map(([prov, count]) => (
                         <div key={prov} style={{
-                          background: "rgba(255,255,255,0.03)", borderRadius: 10, padding: "8px 12px",
-                          border: "1px solid rgba(255,255,255,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center",
+                          background: "#f8fafc", borderRadius: 10, padding: "8px 12px",
+                          border: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center",
                         }}>
-                          <span style={{ fontSize: 12, color: "#e2e8f0" }}>📍 {prov}</span>
-                          <span style={{ fontSize: 12, fontWeight: 700, color: count > 0 ? "#f59e0b" : "#64748b" }}>{count}</span>
+                          <span style={{ fontSize: 12, color: "#1e293b" }}>📍 {prov}</span>
+                          <span style={{ fontSize: 12, fontWeight: 700, color: count > 0 ? "#059669" : "#64748b" }}>{count}</span>
                         </div>
                       ))}
                     </div>
@@ -907,9 +908,9 @@ OUTPUT:
 
             {/* Methodology */}
             <div style={chartCardStyle}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#e2e8f0", margin: "0 0 12px" }}>วิธีการสุ่มตัวอย่าง</h3>
-              <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 12, padding: 20, border: "1px solid rgba(255,255,255,0.06)", lineHeight: 2, fontSize: 14, color: "#cbd5e1" }}>
-                <p style={{ margin: "0 0 8px" }}>ใช้ <strong style={{ color: "#f59e0b" }}>Proportional Quota Sampling</strong> (การสุ่มแบบโควตาตามสัดส่วน) โดย:</p>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: "0 0 12px" }}>วิธีการสุ่มตัวอย่าง</h3>
+              <div style={{ background: "#f8fafc", borderRadius: 12, padding: 20, border: "1px solid #e2e8f0", lineHeight: 2, fontSize: 14, color: "#334155" }}>
+                <p style={{ margin: "0 0 8px" }}>ใช้ <strong style={{ color: "#059669" }}>Proportional Quota Sampling</strong> (การสุ่มแบบโควตาตามสัดส่วน) โดย:</p>
                 <ol style={{ paddingLeft: 24, margin: 0 }}>
                   <li>แบ่งชั้นภูมิ (strata) ตามภูมิภาค 7 ภาค</li>
                   <li>แต่ละภาคมี QR Code และลิงก์เฉพาะ (รวม 7 ลิงก์)</li>
@@ -926,10 +927,10 @@ OUTPUT:
         {activeTab === "overview" && filtered.length > 0 && (
           <>
             <div style={chartCardStyle}>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 20px" }}>คะแนนเฉลี่ยรายปัจจัย</h3>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: "#059669", margin: "0 0 20px" }}>คะแนนเฉลี่ยรายปัจจัย</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={sectionAverages} margin={{ top: 5, right: 20, left: 0, bottom: 60 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis dataKey="name" tick={{ fill: "#94a3b8", fontSize: 11 }} angle={-25} textAnchor="end" interval={0} />
                   <YAxis domain={[0, 5]} tick={{ fill: "#94a3b8", fontSize: 12 }} />
                   <Tooltip content={<CustomTooltip />} />
@@ -944,10 +945,10 @@ OUTPUT:
               <h3 style={{ fontSize: 16, fontWeight: 700, color: "#3b82f6", margin: "0 0 20px" }}>เปรียบเทียบรายด้านย่อย (Radar)</h3>
               <ResponsiveContainer width="100%" height={400}>
                 <RadarChart data={radarData}>
-                  <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                  <PolarGrid stroke="#e2e8f0" />
                   <PolarAngleAxis dataKey="subject" tick={{ fill: "#94a3b8", fontSize: 10 }} />
-                  <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fill: "#64748b", fontSize: 10 }} />
-                  <Radar name="ค่าเฉลี่ย" dataKey="mean" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.25} strokeWidth={2} />
+                  <PolarRadiusAxis angle={90} domain={[0, 5]} tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                  <Radar name="ค่าเฉลี่ย" dataKey="mean" stroke="#059669" fill="#059669" fillOpacity={0.25} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
@@ -961,7 +962,7 @@ OUTPUT:
                       {sourceDistribution.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                     </Pie>
                     <Tooltip content={<CustomTooltip />} />
-                    <Legend wrapperStyle={{ fontSize: 12, color: "#94a3b8" }} />
+                    <Legend wrapperStyle={{ fontSize: 12, color: "#64748b" }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -977,7 +978,7 @@ OUTPUT:
                   <h3 style={{ fontSize: 15, fontWeight: 700, color: SECTION_COLORS[si], margin: "0 0 16px" }}>{sec.title}</h3>
                   <ResponsiveContainer width="100%" height={220}>
                     <BarChart data={subsectionData} margin={{ top: 5, right: 20, left: 0, bottom: 40 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                       <XAxis dataKey="name" tick={{ fill: "#94a3b8", fontSize: 10 }} angle={-15} textAnchor="end" interval={0} />
                       <YAxis domain={[0, 5]} tick={{ fill: "#94a3b8", fontSize: 11 }} />
                       <Tooltip content={<CustomTooltip />} />
@@ -995,7 +996,7 @@ OUTPUT:
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: 20 }}>
             {personalCharts.map((chart, ci) => (
               <div key={ci} style={chartCardStyle}>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0", margin: "0 0 16px" }}>{chart.question}</h3>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: "#1e293b", margin: "0 0 16px" }}>{chart.question}</h3>
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie data={chart.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={40}
@@ -1020,40 +1021,40 @@ OUTPUT:
               const stats = computeSectionStats(sub.items, filtered);
               return (
                 <div key={sub.id} style={{ marginBottom: 20 }}>
-                  <h3 style={{ fontSize: 14, fontWeight: 600, color: "#cbd5e1", margin: "0 0 8px" }}>{sub.title}</h3>
+                  <h3 style={{ fontSize: 14, fontWeight: 600, color: "#334155", margin: "0 0 8px" }}>{sub.title}</h3>
                   <div style={{ overflowX: "auto" }}>
                     <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                       <thead>
-                        <tr style={{ background: "rgba(255,255,255,0.05)" }}>
-                          <th style={{ textAlign: "left", padding: "8px 12px", color: "#94a3b8", fontWeight: 600 }}>ข้อคำถาม</th>
-                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#94a3b8", fontWeight: 600, width: 50 }}>n</th>
-                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#94a3b8", fontWeight: 600, width: 70 }}>X̄</th>
-                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#94a3b8", fontWeight: 600, width: 70 }}>S.D.</th>
-                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#94a3b8", fontWeight: 600, width: 80 }}>แปลผล</th>
+                        <tr style={{ background: "#f1f5f9" }}>
+                          <th style={{ textAlign: "left", padding: "8px 12px", color: "#64748b", fontWeight: 600 }}>ข้อคำถาม</th>
+                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#64748b", fontWeight: 600, width: 50 }}>n</th>
+                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#64748b", fontWeight: 600, width: 70 }}>X̄</th>
+                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#64748b", fontWeight: 600, width: 70 }}>S.D.</th>
+                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#64748b", fontWeight: 600, width: 80 }}>แปลผล</th>
                         </tr>
                       </thead>
                       <tbody>
                         {stats.map(st => {
                           const level = st.mean >= 4.5 ? "มากที่สุด" : st.mean >= 3.5 ? "มาก" : st.mean >= 2.5 ? "ปานกลาง" : st.mean >= 1.5 ? "น้อย" : "น้อยที่สุด";
                           return (
-                            <tr key={st.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                              <td style={{ padding: "8px 12px", color: "#e2e8f0" }}>{st.text}</td>
-                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#94a3b8" }}>{st.n}</td>
-                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#f59e0b", fontWeight: 700 }}>{st.mean.toFixed(2)}</td>
-                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#94a3b8" }}>{st.sd.toFixed(2)}</td>
-                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#e2e8f0", fontSize: 12 }}>{level}</td>
+                            <tr key={st.id} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                              <td style={{ padding: "8px 12px", color: "#1e293b" }}>{st.text}</td>
+                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#64748b" }}>{st.n}</td>
+                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#059669", fontWeight: 700 }}>{st.mean.toFixed(2)}</td>
+                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#64748b" }}>{st.sd.toFixed(2)}</td>
+                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#1e293b", fontSize: 12 }}>{level}</td>
                             </tr>
                           );
                         })}
                         {(() => {
                           const allVals = sub.items.flatMap(item => filtered.map(r => r.likert?.[item.id]).filter(v => v != null));
                           return (
-                            <tr style={{ background: "rgba(255,255,255,0.03)", fontWeight: 700 }}>
+                            <tr style={{ background: "#f8fafc", fontWeight: 700 }}>
                               <td style={{ padding: "8px 12px", color: SECTION_COLORS[si] }}>เฉลี่ยรวม</td>
-                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#94a3b8" }}>{allVals.length}</td>
+                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#64748b" }}>{allVals.length}</td>
                               <td style={{ textAlign: "center", padding: "8px 12px", color: SECTION_COLORS[si] }}>{calcMean(allVals).toFixed(2)}</td>
-                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#94a3b8" }}>{calcSD(allVals).toFixed(2)}</td>
-                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#e2e8f0", fontSize: 12 }}>
+                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#64748b" }}>{calcSD(allVals).toFixed(2)}</td>
+                              <td style={{ textAlign: "center", padding: "8px 12px", color: "#1e293b", fontSize: 12 }}>
                                 {calcMean(allVals) >= 4.5 ? "มากที่สุด" : calcMean(allVals) >= 3.5 ? "มาก" : calcMean(allVals) >= 2.5 ? "ปานกลาง" : calcMean(allVals) >= 1.5 ? "น้อย" : "น้อยที่สุด"}
                               </td>
                             </tr>
@@ -1071,7 +1072,7 @@ OUTPUT:
         {/* INDIVIDUAL RESPONSES TAB */}
         {activeTab === "individual" && filtered.length > 0 && (
           <div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#f59e0b", marginBottom: 16 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: "#059669", marginBottom: 16 }}>
               คำตอบรายบุคคล ({filtered.length} ราย)
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -1081,8 +1082,8 @@ OUTPUT:
                 const likert = r.likert || r.likert_data || {};
                 return (
                   <div key={r.uid} style={{
-                    background: "rgba(255,255,255,0.03)", borderRadius: 12,
-                    border: isExpanded ? "1px solid rgba(245,158,11,0.4)" : "1px solid rgba(255,255,255,0.08)",
+                    background: "#f8fafc", borderRadius: 12,
+                    border: isExpanded ? "1px solid #059669" : "1px solid #e2e8f0",
                     overflow: "hidden",
                   }}>
                     {/* Row header - clickable */}
@@ -1090,38 +1091,38 @@ OUTPUT:
                       onClick={() => setExpandedResponse(isExpanded ? null : r.uid)}
                       style={{
                         padding: "12px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 12,
-                        background: isExpanded ? "rgba(245,158,11,0.08)" : "transparent",
+                        background: isExpanded ? "#f0fdf4" : "transparent",
                       }}
                     >
                       <span style={{ fontSize: 13, color: "#64748b", minWidth: 30 }}>#{idx + 1}</span>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0", flex: 1 }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b", flex: 1 }}>
                         {personal.gender || "-"} · {personal.age || "-"} · {personal.province || (SOURCES[r.source] || r.source)}
                       </span>
-                      <span style={{ fontSize: 11, color: "#94a3b8" }}>{r.timestamp}</span>
-                      <span style={{ fontSize: 11, color: "#64748b", background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: 6 }}>
+                      <span style={{ fontSize: 11, color: "#64748b" }}>{r.timestamp}</span>
+                      <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>
                         ⏱ {formatTime(r.timeTaken)}
                       </span>
                       {r.want_results && <span style={{ fontSize: 11, color: "#10b981" }}>📧</span>}
-                      <span style={{ color: "#94a3b8", fontSize: 16, transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</span>
+                      <span style={{ color: "#64748b", fontSize: 16, transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</span>
                     </div>
 
                     {/* Expanded detail */}
                     {isExpanded && (
-                      <div style={{ padding: "0 16px 16px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                      <div style={{ padding: "0 16px 16px", borderTop: "1px solid #e2e8f0" }}>
                         {/* Personal data */}
                         <div style={{ marginTop: 12, marginBottom: 16 }}>
                           <h4 style={{ fontSize: 13, fontWeight: 700, color: "#3b82f6", margin: "0 0 8px" }}>ข้อมูลทั่วไป</h4>
                           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 6 }}>
                             {PERSONAL_QUESTIONS.map(q => (
-                              <div key={q.id} style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "rgba(255,255,255,0.03)", borderRadius: 8, fontSize: 12 }}>
-                                <span style={{ color: "#94a3b8" }}>{q.text}</span>
-                                <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{personal[q.id] || "-"}</span>
+                              <div key={q.id} style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "#f8fafc", borderRadius: 8, fontSize: 12 }}>
+                                <span style={{ color: "#64748b" }}>{q.text}</span>
+                                <span style={{ color: "#1e293b", fontWeight: 600 }}>{personal[q.id] || "-"}</span>
                               </div>
                             ))}
                             {personal.province && (
-                              <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "rgba(255,255,255,0.03)", borderRadius: 8, fontSize: 12 }}>
-                                <span style={{ color: "#94a3b8" }}>จังหวัด</span>
-                                <span style={{ color: "#e2e8f0", fontWeight: 600 }}>{personal.province}</span>
+                              <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "#f8fafc", borderRadius: 8, fontSize: 12 }}>
+                                <span style={{ color: "#64748b" }}>จังหวัด</span>
+                                <span style={{ color: "#1e293b", fontWeight: 600 }}>{personal.province}</span>
                               </div>
                             )}
                           </div>
@@ -1138,22 +1139,22 @@ OUTPUT:
                             <h4 style={{ fontSize: 13, fontWeight: 700, color: SECTION_COLORS[si], margin: "0 0 6px" }}>{sec.title}</h4>
                             {sec.subsections.map(sub => (
                               <div key={sub.id} style={{ marginBottom: 8 }}>
-                                <div style={{ fontSize: 11, fontWeight: 600, color: "#94a3b8", marginBottom: 4, paddingLeft: 8 }}>{sub.title}</div>
+                                <div style={{ fontSize: 11, fontWeight: 600, color: "#64748b", marginBottom: 4, paddingLeft: 8 }}>{sub.title}</div>
                                 <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                                   {sub.items.map(item => {
                                     const val = likert[item.id];
                                     return (
                                       <div key={item.id} style={{
                                         display: "flex", alignItems: "center", gap: 8, padding: "4px 10px",
-                                        background: "rgba(255,255,255,0.02)", borderRadius: 6, fontSize: 12,
+                                        background: "#fafafa", borderRadius: 6, fontSize: 12,
                                       }}>
-                                        <span style={{ flex: 1, color: "#cbd5e1", lineHeight: 1.4 }}>{item.text}</span>
+                                        <span style={{ flex: 1, color: "#334155", lineHeight: 1.4 }}>{item.text}</span>
                                         <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
                                           {[1,2,3,4,5].map(n => (
                                             <span key={n} style={{
                                               width: 22, height: 22, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center",
                                               fontSize: 11, fontWeight: 700,
-                                              background: val === n ? SECTION_COLORS[si] : "rgba(255,255,255,0.05)",
+                                              background: val === n ? SECTION_COLORS[si] : "#f1f5f9",
                                               color: val === n ? "#fff" : "#64748b",
                                             }}>{n}</span>
                                           ))}
@@ -1169,7 +1170,7 @@ OUTPUT:
 
                         {/* Suggestion */}
                         {r.suggestion && (
-                          <div style={{ marginTop: 8, padding: "8px 12px", background: "rgba(245,158,11,0.08)", borderRadius: 8, fontSize: 12, color: "#f59e0b", lineHeight: 1.6 }}>
+                          <div style={{ marginTop: 8, padding: "8px 12px", background: "#f0fdf4", borderRadius: 8, fontSize: 12, color: "#059669", lineHeight: 1.6 }}>
                             💬 {r.suggestion}
                           </div>
                         )}
@@ -1199,37 +1200,37 @@ OUTPUT:
                 disabled={generatingAll}
                 style={{
                   padding: "12px 28px", borderRadius: 12, border: "none",
-                  background: "linear-gradient(135deg, #f59e0b, #f97316)",
+                  background: "linear-gradient(135deg, #059669, #10b981)",
                   color: "#fff", fontSize: 15, fontWeight: 700, cursor: generatingAll ? "not-allowed" : "pointer",
                 }}
               >
                 {generatingAll ? "⏳ กำลังสร้าง..." : `🚀 สร้างลิงก์ทุกภาค (${REGION_DATA.length} ภาค)`}
               </button>
-              <span style={{ fontSize: 13, color: "#94a3b8" }}>
-                ลิงก์ที่สร้างแล้ว: <strong style={{ color: "#f59e0b" }}>{sources.length}</strong> / {REGION_DATA.length}
+              <span style={{ fontSize: 13, color: "#64748b" }}>
+                ลิงก์ที่สร้างแล้ว: <strong style={{ color: "#059669" }}>{sources.length}</strong> / {REGION_DATA.length}
               </span>
             </div>
 
             {/* Add custom source */}
             <div style={{ ...chartCardStyle, marginBottom: 24 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#94a3b8", margin: "0 0 12px" }}>➕ เพิ่มแหล่งที่มาเพิ่มเติม (กรณีพิเศษ)</h3>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: "#64748b", margin: "0 0 12px" }}>➕ เพิ่มแหล่งที่มาเพิ่มเติม (กรณีพิเศษ)</h3>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
                 <input
                   type="text"
                   value={newSourceName}
                   onChange={e => setNewSourceName(e.target.value)}
                   placeholder="ชื่อแหล่ง"
-                  style={{ flex: 1, minWidth: 150, padding: "10px 14px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.05)", color: "#e2e8f0", fontSize: 13, outline: "none" }}
+                  style={{ flex: 1, minWidth: 150, padding: "10px 14px", borderRadius: 10, border: "1px solid #d1d5db", background: "#f1f5f9", color: "#1e293b", fontSize: 13, outline: "none" }}
                 />
                 <select value={newSourceRegion} onChange={e => setNewSourceRegion(e.target.value)}
-                  style={{ padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.05)", color: "#e2e8f0", fontSize: 13, outline: "none" }}>
+                  style={{ padding: "10px 12px", borderRadius: 10, border: "1px solid #d1d5db", background: "#f1f5f9", color: "#1e293b", fontSize: 13, outline: "none" }}>
                   <option value="">-- ภาค --</option>
                   {REGIONS.map(r => <option key={r.name} value={r.name}>{r.name}</option>)}
                 </select>
                 <input type="number" value={newSourceTarget} onChange={e => setNewSourceTarget(e.target.value)} placeholder="เป้าหมาย"
-                  style={{ width: 80, padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.05)", color: "#e2e8f0", fontSize: 13, outline: "none", textAlign: "center" }} />
+                  style={{ width: 80, padding: "10px 12px", borderRadius: 10, border: "1px solid #d1d5db", background: "#f1f5f9", color: "#1e293b", fontSize: 13, outline: "none", textAlign: "center" }} />
                 <button onClick={addSource} disabled={addingSource || !newSourceName.trim()}
-                  style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: newSourceName.trim() ? "#f59e0b" : "rgba(255,255,255,0.1)", color: newSourceName.trim() ? "#000" : "#64748b", fontSize: 13, fontWeight: 700, cursor: newSourceName.trim() ? "pointer" : "not-allowed" }}>
+                  style={{ padding: "10px 20px", borderRadius: 10, border: "none", background: newSourceName.trim() ? "#059669" : "#e2e8f0", color: newSourceName.trim() ? "#fff" : "#64748b", fontSize: 13, fontWeight: 700, cursor: newSourceName.trim() ? "pointer" : "not-allowed" }}>
                   {addingSource ? "..." : "+ เพิ่ม"}
                 </button>
               </div>
@@ -1253,25 +1254,25 @@ OUTPUT:
                       const link = getSurveyLink(src.code);
                       return (
                         <div key={src.id} style={{
-                          background: "rgba(255,255,255,0.03)", borderRadius: 14, padding: 16,
-                          border: `1px solid ${count >= tgt && tgt > 0 ? "rgba(16,185,129,0.3)" : "rgba(255,255,255,0.08)"}`,
+                          background: "#f8fafc", borderRadius: 14, padding: 16,
+                          border: `1px solid ${count >= tgt && tgt > 0 ? "rgba(16,185,129,0.3)" : "#e2e8f0"}`,
                         }}>
                           {/* Header */}
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                             <div>
-                              <span style={{ fontSize: 15, fontWeight: 700, color: "#e2e8f0" }}>📍 {src.name}</span>
-                              <span style={{ fontSize: 11, color: "#64748b", marginLeft: 8, background: "rgba(255,255,255,0.05)", padding: "2px 8px", borderRadius: 6 }}>{src.code}</span>
+                              <span style={{ fontSize: 15, fontWeight: 700, color: "#1e293b" }}>📍 {src.name}</span>
+                              <span style={{ fontSize: 11, color: "#64748b", marginLeft: 8, background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>{src.code}</span>
                             </div>
                             <span style={{
-                              background: count >= tgt && tgt > 0 ? "rgba(16,185,129,0.15)" : "rgba(245,158,11,0.15)",
-                              color: count >= tgt && tgt > 0 ? "#10b981" : "#f59e0b",
+                              background: count >= tgt && tgt > 0 ? "#ecfdf5" : "#f0fdf4",
+                              color: count >= tgt && tgt > 0 ? "#10b981" : "#059669",
                               padding: "4px 12px", borderRadius: 12, fontSize: 12, fontWeight: 700,
                             }}>{count}{tgt > 0 ? ` / ${tgt}` : ""}</span>
                           </div>
 
                           {/* Progress bar */}
                           {tgt > 0 && (
-                            <div style={{ background: "rgba(255,255,255,0.1)", borderRadius: 6, height: 8, overflow: "hidden", marginBottom: 12 }}>
+                            <div style={{ background: "#e2e8f0", borderRadius: 6, height: 8, overflow: "hidden", marginBottom: 12 }}>
                               <div style={{ width: `${pct}%`, height: "100%", borderRadius: 6, background: count >= tgt ? "#10b981" : reg.color, transition: "width 0.3s" }} />
                             </div>
                           )}
