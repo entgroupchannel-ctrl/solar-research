@@ -7,7 +7,7 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   PieChart, Pie, Cell, Legend,
 } from "recharts";
-import { GraduationCap, Check, QrCode, AlertTriangle } from "lucide-react";
+import { GraduationCap, Check, QrCode, AlertTriangle, BarChart3, Users, ClipboardList, Link2, Clock, FileText, Star, Download, TrendingUp, MessageSquare, Inbox, Zap, Package, Tag } from "lucide-react";
 import { toast } from "sonner";
 
 // ============================================================
