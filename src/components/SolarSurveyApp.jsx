@@ -1601,10 +1601,17 @@ export default function SolarSurveyApp() {
         padding: "8px 20px", background: "rgba(15,32,39,0.8)", backdropFilter: "blur(10px)",
         fontSize: 12, borderBottom: "1px solid rgba(255,255,255,0.05)",
       }}>
-        <span style={{ color: "#94a3b8", display: "flex", alignItems: "center", gap: 6 }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(16,185,129,0.2)" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3" fill="none"/></svg>
-          {regionInfo ? regionInfo.name : (REGION_PROVINCES[source]?.name || "Direct")}
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button onClick={() => { if (confirm("ต้องการกลับหน้าแรกหรือไม่? ข้อมูลที่กรอกจะหายไป")) setPage("pdpa"); }} style={{
+            background: "rgba(255,255,255,0.08)", border: "none", borderRadius: 6,
+            color: "#94a3b8", cursor: "pointer", padding: "4px 8px", fontSize: 12, fontWeight: 600,
+            display: "flex", alignItems: "center", gap: 4,
+          }}>← หน้าแรก</button>
+          <span style={{ color: "#94a3b8", display: "flex", alignItems: "center", gap: 6 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(16,185,129,0.2)" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3" fill="none"/></svg>
+            {regionInfo ? regionInfo.name : (REGION_PROVINCES[source]?.name || "Direct")}
+          </span>
+        </div>
         <span style={{ color: "#f59e0b", fontWeight: 700, fontFamily: "monospace" }}>
           ⏱ {formatTime(timer)}
         </span>
