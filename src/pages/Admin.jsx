@@ -1634,6 +1634,317 @@ OUTPUT:
            </div>
          )}
 
+        {/* STATISTICS TAB */}
+        {activeTab === "statistics" && filtered.length > 0 && (() => {
+          // Build subsection groups with their item IDs for analysis
+          const subsectionGroups = LIKERT_SECTIONS.map(sec => ({
+            id: sec.id,
+            title: sec.title,
+            subsections: sec.subsections.map(sub => ({
+              id: sub.id,
+              title: sub.title,
+              items: sub.items,
+            })),
+            allItems: sec.subsections.flatMap(sub => sub.items),
+          }));
+
+          // Get valid respondent data for each item (only respondents who answered ALL items in a group)
+          const getItemArrays = (items) => {
+            const validRespondents = filtered.filter(r =>
+              items.every(item => r.likert?.[item.id] != null)
+            );
+            return {
+              arrays: items.map(item => validRespondents.map(r => r.likert[item.id])),
+              n: validRespondents.length,
+            };
+          };
+
+          // === SECTION 1: Cronbach's Alpha ===
+          const alphaResults = subsectionGroups.map(sec => {
+            const sectionResult = {
+              title: sec.title,
+              subsections: sec.subsections.map(sub => {
+                const { arrays, n } = getItemArrays(sub.items);
+                const alpha = n >= 2 ? calcCronbachAlpha(arrays) : null;
+                return { title: sub.title, alpha, n, k: sub.items.length };
+              }),
+            };
+            // Overall section alpha
+            const { arrays: allArrays, n: allN } = getItemArrays(sec.allItems);
+            sectionResult.overallAlpha = allN >= 2 ? calcCronbachAlpha(allArrays) : null;
+            sectionResult.overallN = allN;
+            sectionResult.overallK = sec.allItems.length;
+            return sectionResult;
+          });
+
+          const alphaColor = (a) => {
+            if (a === null) return "#94a3b8";
+            if (a >= 0.9) return "#059669";
+            if (a >= 0.8) return "#10b981";
+            if (a >= 0.7) return "#3b82f6";
+            if (a >= 0.6) return "#f59e0b";
+            return "#ef4444";
+          };
+          const alphaLabel = (a) => {
+            if (a === null) return "N/A";
+            if (a >= 0.9) return "ดีเยี่ยม";
+            if (a >= 0.8) return "ดี";
+            if (a >= 0.7) return "ยอมรับได้";
+            if (a >= 0.6) return "น่าสงสัย";
+            return "ไม่ยอมรับ";
+          };
+
+          // === SECTION 2: Descriptive Statistics ===
+          const descStats = LIKERT_SECTIONS.map((sec, si) => ({
+            title: sec.title,
+            color: SECTION_COLORS[si],
+            subsections: sec.subsections.map(sub => ({
+              title: sub.title,
+              items: sub.items.map(item => {
+                const vals = filtered.map(r => r.likert?.[item.id]).filter(v => v != null);
+                return {
+                  id: item.id, text: item.text, n: vals.length,
+                  mean: calcMean(vals), sd: calcSD(vals),
+                  skewness: calcSkewness(vals), kurtosis: calcKurtosis(vals),
+                  min: vals.length ? Math.min(...vals) : 0,
+                  max: vals.length ? Math.max(...vals) : 0,
+                };
+              }),
+            })),
+          }));
+
+          // === SECTION 3: Correlation Matrix ===
+          // Use subsection-level means as variables
+          const corrVars = LIKERT_SECTIONS.flatMap((sec, si) =>
+            sec.subsections.map(sub => {
+              const vals = filtered.map(r => {
+                const scores = sub.items.map(item => r.likert?.[item.id]).filter(v => v != null);
+                return scores.length === sub.items.length ? calcMean(scores) : null;
+              });
+              return {
+                id: sub.id,
+                label: sub.title.replace(/^\d+\.\s*/, "").substring(0, 14),
+                fullLabel: sub.title,
+                values: vals,
+                color: SECTION_COLORS[si],
+              };
+            })
+          );
+
+          // Only use respondents with all values
+          const validIndices = corrVars[0]?.values.map((_, i) =>
+            corrVars.every(v => v.values[i] !== null) ? i : -1
+          ).filter(i => i >= 0) || [];
+
+          const corrMatrix = corrVars.map(v1 => {
+            const arr1 = validIndices.map(i => v1.values[i]);
+            return corrVars.map(v2 => {
+              const arr2 = validIndices.map(i => v2.values[i]);
+              return calcPearsonCorr(arr1, arr2);
+            });
+          });
+
+          const corrCellColor = (r) => {
+            if (r >= 0.8) return "rgba(5,150,105,0.35)";
+            if (r >= 0.6) return "rgba(5,150,105,0.25)";
+            if (r >= 0.4) return "rgba(59,130,246,0.2)";
+            if (r >= 0.2) return "rgba(59,130,246,0.1)";
+            if (r >= -0.2) return "transparent";
+            if (r >= -0.4) return "rgba(239,68,68,0.1)";
+            return "rgba(239,68,68,0.2)";
+          };
+
+          const corrTextColor = (r) => {
+            if (Math.abs(r) >= 0.6) return "#059669";
+            if (Math.abs(r) >= 0.4) return "#3b82f6";
+            return "#64748b";
+          };
+
+          return (
+            <div>
+              {/* === Cronbach's Alpha === */}
+              <div style={chartCardStyle}>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: "#059669", margin: "0 0 8px", display: "flex", alignItems: "center", gap: 8 }}>
+                  <FlaskConical size={20} /> Reliability Analysis (Cronbach's Alpha)
+                </h2>
+                <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 20px" }}>
+                  ค่าความเชื่อมั่นของแบบสอบถามแต่ละด้าน · α ≥ 0.70 = ยอมรับได้ · N = {filtered.length}
+                </p>
+
+                {alphaResults.map((sec, si) => (
+                  <div key={si} style={{ marginBottom: 24 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, padding: "10px 16px", background: "#f0fdf4", borderRadius: 10, borderLeft: `4px solid ${SECTION_COLORS[si]}` }}>
+                      <h3 style={{ fontSize: 14, fontWeight: 700, color: SECTION_COLORS[si], margin: 0 }}>{sec.title}</h3>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span style={{ fontSize: 13, color: "#64748b" }}>α รวม =</span>
+                        <span style={{ fontSize: 20, fontWeight: 800, color: alphaColor(sec.overallAlpha) }}>
+                          {sec.overallAlpha !== null ? sec.overallAlpha.toFixed(4) : "N/A"}
+                        </span>
+                        <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 6, background: alphaColor(sec.overallAlpha) + "22", color: alphaColor(sec.overallAlpha), fontWeight: 600 }}>
+                          {alphaLabel(sec.overallAlpha)}
+                        </span>
+                        <span style={{ fontSize: 11, color: "#94a3b8" }}>k={sec.overallK}, n={sec.overallN}</span>
+                      </div>
+                    </div>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                      <thead>
+                        <tr style={{ background: "#f8fafc" }}>
+                          <th style={{ textAlign: "left", padding: "8px 12px", color: "#64748b", fontWeight: 600 }}>ด้านย่อย</th>
+                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#64748b", fontWeight: 600, width: 60 }}>Items</th>
+                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#64748b", fontWeight: 600, width: 60 }}>n</th>
+                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#64748b", fontWeight: 600, width: 100 }}>α</th>
+                          <th style={{ textAlign: "center", padding: "8px 12px", color: "#64748b", fontWeight: 600, width: 100 }}>แปลผล</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sec.subsections.map((sub, i) => (
+                          <tr key={i} style={{ borderBottom: "1px solid #f1f5f9", background: i % 2 === 0 ? "#fff" : "#fafffe" }}>
+                            <td style={{ padding: "8px 12px", color: "#334155" }}>{sub.title}</td>
+                            <td style={{ textAlign: "center", padding: "8px 12px", color: "#64748b" }}>{sub.k}</td>
+                            <td style={{ textAlign: "center", padding: "8px 12px", color: "#64748b" }}>{sub.n}</td>
+                            <td style={{ textAlign: "center", padding: "8px 12px", fontWeight: 700, color: alphaColor(sub.alpha) }}>
+                              {sub.alpha !== null ? sub.alpha.toFixed(4) : "N/A"}
+                            </td>
+                            <td style={{ textAlign: "center", padding: "8px 12px" }}>
+                              <span style={{ padding: "2px 10px", borderRadius: 6, fontSize: 12, fontWeight: 600, background: alphaColor(sub.alpha) + "18", color: alphaColor(sub.alpha) }}>
+                                {alphaLabel(sub.alpha)}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ))}
+              </div>
+
+              {/* === Descriptive Statistics === */}
+              <div style={chartCardStyle}>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: "#3b82f6", margin: "0 0 8px", display: "flex", alignItems: "center", gap: 8 }}>
+                  <BarChart3 size={20} /> Descriptive Statistics
+                </h2>
+                <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 20px" }}>
+                  ค่าเฉลี่ย (X̄), ส่วนเบี่ยงเบนมาตรฐาน (S.D.), ความเบ้ (Skewness), ความโด่ง (Kurtosis)
+                </p>
+
+                {descStats.map((sec, si) => (
+                  <div key={si} style={{ marginBottom: 28 }}>
+                    <h3 style={{ fontSize: 14, fontWeight: 700, color: sec.color, margin: "0 0 12px", borderBottom: `2px solid ${sec.color}33`, paddingBottom: 8 }}>{sec.title}</h3>
+                    {sec.subsections.map((sub, subi) => (
+                      <div key={subi} style={{ marginBottom: 16 }}>
+                        <h4 style={{ fontSize: 13, fontWeight: 600, color: "#475569", margin: "0 0 8px" }}>{sub.title}</h4>
+                        <div style={{ overflowX: "auto" }}>
+                          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                            <thead>
+                              <tr style={{ background: "#f1f5f9" }}>
+                                <th style={{ textAlign: "left", padding: "8px 10px", color: "#64748b", fontWeight: 600 }}>ข้อคำถาม</th>
+                                <th style={{ textAlign: "center", padding: "8px 10px", color: "#64748b", fontWeight: 600, width: 40 }}>n</th>
+                                <th style={{ textAlign: "center", padding: "8px 10px", color: "#64748b", fontWeight: 600, width: 45 }}>Min</th>
+                                <th style={{ textAlign: "center", padding: "8px 10px", color: "#64748b", fontWeight: 600, width: 45 }}>Max</th>
+                                <th style={{ textAlign: "center", padding: "8px 10px", color: "#64748b", fontWeight: 600, width: 60 }}>X̄</th>
+                                <th style={{ textAlign: "center", padding: "8px 10px", color: "#64748b", fontWeight: 600, width: 60 }}>S.D.</th>
+                                <th style={{ textAlign: "center", padding: "8px 10px", color: "#64748b", fontWeight: 600, width: 70 }}>Skewness</th>
+                                <th style={{ textAlign: "center", padding: "8px 10px", color: "#64748b", fontWeight: 600, width: 70 }}>Kurtosis</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {sub.items.map((st, idx) => {
+                                const skewOk = Math.abs(st.skewness) <= 2;
+                                const kurtOk = Math.abs(st.kurtosis) <= 7;
+                                return (
+                                  <tr key={st.id} style={{ borderBottom: "1px solid #f1f5f9", background: idx % 2 === 0 ? "#fff" : "#fafffe" }}>
+                                    <td style={{ padding: "6px 10px", color: "#334155", fontSize: 11, lineHeight: 1.4 }}>{st.text}</td>
+                                    <td style={{ textAlign: "center", padding: "6px 8px", color: "#64748b" }}>{st.n}</td>
+                                    <td style={{ textAlign: "center", padding: "6px 8px", color: "#64748b" }}>{st.min}</td>
+                                    <td style={{ textAlign: "center", padding: "6px 8px", color: "#64748b" }}>{st.max}</td>
+                                    <td style={{ textAlign: "center", padding: "6px 8px", color: "#059669", fontWeight: 700 }}>{st.mean.toFixed(2)}</td>
+                                    <td style={{ textAlign: "center", padding: "6px 8px", color: "#64748b" }}>{st.sd.toFixed(2)}</td>
+                                    <td style={{ textAlign: "center", padding: "6px 8px", color: skewOk ? "#64748b" : "#ef4444", fontWeight: skewOk ? 400 : 700 }}>{st.skewness.toFixed(3)}</td>
+                                    <td style={{ textAlign: "center", padding: "6px 8px", color: kurtOk ? "#64748b" : "#ef4444", fontWeight: kurtOk ? 400 : 700 }}>{st.kurtosis.toFixed(3)}</td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+
+                <div style={{ padding: 12, background: "#f8fafc", borderRadius: 10, fontSize: 12, color: "#64748b", lineHeight: 1.8 }}>
+                  <strong>เกณฑ์การแปลผลการกระจายข้อมูล:</strong><br/>
+                  • Skewness: |Sk| ≤ 2.0 = การกระจายปกติ <span style={{ color: "#ef4444" }}>(สีแดง = เกินเกณฑ์)</span><br/>
+                  • Kurtosis: |Ku| ≤ 7.0 = การกระจายปกติ <span style={{ color: "#ef4444" }}>(สีแดง = เกินเกณฑ์)</span><br/>
+                  • ค่าเฉลี่ย: 4.51-5.00 = มากที่สุด, 3.51-4.50 = มาก, 2.51-3.50 = ปานกลาง, 1.51-2.50 = น้อย, 1.00-1.50 = น้อยที่สุด
+                </div>
+              </div>
+
+              {/* === Correlation Matrix === */}
+              <div style={chartCardStyle}>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: "#8b5cf6", margin: "0 0 8px", display: "flex", alignItems: "center", gap: 8 }}>
+                  <Table2 size={20} /> Pearson Correlation Matrix
+                </h2>
+                <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 6px" }}>
+                  สหสัมพันธ์ระหว่างตัวแปรรายด้านย่อย (ค่าเฉลี่ยรวมของแต่ละด้าน) · N = {validIndices.length}
+                </p>
+                <div style={{ display: "flex", gap: 12, marginBottom: 16, fontSize: 11, color: "#64748b" }}>
+                  <span>🟢 r ≥ 0.6 สูง</span>
+                  <span>🔵 r 0.4-0.6 ปานกลาง</span>
+                  <span style={{ color: "#94a3b8" }}>○ r &lt; 0.4 ต่ำ</span>
+                </div>
+
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ borderCollapse: "collapse", fontSize: 10 }}>
+                    <thead>
+                      <tr>
+                        <th style={{ padding: "6px 8px", position: "sticky", left: 0, zIndex: 2, background: "#fff", borderBottom: "2px solid #e2e8f0", borderRight: "2px solid #e2e8f0" }}></th>
+                        {corrVars.map((v, i) => (
+                          <th key={i} style={{
+                            padding: "4px 6px", textAlign: "center", color: v.color, fontWeight: 600,
+                            borderBottom: "2px solid #e2e8f0", writingMode: "vertical-lr", height: 100,
+                            whiteSpace: "nowrap", fontSize: 9,
+                          }}>{v.label}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {corrVars.map((v1, i) => (
+                        <tr key={i}>
+                          <td style={{
+                            padding: "6px 8px", fontWeight: 600, color: v1.color, fontSize: 10,
+                            position: "sticky", left: 0, zIndex: 1, background: "#fff",
+                            borderRight: "2px solid #e2e8f0", whiteSpace: "nowrap",
+                          }}>{v1.label}</td>
+                          {corrMatrix[i].map((r, j) => (
+                            <td key={j} style={{
+                              padding: "4px 6px", textAlign: "center",
+                              background: i === j ? "#f0fdf4" : corrCellColor(r),
+                              color: i === j ? "#059669" : corrTextColor(r),
+                              fontWeight: Math.abs(r) >= 0.4 ? 700 : 400,
+                              borderBottom: "1px solid #f1f5f9",
+                              borderRight: "1px solid #f1f5f9",
+                              minWidth: 42,
+                            }}>
+                              {i === j ? "1.00" : r.toFixed(2)}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div style={{ marginTop: 16, padding: 12, background: "#f8fafc", borderRadius: 10, fontSize: 12, color: "#64748b", lineHeight: 1.8 }}>
+                  <strong>เกณฑ์การแปลผล Pearson Correlation:</strong><br/>
+                  • |r| ≥ 0.80 = สหสัมพันธ์สูงมาก · |r| 0.60-0.79 = สหสัมพันธ์สูง<br/>
+                  • |r| 0.40-0.59 = สหสัมพันธ์ปานกลาง · |r| 0.20-0.39 = สหสัมพันธ์ต่ำ · |r| &lt; 0.20 = สหสัมพันธ์ต่ำมาก
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
         {/* LINKS TAB */}
         {activeTab === "links" && (
           <div>
