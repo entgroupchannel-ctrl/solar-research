@@ -532,18 +532,104 @@ function ScreeningQuestion({ onPass, onFail }) {
 
 function ProgressBar({ current, total }) {
   const pct = Math.round((current / total) * 100);
+
+  // Accessibility state
+  const [isDark, setIsDark] = useState(() => {
+    try { return localStorage.getItem("theme") === "dark"; } catch { return false; }
+  });
+  const [fontIdx, setFontIdx] = useState(() => {
+    try {
+      const saved = parseInt(localStorage.getItem("fontSizeIdx"));
+      return !isNaN(saved) && saved >= 0 && saved < 5 ? saved : 2;
+    } catch { return 2; }
+  });
+  const FONT_SIZES = [14, 15, 16, 18, 20];
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  }, [isDark]);
+
+  useEffect(() => {
+    document.documentElement.style.fontSize = FONT_SIZES[fontIdx] + "px";
+    localStorage.setItem("fontSizeIdx", String(fontIdx));
+  }, [fontIdx]);
+
   return (
-    <div style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(15,32,39,0.95)", backdropFilter: "blur(10px)", padding: "12px 20px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-        <span style={{ fontSize: 13, color: "#94a3b8", fontWeight: 600 }}>ความคืบหน้า</span>
-        <span style={{ fontSize: 13, color: "#f59e0b", fontWeight: 700 }}>{pct}%</span>
+    <div style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(15,32,39,0.95)", backdropFilter: "blur(10px)" }}>
+      {/* Top row: progress label + accessibility controls */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 16px 4px" }}>
+        {/* Left: progress info */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 12, color: "#94a3b8", fontWeight: 600 }}>ความคืบหน้า</span>
+          <span style={{
+            fontSize: 12, fontWeight: 800, color: "#f59e0b",
+            background: "rgba(245,158,11,0.12)", padding: "2px 8px", borderRadius: 6,
+          }}>{pct}%</span>
+        </div>
+
+        {/* Right: inline accessibility controls */}
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          {/* Font decrease */}
+          <button
+            onClick={() => setFontIdx(i => Math.max(i - 1, 0))}
+            disabled={fontIdx === 0}
+            style={{
+              width: 28, height: 28, borderRadius: 6, border: "none", cursor: fontIdx === 0 ? "default" : "pointer",
+              background: "rgba(255,255,255,0.08)", color: "#94a3b8",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              opacity: fontIdx === 0 ? 0.3 : 1, transition: "all 0.2s", fontSize: 13, fontWeight: 700,
+            }}
+            title="ลดขนาดตัวอักษร"
+          >A-</button>
+
+          {/* Font size label */}
+          <span style={{
+            fontSize: 10, color: "#64748b", fontWeight: 600, minWidth: 28, textAlign: "center",
+          }}>{FONT_SIZES[fontIdx]}px</span>
+
+          {/* Font increase */}
+          <button
+            onClick={() => setFontIdx(i => Math.min(i + 1, FONT_SIZES.length - 1))}
+            disabled={fontIdx === FONT_SIZES.length - 1}
+            style={{
+              width: 28, height: 28, borderRadius: 6, border: "none", cursor: fontIdx === FONT_SIZES.length - 1 ? "default" : "pointer",
+              background: "rgba(255,255,255,0.08)", color: "#94a3b8",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              opacity: fontIdx === FONT_SIZES.length - 1 ? 0.3 : 1, transition: "all 0.2s", fontSize: 13, fontWeight: 700,
+            }}
+            title="เพิ่มขนาดตัวอักษร"
+          >A+</button>
+
+          {/* Divider */}
+          <div style={{ width: 1, height: 16, background: "rgba(255,255,255,0.1)", margin: "0 4px" }} />
+
+          {/* Dark/Light toggle */}
+          <button
+            onClick={() => setIsDark(!isDark)}
+            style={{
+              width: 28, height: 28, borderRadius: 6, border: "none", cursor: "pointer",
+              background: isDark ? "rgba(250,204,21,0.15)" : "rgba(255,255,255,0.08)",
+              color: isDark ? "#facc15" : "#94a3b8",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              transition: "all 0.2s", fontSize: 14,
+            }}
+            title={isDark ? "เปลี่ยนเป็น Light Mode" : "เปลี่ยนเป็น Dark Mode"}
+          >
+            {isDark ? "☀️" : "🌙"}
+          </button>
+        </div>
       </div>
-      <div style={{ height: 6, background: "rgba(255,255,255,0.1)", borderRadius: 3, overflow: "hidden" }}>
-        <div style={{
-          height: "100%", width: `${pct}%`, borderRadius: 3,
-          background: "linear-gradient(90deg, #f59e0b, #f97316)",
-          transition: "width 0.4s ease",
-        }} />
+
+      {/* Progress bar */}
+      <div style={{ padding: "0 16px 8px" }}>
+        <div style={{ height: 5, background: "rgba(255,255,255,0.08)", borderRadius: 3, overflow: "hidden" }}>
+          <div style={{
+            height: "100%", width: `${pct}%`, borderRadius: 3,
+            background: "linear-gradient(90deg, #f59e0b, #f97316)",
+            transition: "width 0.4s ease",
+          }} />
+        </div>
       </div>
     </div>
   );
