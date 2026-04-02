@@ -124,7 +124,7 @@ const QRCodesPage = () => {
                       flex: 1, padding: "8px 0", borderRadius: 10, border: "1px solid #e2e8f0",
                       background: "#f8fafc", color: "#334155", cursor: "pointer", fontSize: 12, fontWeight: 600,
                     }}
-                  >📋 คัดลอก</button>
+                  ><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Clipboard size={14} /> คัดลอก</span></button>
                   <button
                     onClick={() => printSingle(region)}
                     style={{
