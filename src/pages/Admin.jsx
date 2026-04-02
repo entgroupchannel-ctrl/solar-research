@@ -1125,7 +1125,150 @@ OUTPUT:
           </div>
         )}
 
-        {/* DETAILS TAB */}
+        {/* CROSS-TABULATION TAB */}
+        {activeTab === "crosstab" && filtered.length > 0 && (() => {
+          const rowQ = PERSONAL_QUESTIONS.find(q => q.id === crossRowVar);
+          const colQ = PERSONAL_QUESTIONS.find(q => q.id === crossColVar);
+          if (!rowQ || !colQ) return <p>กรุณาเลือกตัวแปร</p>;
+
+          // Build cross-tab matrix
+          const matrix = {};
+          const colTotals = {};
+          rowQ.options.forEach(r => { matrix[r] = {}; colQ.options.forEach(c => { matrix[r][c] = 0; }); });
+          colQ.options.forEach(c => { colTotals[c] = 0; });
+          let grandTotal = 0;
+
+          filtered.forEach(resp => {
+            const rVal = resp.personal?.[crossRowVar];
+            const cVal = resp.personal?.[crossColVar];
+            if (rVal && cVal && matrix[rVal] && matrix[rVal][cVal] !== undefined) {
+              matrix[rVal][cVal]++;
+              colTotals[cVal]++;
+              grandTotal++;
+            }
+          });
+
+          const rowTotals = {};
+          rowQ.options.forEach(r => { rowTotals[r] = colQ.options.reduce((sum, c) => sum + matrix[r][c], 0); });
+
+          const cellBg = (val) => {
+            if (val === 0) return "transparent";
+            const intensity = Math.min(val / Math.max(grandTotal * 0.15, 1), 1);
+            return `rgba(5, 150, 105, ${0.08 + intensity * 0.25})`;
+          };
+
+          return (
+            <div style={chartCardStyle}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
+                <h2 style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: 0 }}>📊 Cross-Tabulation</h2>
+                <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+                  <label style={{ fontSize: 13, color: "#64748b" }}>
+                    แถว:
+                    <select value={crossRowVar} onChange={e => setCrossRowVar(e.target.value)}
+                      style={{ marginLeft: 6, padding: "6px 12px", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13, background: "#fff", cursor: "pointer" }}>
+                      {PERSONAL_QUESTIONS.map(q => <option key={q.id} value={q.id}>{q.text}</option>)}
+                    </select>
+                  </label>
+                  <span style={{ color: "#cbd5e1", fontWeight: 700 }}>×</span>
+                  <label style={{ fontSize: 13, color: "#64748b" }}>
+                    คอลัมน์:
+                    <select value={crossColVar} onChange={e => setCrossColVar(e.target.value)}
+                      style={{ marginLeft: 6, padding: "6px 12px", borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 13, background: "#fff", cursor: "pointer" }}>
+                      {PERSONAL_QUESTIONS.map(q => <option key={q.id} value={q.id}>{q.text}</option>)}
+                    </select>
+                  </label>
+                </div>
+              </div>
+
+              {crossRowVar === crossColVar ? (
+                <p style={{ color: "#ef4444", fontSize: 13, textAlign: "center", padding: 24 }}>⚠️ กรุณาเลือกตัวแปรที่แตกต่างกัน</p>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                    <thead>
+                      <tr style={{ background: "#f0fdf4" }}>
+                        <th style={{ padding: "10px 12px", textAlign: "left", color: "#059669", fontWeight: 700, borderBottom: "2px solid #059669", minWidth: 140 }}>
+                          {rowQ.text} ↓ / {colQ.text} →
+                        </th>
+                        {colQ.options.map(c => (
+                          <th key={c} style={{ padding: "10px 8px", textAlign: "center", color: "#059669", fontWeight: 600, borderBottom: "2px solid #059669", fontSize: 12, minWidth: 80 }}>{c}</th>
+                        ))}
+                        <th style={{ padding: "10px 8px", textAlign: "center", color: "#1e293b", fontWeight: 700, borderBottom: "2px solid #1e293b", background: "#f8fafc", minWidth: 60 }}>รวม</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rowQ.options.map((r, ri) => (
+                        <tr key={r} style={{ borderBottom: "1px solid #f1f5f9", background: ri % 2 === 0 ? "#fff" : "#fafffe" }}>
+                          <td style={{ padding: "10px 12px", fontWeight: 600, color: "#334155" }}>{r}</td>
+                          {colQ.options.map(c => (
+                            <td key={c} style={{ padding: "10px 8px", textAlign: "center", color: "#1e293b", background: cellBg(matrix[r][c]) }}>
+                              {matrix[r][c] > 0 ? (
+                                <div>
+                                  <span style={{ fontWeight: 700 }}>{matrix[r][c]}</span>
+                                  <span style={{ display: "block", fontSize: 10, color: "#64748b" }}>
+                                    ({grandTotal > 0 ? ((matrix[r][c] / grandTotal) * 100).toFixed(1) : 0}%)
+                                  </span>
+                                </div>
+                              ) : <span style={{ color: "#cbd5e1" }}>—</span>}
+                            </td>
+                          ))}
+                          <td style={{ padding: "10px 8px", textAlign: "center", fontWeight: 700, color: "#059669", background: "#f0fdf4" }}>
+                            {rowTotals[r]}
+                            <span style={{ display: "block", fontSize: 10, color: "#64748b" }}>
+                              ({grandTotal > 0 ? ((rowTotals[r] / grandTotal) * 100).toFixed(1) : 0}%)
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                      <tr style={{ background: "#f8fafc", borderTop: "2px solid #e2e8f0" }}>
+                        <td style={{ padding: "10px 12px", fontWeight: 700, color: "#1e293b" }}>รวม</td>
+                        {colQ.options.map(c => (
+                          <td key={c} style={{ padding: "10px 8px", textAlign: "center", fontWeight: 700, color: "#059669" }}>
+                            {colTotals[c]}
+                            <span style={{ display: "block", fontSize: 10, color: "#64748b" }}>
+                              ({grandTotal > 0 ? ((colTotals[c] / grandTotal) * 100).toFixed(1) : 0}%)
+                            </span>
+                          </td>
+                        ))}
+                        <td style={{ padding: "10px 8px", textAlign: "center", fontWeight: 800, color: "#1e293b", background: "#e2e8f0" }}>
+                          {grandTotal}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  {/* Chi-Square approximation */}
+                  {grandTotal > 0 && (() => {
+                    let chiSq = 0;
+                    rowQ.options.forEach(r => {
+                      colQ.options.forEach(c => {
+                        const observed = matrix[r][c];
+                        const expected = (rowTotals[r] * colTotals[c]) / grandTotal;
+                        if (expected > 0) chiSq += Math.pow(observed - expected, 2) / expected;
+                      });
+                    });
+                    const df = (rowQ.options.length - 1) * (colQ.options.length - 1);
+                    const cramerV = Math.sqrt(chiSq / (grandTotal * (Math.min(rowQ.options.length, colQ.options.length) - 1)));
+                    const strength = cramerV >= 0.5 ? "สูง" : cramerV >= 0.3 ? "ปานกลาง" : cramerV >= 0.1 ? "ต่ำ" : "ไม่มีนัยสำคัญ";
+                    const strengthColor = cramerV >= 0.5 ? "#059669" : cramerV >= 0.3 ? "#3b82f6" : cramerV >= 0.1 ? "#f59e0b" : "#94a3b8";
+
+                    return (
+                      <div style={{ marginTop: 16, padding: 16, background: "#f8fafc", borderRadius: 12, display: "flex", gap: 24, flexWrap: "wrap", fontSize: 13 }}>
+                        <div><span style={{ color: "#64748b" }}>Chi-Square (χ²):</span> <strong style={{ color: "#1e293b" }}>{chiSq.toFixed(3)}</strong></div>
+                        <div><span style={{ color: "#64748b" }}>df:</span> <strong style={{ color: "#1e293b" }}>{df}</strong></div>
+                        <div><span style={{ color: "#64748b" }}>Cramér's V:</span> <strong style={{ color: "#1e293b" }}>{cramerV.toFixed(3)}</strong></div>
+                        <div><span style={{ color: "#64748b" }}>ความสัมพันธ์:</span> <strong style={{ color: strengthColor }}>{strength}</strong></div>
+                        <div><span style={{ color: "#64748b" }}>N:</span> <strong style={{ color: "#1e293b" }}>{grandTotal}</strong></div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
+
         {activeTab === "details" && filtered.length > 0 && LIKERT_SECTIONS.map((sec, si) => (
           <div key={sec.id} style={{ marginBottom: 32 }}>
             <h2 style={{ fontSize: 16, fontWeight: 700, color: SECTION_COLORS[si], marginBottom: 16, borderBottom: `2px solid ${SECTION_COLORS[si]}33`, paddingBottom: 8 }}>
