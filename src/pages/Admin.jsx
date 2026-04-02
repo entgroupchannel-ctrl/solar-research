@@ -153,8 +153,13 @@ const REGION_QUOTAS = [
 const TOTAL_TARGET = 440;
 const TOTAL_SHOPS = 635;
 
+const ADMIN_PASSWORD = "4497542";
+
 const AdminPage = () => {
   const navigate = useNavigate();
+  const [authenticated, setAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [selectedSource, setSelectedSource] = useState("all");
   const [activeTab, setActiveTab] = useState("overview");
   const [responses, setResponses] = useState([]);
