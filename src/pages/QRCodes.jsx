@@ -1,4 +1,5 @@
 import { QRCodeSVG } from "qrcode.react";
+import { Sun, MapPin, GraduationCap, ArrowLeft, Clipboard, Printer, ScanLine } from "lucide-react";
 
 const REGION_DATA = [
   { name: "ภาคตะวันออกเฉียงเหนือ", code: "northeast", color: "#3b82f6", provinces: ["ขอนแก่น", "เลย", "ร้อยเอ็ด", "ปากช่อง", "สุรินทร์", "อุบลราชธานี", "สกลนคร"] },
@@ -43,16 +44,16 @@ const QRCodesPage = () => {
         <div style={{ textAlign: "center", marginBottom: 40 }}>
           <div style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center",
-            width: 64, height: 64, borderRadius: 16, background: "#ecfdf5", marginBottom: 16, fontSize: 28,
-          }}>☀️</div>
+            width: 64, height: 64, borderRadius: 16, background: "#ecfdf5", marginBottom: 16,
+          }}><Sun size={32} color="#059669" /></div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1e293b", margin: "0 0 8px" }}>
             แบบสอบถามวิจัย Solar Rooftop
           </h1>
           <p style={{ fontSize: 15, color: "#64748b", margin: 0, lineHeight: 1.6 }}>
             ปัจจัยที่ส่งผลต่อการตัดสินใจติดตั้งโซลาร์รูฟท็อปของผู้บริโภคในประเทศไทย
           </p>
-          <p style={{ fontSize: 13, color: "#059669", margin: "8px 0 0", fontWeight: 600 }}>
-            🎓 หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี
+          <p style={{ fontSize: 13, color: "#059669", margin: "8px 0 0", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+            <GraduationCap size={16} /> หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี
           </p>
           <a
             href="/"
@@ -65,7 +66,7 @@ const QRCodesPage = () => {
               transition: "all 0.2s",
             }}
           >
-            ← กลับหน้าแบบสอบถาม
+            <ArrowLeft size={16} /> กลับหน้าแบบสอบถาม
           </a>
         </div>
 
@@ -74,8 +75,8 @@ const QRCodesPage = () => {
           background: "#fff", borderRadius: 16, padding: "16px 24px", marginBottom: 32,
           border: "1px solid #e2e8f0", textAlign: "center", boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
         }}>
-          <p style={{ margin: 0, fontSize: 14, color: "#334155" }}>
-            📱 สแกน QR Code หรือคลิกลิงก์ของภาคที่ท่านอยู่ เพื่อเริ่มทำแบบสอบถาม
+          <p style={{ margin: 0, fontSize: 14, color: "#334155", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            <ScanLine size={18} color="#059669" /> สแกน QR Code หรือคลิกลิงก์ของภาคที่ท่านอยู่ เพื่อเริ่มทำแบบสอบถาม
           </p>
         </div>
 
@@ -91,8 +92,8 @@ const QRCodesPage = () => {
                 borderTop: `4px solid ${region.color}`,
               }}>
                 {/* Region Name */}
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: region.color, margin: "0 0 4px", textAlign: "center" }}>
-                  📍 {region.name}
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: region.color, margin: "0 0 4px", textAlign: "center", display: "flex", alignItems: "center", gap: 6 }}>
+                  <MapPin size={18} /> {region.name}
                 </h3>
                 <p style={{ fontSize: 11, color: "#94a3b8", margin: "0 0 16px", textAlign: "center" }}>
                   {region.provinces.join(" · ")}
@@ -123,14 +124,14 @@ const QRCodesPage = () => {
                       flex: 1, padding: "8px 0", borderRadius: 10, border: "1px solid #e2e8f0",
                       background: "#f8fafc", color: "#334155", cursor: "pointer", fontSize: 12, fontWeight: 600,
                     }}
-                  >📋 คัดลอก</button>
+                  ><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Clipboard size={14} /> คัดลอก</span></button>
                   <button
                     onClick={() => printSingle(region)}
                     style={{
                       flex: 1, padding: "8px 0", borderRadius: 10, border: "none",
                       background: region.color, color: "#fff", cursor: "pointer", fontSize: 12, fontWeight: 600,
                     }}
-                  >🖨️ พิมพ์</button>
+                  ><span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Printer size={14} /> พิมพ์</span></button>
                 </div>
               </div>
             );
