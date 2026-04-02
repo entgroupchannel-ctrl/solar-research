@@ -1777,7 +1777,7 @@ export default function SolarSurveyApp() {
             onMouseOver={e => { e.currentTarget.style.background = "rgba(16,185,129,0.25)"; }}
             onMouseOut={e => { e.currentTarget.style.background = "rgba(16,185,129,0.12)"; }}
           >
-            📱 ดู QR Code แยกตามภาค
+            <QrCode size={14} style={{ marginRight: 4 }} /> ดู QR Code แยกตามภาค
           </a>
         </div>
 
