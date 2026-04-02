@@ -143,6 +143,9 @@ const QRCodesPage = () => {
           <p style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>
             © 2025 งานวิจัย Solar Rooftop · มหาวิทยาลัยธนบุรี
           </p>
+          <p style={{ fontSize: 11, color: "#cbd5e1", margin: "4px 0 0" }}>
+            พัฒนาระบบโดย therdpume@hotmail.com
+          </p>
         </div>
       </div>
     </div>
