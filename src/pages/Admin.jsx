@@ -2162,7 +2162,7 @@ OUTPUT:
                           {/* Header */}
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                             <div>
-                              <span style={{ fontSize: 15, fontWeight: 700, color: "#1e293b" }}>📍 {src.name}</span>
+                              <span style={{ fontSize: 15, fontWeight: 700, color: "#1e293b", display: "flex", alignItems: "center", gap: 4 }}><MapPin size={14} color={reg.color} /> {src.name}</span>
                               <span style={{ fontSize: 11, color: "#64748b", marginLeft: 8, background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>{src.code}</span>
                             </div>
                             <span style={{
