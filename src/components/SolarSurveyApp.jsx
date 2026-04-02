@@ -7,7 +7,7 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   PieChart, Pie, Cell, Legend,
 } from "recharts";
-import { GraduationCap, Check, QrCode, AlertTriangle } from "lucide-react";
+import { GraduationCap, Check, QrCode, AlertTriangle, BarChart3, Users, ClipboardList, Link2, Clock, FileText, Star, Download, TrendingUp, MessageSquare, Inbox, Zap, Package, Tag, MapPin } from "lucide-react";
 import { toast } from "sonner";
 
 // ============================================================
@@ -850,7 +850,7 @@ function ThankYou({ responseId, timeTaken }) {
             rel="noopener noreferrer"
             style={{ fontSize: 13, color: "#f59e0b", textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}
           >
-            🎓 หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี →
+            <GraduationCap size={14} style={{ marginRight: 4 }} /> หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี →
           </a>
         </div>
       </div>
@@ -1016,7 +1016,7 @@ function AdminDashboard({ responses, onBack }) {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, marginBottom: 24 }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#f59e0b" }}>📊 Admin Dashboard</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#f59e0b", display: "flex", alignItems: "center", gap: 8 }}><BarChart3 size={22} /> Admin Dashboard</h1>
             <p style={{ margin: "4px 0 0", fontSize: 13, color: "#94a3b8" }}>รายงานผลแบบสอบถาม</p>
           </div>
           <button onClick={onBack} style={{
@@ -1029,16 +1029,16 @@ function AdminDashboard({ responses, onBack }) {
         {/* Summary Cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 24 }}>
           {[
-            { label: "ตอบทั้งหมด", value: filtered.length, icon: "📝" },
-            { label: "เวลาเฉลี่ย", value: filtered.length ? formatTime(Math.round(calcMean(filtered.map(r => r.timeTaken)))) : "-", icon: "⏱" },
-            { label: "แหล่งที่มา", value: new Set(filtered.map(r => r.source)).size, icon: "🔗" },
-            { label: "คะแนนเฉลี่ยรวม", value: filtered.length ? calcMean(sectionAverages.map(s => s.mean)).toFixed(2) : "-", icon: "⭐" },
+            { label: "ตอบทั้งหมด", value: filtered.length, icon: <FileText size={28} color="#f59e0b" /> },
+            { label: "เวลาเฉลี่ย", value: filtered.length ? formatTime(Math.round(calcMean(filtered.map(r => r.timeTaken)))) : "-", icon: <Clock size={28} color="#f59e0b" /> },
+            { label: "แหล่งที่มา", value: new Set(filtered.map(r => r.source)).size, icon: <Link2 size={28} color="#f59e0b" /> },
+            { label: "คะแนนเฉลี่ยรวม", value: filtered.length ? calcMean(sectionAverages.map(s => s.mean)).toFixed(2) : "-", icon: <Star size={28} color="#f59e0b" /> },
           ].map((card, i) => (
             <div key={i} style={{
               background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 20,
               border: "1px solid rgba(255,255,255,0.08)",
             }}>
-              <div style={{ fontSize: 28, marginBottom: 8 }}>{card.icon}</div>
+              <div style={{ marginBottom: 8 }}>{card.icon}</div>
               <div style={{ fontSize: 24, fontWeight: 700, color: "#f59e0b" }}>{card.value}</div>
               <div style={{ fontSize: 12, color: "#94a3b8" }}>{card.label}</div>
             </div>
@@ -1068,9 +1068,9 @@ function AdminDashboard({ responses, onBack }) {
         {/* Export Buttons */}
         <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
           {[
-            { label: "📥 CSV", fn: exportCSV },
-            { label: "📄 TXT", fn: exportTXT },
-            { label: "📊 Excel", fn: exportExcelJSON },
+            { label: "CSV", fn: exportCSV, icon: <Download size={13} /> },
+            { label: "TXT", fn: exportTXT, icon: <FileText size={13} /> },
+            { label: "Excel", fn: exportExcelJSON, icon: <BarChart3 size={13} /> },
           ].map((btn, i) => (
             <button key={i} onClick={btn.fn} style={{
               padding: "10px 24px", border: "1px solid rgba(255,255,255,0.2)",
@@ -1080,21 +1080,21 @@ function AdminDashboard({ responses, onBack }) {
             }}
               onMouseOver={e => e.target.style.background = "rgba(245,158,11,0.2)"}
               onMouseOut={e => e.target.style.background = "rgba(255,255,255,0.05)"}
-            >{btn.label}</button>
+            >{btn.icon} <span style={{ marginLeft: 4 }}>{btn.label}</span></button>
           ))}
         </div>
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: 8, marginBottom: 32, borderBottom: "1px solid rgba(255,255,255,0.08)", paddingBottom: 12 }}>
-          <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}>📈 ภาพรวม</button>
-          <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}>👥 ข้อมูลผู้ตอบ</button>
-          <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}>📋 ตารางละเอียด</button>
-          <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}>🔗 ลิงก์</button>
+          <button onClick={() => setActiveTab("overview")} style={tabStyle(activeTab === "overview")}><TrendingUp size={14} style={{ marginRight: 4 }} /> ภาพรวม</button>
+          <button onClick={() => setActiveTab("demographics")} style={tabStyle(activeTab === "demographics")}><Users size={14} style={{ marginRight: 4 }} /> ข้อมูลผู้ตอบ</button>
+          <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}><ClipboardList size={14} style={{ marginRight: 4 }} /> ตารางละเอียด</button>
+          <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}><Link2 size={14} style={{ marginRight: 4 }} /> ลิงก์</button>
         </div>
 
         {filtered.length === 0 && (
           <div style={{ textAlign: "center", padding: 60, color: "#64748b" }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
+            <div style={{ fontSize: 48, marginBottom: 16 }}><Inbox size={48} color="#64748b" /></div>
             <p>ยังไม่มีข้อมูลที่ส่งเข้ามา</p>
           </div>
         )}
@@ -1256,7 +1256,7 @@ function AdminDashboard({ responses, onBack }) {
         {/* LINKS TAB */}
         {activeTab === "links" && (
           <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.08)" }}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 16px" }}>🔗 ลิงก์แบบสอบถามตามภาค (7 ภาค)</h2>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 16px", display: "flex", alignItems: "center", gap: 8 }}><Link2 size={18} /> ลิงก์แบบสอบถามตามภาค (7 ภาค)</h2>
             <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 16px" }}>คัดลอกลิงก์ด้านล่างเพื่อแจกจ่ายตามภาค (เพิ่ม ?src=region ต่อท้าย URL)</p>
             <div style={{ display: "grid", gap: 8 }}>
               {Object.entries(REGION_PROVINCES).map(([key, region]) => (
@@ -1598,12 +1598,12 @@ export default function SolarSurveyApp() {
       title: sec.title.replace("ปัจจัยด้าน", "").substring(0, 20),
       answered: sec.subsections.reduce((s, sub) => s + sub.items.filter(item => likert[item.id] != null).length, 0),
       total: sectionItems[si],
-      color: SECTION_COLORS[si], icon: si === 0 ? "⚡" : si === 1 ? "📦" : si === 2 ? "🏷" : "📋",
+      color: SECTION_COLORS[si], icon: si === 0 ? <Zap size={14} /> : si === 1 ? <Package size={14} /> : si === 2 ? <Tag size={14} /> : <ClipboardList size={14} />,
     })),
     {
       id: "suggestion", label: "ส่วนที่ 4", title: "ข้อเสนอแนะ",
       answered: suggestion.trim() ? 1 : 0, total: 1,
-      color: "#ec4899", icon: "💬",
+      color: "#ec4899", icon: <MessageSquare size={14} />,
     },
   ];
 
@@ -1646,7 +1646,7 @@ export default function SolarSurveyApp() {
           </span>
         </div>
         <span style={{ color: "#f59e0b", fontWeight: 700, fontFamily: "monospace" }}>
-          ⏱ {formatTime(timer)}
+          <Clock size={14} style={{ marginRight: 4 }} /> {formatTime(timer)}
         </span>
       </div>
 
@@ -1657,7 +1657,7 @@ export default function SolarSurveyApp() {
           borderRadius: 12, border: "1px solid rgba(239,68,68,0.3)",
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <span style={{ color: "#f87171", fontWeight: 700, fontSize: 14 }}>⚠️ กรุณาตอบคำถามให้ครบ</span>
+            <span style={{ color: "#f87171", fontWeight: 700, fontSize: 14, display: "flex", alignItems: "center", gap: 6 }}><AlertTriangle size={16} /> กรุณาตอบคำถามให้ครบ</span>
             <button onClick={() => setShowValidation(false)} style={{
               background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: 18
             }}>×</button>
@@ -1672,7 +1672,7 @@ export default function SolarSurveyApp() {
                 borderRadius: 6, padding: "4px 10px", color: "#fca5a5", fontSize: 12,
                 cursor: "pointer", textAlign: "left", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200,
               }}>
-                📌 {f.text}
+                <MapPin size={12} style={{ marginRight: 2, flexShrink: 0 }} /> {f.text}
               </button>
             ))}
           </div>
@@ -1777,7 +1777,7 @@ export default function SolarSurveyApp() {
             onMouseOver={e => { e.currentTarget.style.background = "rgba(16,185,129,0.25)"; }}
             onMouseOut={e => { e.currentTarget.style.background = "rgba(16,185,129,0.12)"; }}
           >
-            📱 ดู QR Code แยกตามภาค
+            <QrCode size={14} style={{ marginRight: 4 }} /> ดู QR Code แยกตามภาค
           </a>
         </div>
 
@@ -1990,7 +1990,7 @@ export default function SolarSurveyApp() {
             width: 56, height: 56, borderRadius: "50%",
             background: "#fef3c7", display: "flex", alignItems: "center", justifyContent: "center",
             margin: "0 auto 16px", fontSize: 28,
-          }}>⚠️</div>
+          }}><AlertTriangle size={28} color="#f59e0b" /></div>
           <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1e293b", margin: "0 0 8px" }}>
             ต้องการกลับหน้าแรก?
           </h3>

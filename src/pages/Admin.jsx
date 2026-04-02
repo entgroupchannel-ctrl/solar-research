@@ -13,6 +13,8 @@ import {
   BarChartHorizontal, Radar as RadarIcon, Copy, Printer, Download,
   Table2, ArrowLeft, FlaskConical, Rocket, Loader2, Plus, MapPin,
   CircleCheck, CircleX, Trash2, ToggleLeft, ToggleRight,
+  Inbox, Clock, Mail, MessageSquare, AlertTriangle, CheckCircle2,
+  Pause, Flame, Timer, ChevronUp,
 } from "lucide-react";
 
 const PERSONAL_QUESTIONS = [
@@ -487,7 +489,7 @@ const AdminPage = () => {
       .link{font-size:11px;color:#999;word-break:break-all;margin-top:16px}
     </style></head><body>
       <h2>แบบสอบถามวิจัย</h2>
-      <p style="font-size:18px;font-weight:700;color:#f59e0b">📍 ${province}</p>
+      <p style="font-size:18px;font-weight:700;color:#f59e0b">${province}</p>
       <p>โซลาร์รูฟท็อป — มหาวิทยาลัยธนบุรี</p>
       <div class="qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(link)}" width="300" height="300"/></div>
       <p>สแกน QR Code เพื่อทำแบบสอบถาม</p>
@@ -922,7 +924,7 @@ OUTPUT:
         fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif", color: "#1e293b",
       }}>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
+          <div style={{ fontSize: 48, marginBottom: 16 }}><Loader2 size={48} color="#059669" style={{ animation: "spin 1s linear infinite" }} /></div>
           <p style={{ color: "#64748b" }}>กำลังโหลดข้อมูล...</p>
         </div>
       </div>
@@ -1017,7 +1019,7 @@ OUTPUT:
 
         {filtered.length === 0 && activeTab !== "links" && activeTab !== "sampling" && (
           <div style={{ textAlign: "center", padding: 60, color: "#64748b" }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
+            <div style={{ fontSize: 48, marginBottom: 16 }}><Inbox size={48} color="#94a3b8" /></div>
             <p>ยังไม่มีข้อมูลที่ส่งเข้ามา</p>
           </div>
         )}
@@ -1077,7 +1079,7 @@ OUTPUT:
                 { label: "ร้าน PSI ทั้งหมด", value: TOTAL_SHOPS, sub: "Population" },
                 { label: "7 วันล่าสุด", value: last7, sub: `≈ ${(last7 / 7).toFixed(1)}/วัน` },
                 { label: "30 วันล่าสุด", value: last30, sub: `≈ ${(last30 / 30).toFixed(1)}/วัน` },
-                { label: "คาดว่าครบ", value: overallProj.status === "done" ? "✅ ครบแล้ว" : overallProj.projectedDate ? formatDate(overallProj.projectedDate) : "—", sub: overallProj.daysLeft != null ? `อีก ${overallProj.daysLeft} วัน` : overallProj.status === "done" ? "เสร็จสิ้น" : "ข้อมูลไม่เพียงพอ" },
+                { label: "คาดว่าครบ", value: overallProj.status === "done" ? "ครบแล้ว" : overallProj.projectedDate ? formatDate(overallProj.projectedDate) : "—", sub: overallProj.daysLeft != null ? `อีก ${overallProj.daysLeft} วัน` : overallProj.status === "done" ? "เสร็จสิ้น" : "ข้อมูลไม่เพียงพอ" },
               ].map((c, i) => (
                 <div key={i} style={{ background: "#f1f5f9", borderRadius: 12, padding: 16, textAlign: "center", border: "1px solid #e2e8f0" }}>
                   <div style={{ fontSize: 11, color: "#64748b", marginBottom: 4 }}>{c.label}</div>
@@ -1130,10 +1132,10 @@ OUTPUT:
                   <tbody>
                     {regionProjections.sort((a, b) => (b.collected / b.target) - (a.collected / a.target)).map((reg, i) => {
                       const pct = reg.target > 0 ? (reg.collected / reg.target) * 100 : 0;
-                      const statusLabel = reg.status === "done" ? "✅ ครบแล้ว"
-                        : reg.status === "stalled" ? "⏸ หยุดชะงัก"
-                        : reg.status === "insufficient" ? "📊 รอข้อมูล"
-                        : pct >= 75 ? "🔥 ใกล้ครบ" : pct >= 50 ? "🚀 กำลังดี" : pct >= 25 ? "📈 เริ่มต้น" : "⏳ เริ่มต้น";
+                      const statusLabel = reg.status === "done" ? "ครบแล้ว"
+                        : reg.status === "stalled" ? "หยุดชะงัก"
+                        : reg.status === "insufficient" ? "รอข้อมูล"
+                        : pct >= 75 ? "ใกล้ครบ" : pct >= 50 ? "กำลังดี" : pct >= 25 ? "เริ่มต้น" : "เริ่มต้น";
                       const statusColor = reg.status === "done" ? "#10b981"
                         : reg.status === "stalled" ? "#ef4444"
                         : pct >= 75 ? "#f59e0b" : pct >= 50 ? "#3b82f6" : "#64748b";
@@ -1198,7 +1200,7 @@ OUTPUT:
                       </td>
                       <td style={{ textAlign: "center", padding: "10px 8px" }}>
                         <span style={{ padding: "3px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, background: responses.length >= TOTAL_TARGET ? "#10b98118" : "#05966918", color: responses.length >= TOTAL_TARGET ? "#10b981" : "#059669" }}>
-                          {responses.length >= TOTAL_TARGET ? "✅ ครบแล้ว" : `⏳ ${((responses.length / TOTAL_TARGET) * 100).toFixed(0)}%`}
+                          {responses.length >= TOTAL_TARGET ? "ครบแล้ว" : `${((responses.length / TOTAL_TARGET) * 100).toFixed(0)}%`}
                         </span>
                       </td>
                     </tr>
@@ -1246,7 +1248,7 @@ OUTPUT:
                           background: "#f8fafc", borderRadius: 10, padding: "8px 12px",
                           border: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center",
                         }}>
-                          <span style={{ fontSize: 12, color: "#1e293b" }}>📍 {prov}</span>
+                          <span style={{ fontSize: 12, color: "#1e293b", display: "flex", alignItems: "center", gap: 4 }}><MapPin size={12} color="#059669" /> {prov}</span>
                           <span style={{ fontSize: 12, fontWeight: 700, color: count > 0 ? "#059669" : "#64748b" }}>{count}</span>
                         </div>
                       ))}
@@ -1470,7 +1472,7 @@ OUTPUT:
               </div>
 
               {crossRowVar === crossColVar ? (
-                <p style={{ color: "#ef4444", fontSize: 13, textAlign: "center", padding: 24 }}>⚠️ กรุณาเลือกตัวแปรที่แตกต่างกัน</p>
+                <p style={{ color: "#ef4444", fontSize: 13, textAlign: "center", padding: 24, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}><AlertTriangle size={16} /> กรุณาเลือกตัวแปรที่แตกต่างกัน</p>
               ) : (
                 <div style={{ overflowX: "auto" }}>
                   <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
@@ -1668,9 +1670,9 @@ OUTPUT:
                              </span>
                              <span style={{ fontSize: 11, color: "#64748b" }}>{r.timestamp}</span>
                              <span style={{ fontSize: 11, color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: 6 }}>
-                               ⏱ {formatTime(r.timeTaken)}
+                               <Clock size={11} style={{ marginRight: 2 }} /> {formatTime(r.timeTaken)}
                              </span>
-                             {r.want_results && <span style={{ fontSize: 11, color: "#10b981" }}>📧</span>}
+                             {r.want_results && <span style={{ fontSize: 11, color: "#10b981" }}><Mail size={13} /></span>}
                              <span style={{ color: "#64748b", fontSize: 16, transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</span>
                            </div>
 
@@ -1696,7 +1698,7 @@ OUTPUT:
                                  </div>
                                  {r.email && (
                                    <div style={{ marginTop: 6, padding: "6px 10px", background: "rgba(16,185,129,0.08)", borderRadius: 8, fontSize: 12, color: "#10b981" }}>
-                                     📧 {r.email} (ต้องการรับผลวิจัย)
+                                     <Mail size={12} style={{ marginRight: 4, display: "inline" }} /> {r.email} (ต้องการรับผลวิจัย)
                                    </div>
                                  )}
                                </div>
@@ -1740,7 +1742,7 @@ OUTPUT:
                                {/* Suggestion */}
                                {r.suggestion && (
                                  <div style={{ marginTop: 8, padding: "8px 12px", background: "#f0fdf4", borderRadius: 8, fontSize: 12, color: "#059669", lineHeight: 1.6 }}>
-                                   💬 {r.suggestion}
+                                   <MessageSquare size={12} style={{ marginRight: 4, flexShrink: 0 }} /> {r.suggestion}
                                  </div>
                                )}
 
@@ -2036,8 +2038,8 @@ OUTPUT:
                   สหสัมพันธ์ระหว่างตัวแปรรายด้านย่อย (ค่าเฉลี่ยรวมของแต่ละด้าน) · N = {validIndices.length}
                 </p>
                 <div style={{ display: "flex", gap: 12, marginBottom: 16, fontSize: 11, color: "#64748b" }}>
-                  <span>🟢 r ≥ 0.6 สูง</span>
-                  <span>🔵 r 0.4-0.6 ปานกลาง</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: "50%", background: "#059669", display: "inline-block" }} /> r ≥ 0.6 สูง</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: "50%", background: "#3b82f6", display: "inline-block" }} /> r 0.4-0.6 ปานกลาง</span>
                   <span style={{ color: "#94a3b8" }}>○ r &lt; 0.4 ต่ำ</span>
                 </div>
 
