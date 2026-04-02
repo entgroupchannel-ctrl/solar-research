@@ -1473,6 +1473,35 @@ export default function SolarSurveyApp() {
   if (page === "thanks") return <ThankYou responseId={uid} timeTaken={timer} />;
   if (page === "admin") return <AdminDashboard responses={responses} onBack={() => setPage("survey")} />;
 
+  // Build milestone data
+  const sectionItems = LIKERT_SECTIONS.map(sec => sec.subsections.reduce((s, sub) => s + sub.items.length, 0));
+  const milestones = [
+    {
+      id: "personal", label: "ส่วนที่ 1", title: "ข้อมูลทั่วไป",
+      answered: answeredPersonal, total: PERSONAL_QUESTIONS.length + (regionInfo ? 1 : 0),
+      color: "#f59e0b", icon: "👤",
+    },
+    ...LIKERT_SECTIONS.map((sec, si) => ({
+      id: sec.id, label: `ส่วนที่ ${sec.id === "decision" ? 3 : 2}`,
+      title: sec.title.replace("ปัจจัยด้าน", "").substring(0, 20),
+      answered: sec.subsections.reduce((s, sub) => s + sub.items.filter(item => likert[item.id] != null).length, 0),
+      total: sectionItems[si],
+      color: SECTION_COLORS[si], icon: si === 0 ? "⚡" : si === 1 ? "📦" : si === 2 ? "🏷" : "📋",
+    })),
+    {
+      id: "suggestion", label: "ส่วนที่ 4", title: "ข้อเสนอแนะ",
+      answered: suggestion.trim() ? 1 : 0, total: 1,
+      color: "#ec4899", icon: "💬",
+    },
+  ];
+
+  const scrollToSection = (id) => {
+    const el = id === "personal" ? sectionRefs.current["personal_0"]
+      : id === "suggestion" ? sectionRefs.current["suggestion"]
+      : sectionRefs.current["likert_" + LIKERT_SECTIONS.findIndex(s => s.id === id)];
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   let globalIndex = 0;
 
   return (
@@ -1530,7 +1559,78 @@ export default function SolarSurveyApp() {
         </div>
       )}
 
-      <div style={{ maxWidth: 700, margin: "0 auto", padding: "20px 16px 100px" }}>
+      {/* Main layout with sidebar */}
+      <div style={{ display: "flex", maxWidth: 960, margin: "0 auto", padding: "20px 16px 100px", gap: 20 }}>
+        
+        {/* Milestone Sidebar - desktop only */}
+        <div style={{
+          width: 200, flexShrink: 0, position: "sticky", top: 100, alignSelf: "flex-start",
+          display: "none",
+        }} className="milestone-sidebar">
+          <div style={{
+            background: "rgba(255,255,255,0.06)", borderRadius: 16,
+            border: "1px solid rgba(255,255,255,0.1)", padding: "16px 12px",
+            backdropFilter: "blur(10px)",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1, marginBottom: 16, textAlign: "center" }}>
+              ความคืบหน้า
+            </div>
+            {milestones.map((m, i) => {
+              const pct = m.total > 0 ? Math.round((m.answered / m.total) * 100) : 0;
+              const done = pct === 100;
+              return (
+                <div key={m.id} style={{ position: "relative", paddingLeft: 24, marginBottom: i < milestones.length - 1 ? 0 : 0 }}>
+                  {/* Vertical line */}
+                  {i < milestones.length - 1 && (
+                    <div style={{
+                      position: "absolute", left: 9, top: 20, width: 2, height: "calc(100% - 4px)",
+                      background: done ? m.color : "rgba(255,255,255,0.1)",
+                      transition: "background 0.3s",
+                    }} />
+                  )}
+                  {/* Dot */}
+                  <div style={{
+                    position: "absolute", left: 2, top: 4, width: 16, height: 16, borderRadius: "50%",
+                    background: done ? m.color : pct > 0 ? `${m.color}40` : "rgba(255,255,255,0.1)",
+                    border: `2px solid ${done ? m.color : pct > 0 ? m.color : "rgba(255,255,255,0.2)"}`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 8, color: "#fff", transition: "all 0.3s",
+                  }}>
+                    {done && "✓"}
+                  </div>
+                  {/* Content */}
+                  <button onClick={() => scrollToSection(m.id)} style={{
+                    background: "none", border: "none", cursor: "pointer", textAlign: "left",
+                    padding: "2px 0 16px", display: "block", width: "100%",
+                  }}>
+                    <div style={{ fontSize: 10, color: "#64748b", fontWeight: 600 }}>{m.label}</div>
+                    <div style={{ fontSize: 12, color: done ? m.color : "#cbd5e1", fontWeight: 600, lineHeight: 1.3 }}>
+                      {m.title}
+                    </div>
+                    {/* Mini progress bar */}
+                    <div style={{ marginTop: 4, height: 3, borderRadius: 2, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                      <div style={{ width: `${pct}%`, height: "100%", borderRadius: 2, background: m.color, transition: "width 0.5s ease" }} />
+                    </div>
+                    <div style={{ fontSize: 9, color: "#64748b", marginTop: 2 }}>{m.answered}/{m.total}</div>
+                  </button>
+                </div>
+              );
+            })}
+            {/* Overall */}
+            <div style={{
+              marginTop: 8, padding: "10px 8px", background: "rgba(255,255,255,0.04)",
+              borderRadius: 10, textAlign: "center",
+            }}>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#f59e0b" }}>
+                {totalRequired > 0 ? Math.round((answeredTotal / totalRequired) * 100) : 0}%
+              </div>
+              <div style={{ fontSize: 10, color: "#64748b" }}>ทำเสร็จแล้ว</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Form content */}
+        <div style={{ flex: 1, minWidth: 0 }}>
         {/* Title */}
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <img src={logoUThon} alt="มหาวิทยาลัยธนบุรี" style={{ height: 72, marginBottom: 12, objectFit: "contain" }} />
