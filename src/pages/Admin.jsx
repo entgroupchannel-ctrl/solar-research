@@ -140,6 +140,19 @@ function formatTime(seconds) {
 const SECTION_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981"];
 const PIE_COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#10b981", "#ef4444", "#ec4899", "#06b6d4", "#84cc16"];
 
+// Sampling quota data (from research methodology)
+const REGION_QUOTAS = [
+  { region: "ภาคตะวันออกเฉียงเหนือ", shops: 183, ratio: "28.8%", target: 127, branches: "ขอนแก่น 34 · เลย 24 · ร้อยเอ็ด 19 · ปากช่อง 15 · สุรินทร์ 15 · อุบลราชธานี 12 · สกลนคร 8", color: "#3b82f6" },
+  { region: "ภาคเหนือ", shops: 158, ratio: "24.9%", target: 109, branches: "กำแพงเพชร 24 · เชียงใหม่ 21 · แพร่ 21 · เพชรบูรณ์ 15 · แม่สอด 12 · พิษณุโลก 9 · เชียงราย 7", color: "#10b981" },
+  { region: "ภาคใต้", shops: 102, ratio: "16.1%", target: 71, branches: "สุราษฎร์ธานี 35 · ทุ่งสง 18 · หาดใหญ่ 15 · ชุมพร 3", color: "#3b82f6" },
+  { region: "ภาคตะวันออก", shops: 55, ratio: "8.7%", target: 38, branches: "ระยอง 24 · กบินทร์บุรี 14", color: "#f59e0b" },
+  { region: "ภาคกลาง", shops: 55, ratio: "8.7%", target: 38, branches: "สุพรรณบุรี 18 · ปทุมธานี 12 · สิงห์บุรี 8", color: "#10b981" },
+  { region: "กรุงเทพฯ และปริมณฑล", shops: 43, ratio: "6.8%", target: 30, branches: "รามคำแหง 15 · บางแค 15", color: "#f59e0b" },
+  { region: "ภาคตะวันตก", shops: 38, ratio: "6.0%", target: 27, branches: "เพชรบุรี 27", color: "#ec4899" },
+];
+const TOTAL_TARGET = 440;
+const TOTAL_SHOPS = 635;
+
 const AdminPage = () => {
   const navigate = useNavigate();
   const [selectedSource, setSelectedSource] = useState("all");
@@ -148,6 +161,8 @@ const AdminPage = () => {
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newSourceName, setNewSourceName] = useState("");
+  const [newSourceRegion, setNewSourceRegion] = useState("");
+  const [newSourceTarget, setNewSourceTarget] = useState("");
   const [addingSource, setAddingSource] = useState(false);
 
   // Load data from Supabase
