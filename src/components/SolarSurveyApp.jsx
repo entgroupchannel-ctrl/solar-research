@@ -1244,17 +1244,17 @@ function AdminDashboard({ responses, onBack }) {
         {/* LINKS TAB */}
         {activeTab === "links" && (
           <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 12, padding: 24, border: "1px solid rgba(255,255,255,0.08)" }}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 16px" }}>🔗 ลิงก์แบบสอบถาม (10 แหล่ง)</h2>
-            <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 16px" }}>คัดลอกลิงก์ด้านล่างเพื่อแจกจ่ายตามแหล่งที่ต้องการ (เพิ่ม ?src=srcXX ต่อท้าย URL)</p>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#f59e0b", margin: "0 0 16px" }}>🔗 ลิงก์แบบสอบถามตามภาค (7 ภาค)</h2>
+            <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 16px" }}>คัดลอกลิงก์ด้านล่างเพื่อแจกจ่ายตามภาค (เพิ่ม ?src=region ต่อท้าย URL)</p>
             <div style={{ display: "grid", gap: 8 }}>
-              {Object.entries(SOURCES).map(([key, name]) => (
+              {Object.entries(REGION_PROVINCES).map(([key, region]) => (
                 <div key={key} style={{
                   display: "flex", alignItems: "center", gap: 12,
                   background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "10px 16px",
                   fontSize: 13,
                 }}>
-                  <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 40 }}>{key}</span>
-                  <span style={{ color: "#e2e8f0", flex: 1 }}>{name}</span>
+                  <span style={{ color: "#f59e0b", fontWeight: 700, minWidth: 80 }}>{key}</span>
+                  <span style={{ color: "#e2e8f0", flex: 1 }}>{region.name}</span>
                   <code style={{ color: "#94a3b8", fontSize: 11 }}>?src={key}</code>
                 </div>
               ))}
