@@ -11,7 +11,8 @@ import {
   Lock, LayoutDashboard, Eye, RefreshCw, TrendingUp, Target, Users,
   BarChart3, ClipboardList, FileText, Link2, PieChart as PieChartIcon,
   BarChartHorizontal, Radar as RadarIcon, Copy, Printer, Download,
-  Table2, ArrowLeft, FlaskConical,
+  Table2, ArrowLeft, FlaskConical, Rocket, Loader2, Plus, MapPin,
+  CircleCheck, CircleX, Trash2, ToggleLeft, ToggleRight,
 } from "lucide-react";
 
 const PERSONAL_QUESTIONS = [
