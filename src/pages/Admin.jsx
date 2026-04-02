@@ -1010,6 +1010,7 @@ OUTPUT:
            <button onClick={() => setActiveTab("crosstab")} style={tabStyle(activeTab === "crosstab")}><Table2 size={14} style={{ marginRight: 4 }} /> Cross-tab</button>
            <button onClick={() => setActiveTab("details")} style={tabStyle(activeTab === "details")}><ClipboardList size={14} style={{ marginRight: 4 }} /> ตารางละเอียด</button>
            <button onClick={() => setActiveTab("individual")} style={tabStyle(activeTab === "individual")}><FileText size={14} style={{ marginRight: 4 }} /> รายบุคคล</button>
+           <button onClick={() => setActiveTab("statistics")} style={tabStyle(activeTab === "statistics")}><FlaskConical size={14} style={{ marginRight: 4 }} /> สถิติวิจัย</button>
            <button onClick={() => setActiveTab("links")} style={tabStyle(activeTab === "links")}><Link2 size={14} style={{ marginRight: 4 }} /> จัดการลิงก์</button>
         </div>
 
