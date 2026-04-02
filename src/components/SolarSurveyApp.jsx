@@ -926,7 +926,7 @@ function AdminDashboard({ responses, onBack }) {
     txt += `Export Date: ${new Date().toLocaleString("th-TH")}\n\n`;
     filtered.forEach((r, i) => {
       txt += `--- Response #${i + 1} (${r.id}) ---\n`;
-      txt += `Source: ${SOURCES[r.source] || r.source}\n`;
+      txt += `Source: ${REGION_PROVINCES[r.source]?.name || SOURCES[r.source] || r.source}\n`;
       txt += `Time: ${r.timestamp}\n`;
       txt += `Duration: ${formatTime(r.timeTaken)}\n`;
       PERSONAL_QUESTIONS.forEach(q => { txt += `${q.text}: ${r.personal?.[q.id] || "-"}\n`; });
