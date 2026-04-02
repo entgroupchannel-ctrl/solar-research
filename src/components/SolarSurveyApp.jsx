@@ -1148,7 +1148,7 @@ export default function SolarSurveyApp() {
               borderBottom: "1px solid rgba(255,255,255,0.05)",
             }}>
               <h2 style={{ fontSize: 16, fontWeight: 700, color: SECTION_COLORS[si], margin: 0 }}>
-                ส่วนที่ {si + 2}: {sec.title}
+                ส่วนที่ {sec.id === "decision" ? 3 : 2}: {sec.title}
               </h2>
               <div style={{ display: "flex", gap: 16, marginTop: 8, fontSize: 11, color: "#94a3b8" }}>
                 {LIKERT.map(l => <span key={l.value}>{l.short} = {l.label}</span>)}
