@@ -924,7 +924,7 @@ OUTPUT:
         fontFamily: "'Sarabun', 'Noto Sans Thai', sans-serif", color: "#1e293b",
       }}>
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
+          <div style={{ fontSize: 48, marginBottom: 16 }}><Loader2 size={48} color="#059669" style={{ animation: "spin 1s linear infinite" }} /></div>
           <p style={{ color: "#64748b" }}>กำลังโหลดข้อมูล...</p>
         </div>
       </div>
