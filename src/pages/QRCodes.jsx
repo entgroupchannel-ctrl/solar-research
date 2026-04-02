@@ -1,4 +1,5 @@
 import { QRCodeSVG } from "qrcode.react";
+import { Sun, MapPin, GraduationCap, ArrowLeft, Clipboard, Printer, ScanLine } from "lucide-react";
 
 const REGION_DATA = [
   { name: "ภาคตะวันออกเฉียงเหนือ", code: "northeast", color: "#3b82f6", provinces: ["ขอนแก่น", "เลย", "ร้อยเอ็ด", "ปากช่อง", "สุรินทร์", "อุบลราชธานี", "สกลนคร"] },
