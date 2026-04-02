@@ -7,6 +7,7 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   PieChart, Pie, Cell, Legend,
 } from "recharts";
+import { GraduationCap, Check, QrCode } from "lucide-react";
 
 // ============================================================
 // SOLAR ROOFTOP SURVEY SYSTEM
@@ -386,7 +387,7 @@ function PDPAConsent({ onAccept }) {
               rel="noopener noreferrer"
               style={{ fontSize: 13, color: "#f59e0b", textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}
             >
-              🎓 หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี →
+              <GraduationCap size={15} /> หลักสูตรบริหารธุรกิจดุษฎีบัณฑิต มหาวิทยาลัยธนบุรี →
             </a>
           </div>
         </div>
@@ -402,7 +403,7 @@ function PDPAConsent({ onAccept }) {
           onMouseOver={(e) => { e.target.style.transform = "translateY(-2px)"; e.target.style.boxShadow = "0 8px 25px rgba(249,115,22,0.5)"; }}
           onMouseOut={(e) => { e.target.style.transform = ""; e.target.style.boxShadow = "0 4px 15px rgba(249,115,22,0.4)"; }}
         >
-          ✓ ยอมรับและเริ่มทำแบบสอบถาม
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Check size={18} /> ยอมรับและเริ่มทำแบบสอบถาม</span>
         </button>
         <p style={{ textAlign: "center", fontSize: 12, color: "#94a3b8", marginTop: 12, marginBottom: 0 }}>
           การกดปุ่มด้านบนถือว่าท่านยินยอมตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
@@ -417,7 +418,7 @@ function PDPAConsent({ onAccept }) {
               color: "#059669", fontSize: 14, fontWeight: 600, textDecoration: "none",
             }}
           >
-            📱 ดู QR Code แยกตามภาค (7 ภาค)
+            <QrCode size={16} /> ดู QR Code แยกตามภาค (7 ภาค)
           </a>
         </div>
       </div>
