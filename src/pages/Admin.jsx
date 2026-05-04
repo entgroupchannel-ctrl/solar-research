@@ -1311,12 +1311,13 @@ OUTPUT:
 
             {/* Region-level progress with province breakdown */}
             {REGION_DATA.map(reg => {
-              const regionCollected = responses.filter(r => r.source === reg.code).length;
+              const regionResponses = responsesByRegion[reg.code] || [];
+              const regionCollected = regionResponses.length;
               const regionPct = reg.target > 0 ? Math.min((regionCollected / reg.target) * 100, 100) : 0;
 
               const provinceCounts = {};
               reg.provinces.forEach(p => provinceCounts[p] = 0);
-              responses.filter(r => r.source === reg.code).forEach(r => {
+              regionResponses.forEach(r => {
                 const prov = (typeof r.personal === 'object' ? r.personal : r.personal_data)?.province;
                 if (prov && provinceCounts.hasOwnProperty(prov)) {
                   provinceCounts[prov]++;
