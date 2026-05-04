@@ -1156,10 +1156,13 @@ OUTPUT:
           };
           const responsesByRegion = {};
           REGION_DATA.forEach(reg => { responsesByRegion[reg.code] = []; });
+          const unclassifiedResponses = [];
           responses.forEach(r => {
             const code = classifyRegion(r);
             if (code) responsesByRegion[code].push(r);
+            else unclassifiedResponses.push(r);
           });
+          const classifiedCount = responses.length - unclassifiedResponses.length;
 
           // Region projections
           const regionProjections = REGION_DATA.map(reg => {
@@ -1280,6 +1283,27 @@ OUTPUT:
                         </tr>
                       );
                     })}
+                    {unclassifiedResponses.length > 0 && (
+                      <tr style={{ borderTop: "1px dashed #cbd5e1", background: "#fff7ed" }}>
+                        <td style={{ padding: "10px 12px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <span style={{ width: 10, height: 10, borderRadius: 3, background: "#f59e0b", flexShrink: 0 }} />
+                            <span style={{ fontWeight: 600, color: "#9a3412" }}>ยังไม่ระบุจังหวัด/ภูมิภาค</span>
+                          </div>
+                        </td>
+                        <td style={{ textAlign: "center", padding: "10px 8px", color: "#9ca3af" }}>—</td>
+                        <td style={{ textAlign: "center", padding: "10px 8px", fontWeight: 700, color: "#9a3412" }}>{unclassifiedResponses.length}</td>
+                        <td style={{ textAlign: "center", padding: "10px 8px", color: "#9ca3af" }}>—</td>
+                        <td style={{ textAlign: "center", padding: "10px 8px", color: "#9ca3af", fontSize: 12 }}>—</td>
+                        <td style={{ textAlign: "center", padding: "10px 8px", color: "#9ca3af", fontWeight: 600 }}>—</td>
+                        <td style={{ textAlign: "center", padding: "10px 8px", fontSize: 12, color: "#9ca3af" }}>—</td>
+                        <td style={{ textAlign: "center", padding: "10px 8px" }}>
+                          <span style={{ padding: "3px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, background: "#f59e0b18", color: "#b45309" }}>
+                            รอตรวจสอบ
+                          </span>
+                        </td>
+                      </tr>
+                    )}
                     {/* Total row */}
                     <tr style={{ background: "#f0fdf4", borderTop: "2px solid #059669" }}>
                       <td style={{ padding: "10px 12px", fontWeight: 700, color: "#059669" }}>รวมทั้งหมด</td>
@@ -1308,6 +1332,15 @@ OUTPUT:
                 </table>
               </div>
             </div>
+
+            {unclassifiedResponses.length > 0 && (
+              <div style={{ ...chartCardStyle, border: "1px solid #fed7aa", background: "#fffbeb" }}>
+                <h3 style={{ fontSize: 15, fontWeight: 700, color: "#b45309", margin: "0 0 8px" }}>ข้อมูลที่ยังจัดเข้าภูมิภาคไม่ได้</h3>
+                <div style={{ fontSize: 14, color: "#9a3412", lineHeight: 1.8 }}>
+                  รวมคำตอบทั้งหมด {responses.length} รายการ · จัดเข้าภูมิภาคได้ {classifiedCount} รายการ · ยังไม่ระบุจังหวัด/ภูมิภาค {unclassifiedResponses.length} รายการ
+                </div>
+              </div>
+            )}
 
             {/* Region-level progress with province breakdown */}
             {REGION_DATA.map(reg => {
