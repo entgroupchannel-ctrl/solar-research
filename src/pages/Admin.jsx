@@ -1143,9 +1143,27 @@ OUTPUT:
           const allTimestamps = responses.map(r => r.created_at);
           const overallProj = computeProjection(responses.length, TOTAL_TARGET, allTimestamps);
 
+          // Map province -> region code (for responses that don't carry a region source_code)
+          const PROVINCE_TO_REGION = {};
+          REGION_DATA.forEach(reg => { reg.provinces.forEach(p => { PROVINCE_TO_REGION[p] = reg.code; }); });
+          const REGION_CODES = REGION_DATA.map(r => r.code);
+          const classifyRegion = (r) => {
+            if (REGION_CODES.includes(r.source)) return r.source;
+            const personal = (typeof r.personal === 'object' ? r.personal : r.personal_data) || {};
+            const prov = personal.province;
+            if (prov && PROVINCE_TO_REGION[prov]) return PROVINCE_TO_REGION[prov];
+            return null;
+          };
+          const responsesByRegion = {};
+          REGION_DATA.forEach(reg => { responsesByRegion[reg.code] = []; });
+          responses.forEach(r => {
+            const code = classifyRegion(r);
+            if (code) responsesByRegion[code].push(r);
+          });
+
           // Region projections
           const regionProjections = REGION_DATA.map(reg => {
-            const regionResponses = responses.filter(r => r.source === reg.code);
+            const regionResponses = responsesByRegion[reg.code] || [];
             const timestamps = regionResponses.map(r => r.created_at);
             const proj = computeProjection(regionResponses.length, reg.target, timestamps);
             return { ...reg, collected: regionResponses.length, ...proj };
