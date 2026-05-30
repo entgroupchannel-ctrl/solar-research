@@ -2274,13 +2274,25 @@ OUTPUT:
           return (
             <div>
               {/* === Cronbach's Alpha === */}
+              {(() => {
+                const allOverall = alphaResults.map(s => s.overallAlpha).filter(a => a !== null);
+                const allSubs = alphaResults.flatMap(s => s.subsections.map(x => x.alpha)).filter(a => a !== null);
+                const acceptableCount = allSubs.filter(a => a >= 0.7).length;
+                const excellentCount = allSubs.filter(a => a >= 0.9).length;
+                const avgOverall = allOverall.length ? allOverall.reduce((a,b)=>a+b,0)/allOverall.length : 0;
+                return (
               <div style={chartCardStyle}>
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: "#059669", margin: "0 0 8px", display: "flex", alignItems: "center", gap: 8 }}>
                   <FlaskConical size={20} /> Reliability Analysis (Cronbach's Alpha)
                 </h2>
-                <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 20px" }}>
-                  ค่าความเชื่อมั่นของแบบสอบถามแต่ละด้าน · α ≥ 0.70 = ยอมรับได้ · N = {filtered.length}
+                <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 12px" }}>
+                  ค่าความเชื่อมั่นของแบบสอบถามแต่ละด้าน · α ≥ 0.70 = ยอมรับได้ · ใช้ข้อมูลทั้งหมด N = {responses.length} ราย
                 </p>
+                {allSubs.length > 0 && (
+                  <div style={{ padding: "12px 16px", background: "linear-gradient(135deg, #ecfdf5, #f0fdf4)", border: "1px solid #a7f3d0", borderRadius: 10, marginBottom: 20, fontSize: 13, color: "#065f46", lineHeight: 1.7 }}>
+                    <strong>สรุปผล:</strong> จากข้อมูล {responses.length} ราย · ค่า α เฉลี่ยรายปัจจัย = <strong>{avgOverall.toFixed(4)}</strong> · ด้านย่อยที่ผ่านเกณฑ์ (α ≥ 0.70): <strong>{acceptableCount}/{allSubs.length}</strong> ด้าน · ระดับดีเยี่ยม (α ≥ 0.90): <strong>{excellentCount}</strong> ด้าน
+                  </div>
+                )}
 
                 {alphaResults.map((sec, si) => (
                   <div key={si} style={{ marginBottom: 24 }}>
