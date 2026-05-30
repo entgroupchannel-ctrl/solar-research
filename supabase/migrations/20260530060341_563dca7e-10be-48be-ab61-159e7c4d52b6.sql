@@ -1,0 +1,1 @@
+DELETE FROM public.survey_responses WHERE source_code = 'simulated';
