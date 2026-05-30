@@ -2340,15 +2340,31 @@ OUTPUT:
                   </div>
                 ))}
               </div>
+                );
+              })()}
 
               {/* === Descriptive Statistics === */}
+              {(() => {
+                const allItems = descStats.flatMap(s => s.subsections.flatMap(sub => sub.items));
+                const totalItems = allItems.length;
+                const meanOfMeans = totalItems ? allItems.reduce((a,it)=>a+it.mean,0)/totalItems : 0;
+                const meanOfSD = totalItems ? allItems.reduce((a,it)=>a+it.sd,0)/totalItems : 0;
+                const highMeanCount = allItems.filter(it => it.mean >= 3.51).length;
+                const normalDist = allItems.filter(it => Math.abs(it.skewness) <= 2 && Math.abs(it.kurtosis) <= 7).length;
+                const meanLabel = meanOfMeans >= 4.51 ? "มากที่สุด" : meanOfMeans >= 3.51 ? "มาก" : meanOfMeans >= 2.51 ? "ปานกลาง" : meanOfMeans >= 1.51 ? "น้อย" : "น้อยที่สุด";
+                return (
               <div style={chartCardStyle}>
                 <h2 style={{ fontSize: 18, fontWeight: 700, color: "#3b82f6", margin: "0 0 8px", display: "flex", alignItems: "center", gap: 8 }}>
                   <BarChart3 size={20} /> Descriptive Statistics
                 </h2>
-                <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 20px" }}>
-                  ค่าเฉลี่ย (X̄), ส่วนเบี่ยงเบนมาตรฐาน (S.D.), ความเบ้ (Skewness), ความโด่ง (Kurtosis)
+                <p style={{ fontSize: 13, color: "#64748b", margin: "0 0 12px" }}>
+                  ค่าเฉลี่ย (X̄), ส่วนเบี่ยงเบนมาตรฐาน (S.D.), ความเบ้ (Skewness), ความโด่ง (Kurtosis) · N = {filtered.length} ราย
                 </p>
+                {totalItems > 0 && (
+                  <div style={{ padding: "12px 16px", background: "linear-gradient(135deg, #eff6ff, #f0f9ff)", border: "1px solid #bfdbfe", borderRadius: 10, marginBottom: 20, fontSize: 13, color: "#1e3a8a", lineHeight: 1.7 }}>
+                    <strong>สรุปผล:</strong> ค่าเฉลี่ยรวมทุกข้อ = <strong>{meanOfMeans.toFixed(2)}</strong> (ระดับ{meanLabel}) · S.D. เฉลี่ย = <strong>{meanOfSD.toFixed(2)}</strong> · ข้อที่ได้ค่าเฉลี่ยระดับมากขึ้นไป: <strong>{highMeanCount}/{totalItems}</strong> ข้อ · ข้อที่มีการกระจายปกติ (|Sk|≤2, |Ku|≤7): <strong>{normalDist}/{totalItems}</strong> ข้อ
+                  </div>
+                )}
 
                 {descStats.map((sec, si) => (
                   <div key={si} style={{ marginBottom: 28 }}>
