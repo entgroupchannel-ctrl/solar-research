@@ -94,6 +94,17 @@ Deno.serve(async (req) => {
         break;
       }
 
+      case "insert_responses_batch": {
+        const { rows } = payload;
+        const { data, error } = await supabase
+          .from("survey_responses")
+          .insert(rows)
+          .select("id");
+        if (error) throw error;
+        result = { inserted: data.length };
+        break;
+      }
+
       default:
         return new Response(JSON.stringify({ error: "Unknown action" }), {
           status: 400,
